@@ -93,7 +93,7 @@
                             <span>70%</span>
                         </div>
                         <div class="skill-bar">
-                            <div class="skill-progress" data-width="80"></div>
+                            <div class="skill-progress" data-width="70"></div>
                         </div>
                     </div>
                     <div class="skill-item">
@@ -156,60 +156,8 @@
                 <button class="filter-btn" data-filter="app">Приложения</button>
                 <button class="filter-btn" data-filter="design">Дизайн</button>
             </div>
-            <div class="portfolio-grid">
-                <div class="portfolio-item" data-category="web">
-                    <div class="portfolio-image">
-                        <i class="fas fa-shopping-cart"></i>
-                        <div class="portfolio-overlay">
-                            <div class="portfolio-links">
-                                <a href="https://districkov.github.io/Moscow___RP/" target="_blank" class="portfolio-link">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="https://github.com/Districkov/Moscow___RP" target="_blank" class="portfolio-link">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="portfolio-content">
-                        <h3>Интернет-магазин</h3>
-                        <p>Разработка современного интернет-магазина с корзиной, фильтрами и системой оплаты.</p>
-                    </div>
-                </div>
-                <div class="portfolio-item" data-category="app">
-                    <div class="portfolio-image">
-                        <i class="fas fa-tasks"></i>
-                        <div class="portfolio-overlay">
-                            <div class="portfolio-links">
-                                <a href="https://pyrometer.tilda.ws/" target="_blank" class="portfolio-link">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="portfolio-content">
-                        <h3>Приложение для управления задачами</h3>
-                        <p>React-приложение для управления проектами и задачами с возможностью совместной работы.</p>
-                    </div>
-                </div>
-                <div class="portfolio-item" data-category="design">
-                    <div class="portfolio-image">
-                        <i class="fas fa-palette"></i>
-                        <div class="portfolio-overlay">
-                            <div class="portfolio-links">
-                                <a href="https://www.figma.com/design/XbDdfTxHWDtniMplxhkvcu/Astra-Project-%7C-Figma?node-id=310-3098&p=f&t=t1uig8AF5IQqlOv7-0" target="_blank" class="portfolio-link">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="portfolio-content">
-                        <h3>Дизайн платформы для обучения</h3>
-                        <p>Создание UI/UX дизайна для образовательной платформы с системой курсов и тестирования.</p>
-                    </div>
-                </div>
+            <div class="portfolio-grid" id="portfolio-grid">
+                <!-- Проекты загружаются динамически из JSON -->
             </div>
         </div>
     </section>
@@ -245,13 +193,12 @@
                         </div>
                     </div>
                     <div class="social-links">
-                        <a href="https://t.me/yourprofile" target="_blank" class="social-link">
+                        <a href="https://t.me/districk" target="_blank" class="social-link">
                             <i class="fab fa-telegram"></i>
                         </a>
-                        <a href="https://github.com/yourprofile" target="_blank" class="social-link">
+                        <a href="https://github.com/Districkov" target="_blank" class="social-link">
                             <i class="fab fa-github"></i>
                         </a>
-                        
                     </div>
                 </div>
                 <div class="contact-form">
@@ -283,12 +230,63 @@
     <footer>
         <div class="container">
             <div class="footer-content">
-                <div class="footer-logo"><span>Districk</span></div>
+                <div class="footer-logo">Dis<span>Portfolio</span></div>
                 <p class="footer-text">Фронтенд разработчик, специализирующийся на создании современных и отзывчивых веб-приложений.</p>
+                <div class="social-links">
+                    <a href="https://t.me/districk" target="_blank" class="social-link">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                    <a href="https://github.com/Districkov" target="_blank" class="social-link">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
             </div>
-            
+            <div class="copyright">
+                &copy; 2024 Districk Portfolio. Все права защищены.
+            </div>
         </div>
     </footer>
+
+    <!-- Админ-панель для добавления проектов -->
+    <div id="admin-panel" class="admin-panel">
+        <div class="admin-content">
+            <h3>Добавить новый проект</h3>
+            <form id="project-form">
+                <div class="form-group">
+                    <input type="text" placeholder="Название проекта" id="project-title" required>
+                </div>
+                <div class="form-group">
+                    <select id="project-category" required>
+                        <option value="">Выберите категорию</option>
+                        <option value="web">Веб-сайт</option>
+                        <option value="app">Приложение</option>
+                        <option value="design">Дизайн</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Описание проекта" id="project-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Название файла изображения (например: project1.jpg)" id="project-image" required>
+                    <small>Поместите изображение в папку images/</small>
+                </div>
+                <div class="form-group">
+                    <input type="url" placeholder="Демо ссылка (необязательно)" id="project-demo">
+                </div>
+                <div class="form-group">
+                    <input type="url" placeholder="GitHub ссылка (необязательно)" id="project-github">
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn">Добавить проект</button>
+                    <button type="button" onclick="toggleAdmin()" class="btn btn-outline">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <button class="admin-toggle-btn" onclick="toggleAdmin()">
+        <i class="fas fa-plus"></i>
+    </button>
 
     <script src="script.js"></script>
 </body>
