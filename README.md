@@ -61,7 +61,7 @@ LocalStorage - хранение данных
 
 🌐 Размещение на GitHub Pages
 
-Сайт будет доступен по адресу: https://username.github.io/repository-name
+Сайт будет доступен по адресу: https://districkov.github.io/portfolio/
 
 📞 Контакты
 Email: ert34vh@gmail.com
