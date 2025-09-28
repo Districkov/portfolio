@@ -16,16 +16,16 @@ function getProjectsFromStorage() {
             "id": 1,
             "category": "web",
             "title": "Интернет-магазин Moscow RP",
-            "description": "Разработка современного интернет-магазина с корзиной, фильтрами и системой оплаты для проекта GTA 5 RP.",
+            "description": "Разработка современного лендинг сайта для проекта GTA 5 RP.",
             "image": "project1.png",
             "demoLink": "https://districkov.github.io/Moscow___RP/",
             "githubLink": "https://github.com/Districkov/Moscow___RP"
         },
         {
             "id": 2,
-            "category": "app", 
-            "title": "Приложение Pyrometer",
-            "description": "Веб-приложение для управления задачами и проектами с возможностью совместной работы.",
+            "category": "web", 
+            "title": "Сайт Pyrometer",
+            "description": "Сайт для покупки пирометров.",
             "image": "project2.png",
             "demoLink": "https://pyrometer.tilda.ws/",
             "githubLink": ""
