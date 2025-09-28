@@ -202,22 +202,22 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form id="contactForm">
+                    <form id="contactForm" action="https://formspree.io/f/xeorajek" method="POST">
                         <div class="form-group">
                             <label for="name">Ваше имя</label>
-                            <input type="text" id="name" required>
+                            <input type="text" id="name" name="name" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" required>
+                            <input type="email" id="email" name="email" required>
                         </div>
                         <div class="form-group">
                             <label for="subject">Тема</label>
-                            <input type="text" id="subject" required>
+                            <input type="text" id="subject" name="subject" required>
                         </div>
                         <div class="form-group">
                             <label for="message">Сообщение</label>
-                            <textarea id="message" required></textarea>
+                            <textarea id="message" name="message" required></textarea>
                         </div>
                         <button type="submit" class="btn">Отправить сообщение</button>
                     </form>
@@ -303,9 +303,9 @@
         </div>
     </div>
 
-    <button class="admin-toggle-btn locked" onclick="toggleLogin()">
-    <i class="fas fa-lock"></i>
-</button>
+    <button class="admin-toggle-btn locked">
+        <i class="fas fa-lock"></i>
+    </button>
 
     <script src="script.js"></script>
 </body>

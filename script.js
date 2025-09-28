@@ -1,6 +1,6 @@
 // Настройки администратора
 const ADMIN_CONFIG = {
-    password: "admin123", // Пароль для входа (можете поменять)
+    password: "admin123",
     isLoggedIn: false
 };
 
@@ -10,23 +10,22 @@ function getProjectsFromStorage() {
     if (savedProjects) {
         return JSON.parse(savedProjects);
     }
-    // Если нет сохраненных проектов, возвращаем стандартные
     return [
         {
             "id": 1,
             "category": "web",
             "title": "Интернет-магазин Moscow RP",
-            "description": "Разработка современного лендинг сайта для проекта GTA 5 RP.",
-            "image": "project1.png",
+            "description": "Разработка современного интернет-магазина с корзиной, фильтрами и системой оплаты для проекта GTA 5 RP.",
+            "image": "project1.jpg",
             "demoLink": "https://districkov.github.io/Moscow___RP/",
             "githubLink": "https://github.com/Districkov/Moscow___RP"
         },
         {
             "id": 2,
-            "category": "web", 
-            "title": "Сайт Pyrometer",
-            "description": "Сайт для покупки пирометров.",
-            "image": "project2.png",
+            "category": "app", 
+            "title": "Приложение Pyrometer",
+            "description": "Веб-приложение для управления задачами и проектами с возможностью совместной работы.",
+            "image": "project2.jpg",
             "demoLink": "https://pyrometer.tilda.ws/",
             "githubLink": ""
         },
@@ -35,7 +34,7 @@ function getProjectsFromStorage() {
             "category": "design",
             "title": "Дизайн проекта Astra GTA 5 RP", 
             "description": "Создание UI/UX дизайна для проекта по GTA 5 RP с современным интерфейсом.",
-            "image": "project3.png",
+            "image": "project3.jpg",
             "demoLink": "https://www.figma.com/design/XbDdfTxHWDtniMplxhkvcu/Astra-Project-%7C-Figma?node-id=310-3098&p=f&t=t1uig8AF5IQqlOv7-0",
             "githubLink": ""
         }
@@ -69,40 +68,32 @@ function updateAdminButton() {
         adminBtn.classList.remove('locked');
         adminBtn.classList.add('unlocked');
         icon.className = 'fas fa-plus';
-        adminBtn.onclick = toggleAdmin;
+        adminBtn.setAttribute('onclick', 'toggleAdmin()');
     } else {
         adminBtn.classList.remove('unlocked');
         adminBtn.classList.add('locked');
         icon.className = 'fas fa-lock';
-        adminBtn.onclick = toggleLogin;
+        adminBtn.setAttribute('onclick', 'toggleLogin()');
     }
 }
 
 // Форма входа
 function toggleLogin() {
-    console.log('Toggle login called');
     const loginPanel = document.getElementById('login-panel');
     if (loginPanel) {
-        loginPanel.style.display = loginPanel.style.display === 'none' ? 'block' : 'none';
-        console.log('Login panel display:', loginPanel.style.display);
-    } else {
-        console.error('Login panel not found');
+        loginPanel.style.display = loginPanel.style.display === 'none' || loginPanel.style.display === '' ? 'block' : 'none';
     }
 }
 
 // Форма добавления проектов
 function toggleAdmin() {
-    console.log('Toggle admin called');
     if (!ADMIN_CONFIG.isLoggedIn) {
         toggleLogin();
         return;
     }
     const adminPanel = document.getElementById('admin-panel');
     if (adminPanel) {
-        adminPanel.style.display = adminPanel.style.display === 'none' ? 'block' : 'none';
-        console.log('Admin panel display:', adminPanel.style.display);
-    } else {
-        console.error('Admin panel not found');
+        adminPanel.style.display = adminPanel.style.display === 'none' || adminPanel.style.display === '' ? 'block' : 'none';
     }
 }
 
@@ -112,25 +103,19 @@ function logout() {
     localStorage.removeItem('portfolioAuth');
     updateAdminButton();
     
-    // Закрываем админ-панель если открыта
     const adminPanel = document.getElementById('admin-panel');
     if (adminPanel) {
         adminPanel.style.display = 'none';
     }
     
-    // Перерисовываем проекты (убираем кнопки удаления)
     renderProjects(projects);
-    
     alert('Вы вышли из системы.');
 }
 
 // Функция для отрисовки проектов
 function renderProjects(projects) {
     const portfolioGrid = document.getElementById('portfolio-grid');
-    if (!portfolioGrid) {
-        console.error('Portfolio grid not found');
-        return;
-    }
+    if (!portfolioGrid) return;
     
     if (projects.length === 0) {
         portfolioGrid.innerHTML = `
@@ -325,7 +310,7 @@ function initFadeAnimations() {
     };
     
     window.addEventListener('scroll', fadeInOnScroll);
-    fadeInOnScroll(); // Запускаем сразу для видимых элементов
+    fadeInOnScroll();
 }
 
 // Анимация прогресс-баров
@@ -404,13 +389,8 @@ function initProjectForm() {
                 githubLink: githubInput ? githubInput.value || '' : ''
             };
             
-            // Добавляем проект в массив
             projects.push(newProject);
-            
-            // Сохраняем в localStorage
             saveProjectsToStorage(projects);
-            
-            // Перерисовываем проекты
             renderProjects(projects);
             initPortfolioFilters();
             
@@ -426,19 +406,23 @@ function initContactForm() {
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
+            // Форма будет отправляться через Formspree
+            // Показываем уведомление
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const subject = document.getElementById('subject').value;
             const message = document.getElementById('message').value;
             
-            if (name && email && subject && message) {
-                alert('Спасибо! Ваше сообщение отправлено. Я свяжусь с вами в ближайшее время.');
-                this.reset();
-            } else {
+            if (!name || !email || !subject || !message) {
+                e.preventDefault();
                 alert('Пожалуйста, заполните все поля формы.');
+                return;
             }
+            
+            // Показываем сообщение об успешной отправке
+            setTimeout(() => {
+                alert('Спасибо! Ваше сообщение отправлено. Я свяжусь с вами в ближайшее время.');
+            }, 1000);
         });
     }
 }
@@ -466,12 +450,7 @@ function initClickOutside() {
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing portfolio...');
-    
-    // Проверяем авторизацию
     checkAuth();
-    
-    // Инициализируем все компоненты
     initMobileMenu();
     initNavLinks();
     initSmoothScroll();
@@ -483,16 +462,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initContactForm();
     initClickOutside();
     
-    // Загружаем и отображаем проекты
     renderProjects(projects);
     initPortfolioFilters();
-    
-    console.log('Portfolio initialized successfully!');
-    console.log('Projects count:', projects.length);
-    console.log('Admin logged in:', ADMIN_CONFIG.isLoggedIn);
 });
 
-// Делаем функции глобальными для вызова из HTML
+// Делаем функции глобальными
 window.toggleLogin = toggleLogin;
 window.toggleAdmin = toggleAdmin;
 window.logout = logout;
