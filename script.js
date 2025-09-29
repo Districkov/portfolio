@@ -56,7 +56,7 @@ function getDefaultProjects() {
             "category": "web",
             "title": "Интернет-магазин Moscow RP",
             "description": "Разработка современного интернет-магазина с корзиной, фильтрами и системой оплаты для проекта GTA 5 RP.",
-            "image": "project1.jpg",
+            "image": "project1.png",
             "demoLink": "https://districkov.github.io/Moscow___RP/",
             "githubLink": "https://github.com/Districkov/Moscow___RP"
         },
@@ -65,7 +65,7 @@ function getDefaultProjects() {
             "category": "app", 
             "title": "Приложение Pyrometer",
             "description": "Веб-приложение для управления задачами и проектами с возможностью совместной работы.",
-            "image": "project2.jpg",
+            "image": "project2.png",
             "demoLink": "https://pyrometer.tilda.ws/",
             "githubLink": ""
         },
@@ -74,7 +74,7 @@ function getDefaultProjects() {
             "category": "design",
             "title": "Дизайн проекта Astra GTA 5 RP", 
             "description": "Создание UI/UX дизайна для проекта по GTA 5 RP с современным интерфейсом.",
-            "image": "project3.jpg",
+            "image": "project3.png",
             "demoLink": "https://www.figma.com/design/XbDdfTxHWDtniMplxhkvcu/Astra-Project-%7C-Figma?node-id=310-3098&p=f&t=t1uig8AF5IQqlOv7-0",
             "githubLink": ""
         }
