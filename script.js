@@ -1,575 +1,159 @@
 // =============================================
-// КОНФИГУРАЦИЯ И ПЕРЕМЕННЫЕ
+// КОНФИГУРАЦИЯ ПРИЛОЖЕНИЯ
 // =============================================
 const CONFIG = {
-    admin: {
-        password: "admin123",
-        isLoggedIn: false
-    },
-    theme: {
-        current: 'dark'
-    },
-    music: {
-        enabled: true,
-        volume: 0.3,
-        currentTime: 0
-    }
+    enable3D: false,
+    musicEnabled: true,
+    particlesEnabled: true
 };
 
 let projects = [];
-let chatHistory = [];
-let threeScene, threeCamera, threeRenderer, threeObjects = [];
-let is3DMode = false;
-let musicProgressInterval;
-
-// Состояние приложения
-const APP_STATE = {
-    isInitialized: false,
-    components: {
-        music: false,
-        chat: false,
-        threejs: false,
-        background: false
-    }
-};
+let threeScene = null;
 
 // =============================================
-// УЛУЧШЕННАЯ ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
+// ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
 // =============================================
 document.addEventListener('DOMContentLoaded', function() {
-    initializeEnhancedApp();
+    console.log('🚀 Initializing portfolio application...');
+    
+    // Инициализация основных модулей
+    initializeApp();
+    
+    // Загрузка проектов
+    loadProjects();
+    
+    console.log('✅ Portfolio application initialized successfully!');
 });
 
-async function initializeEnhancedApp() {
-    try {
-        console.log('🚀 Starting enhanced portfolio initialization...');
-        
-        // Инициализируем компоненты последовательно
-        await initializeCoreComponents();
-        
-        // Инициализируем интерактивные компоненты
-        await initializeInteractiveComponents();
-        
-        // Загружаем данные
-        await loadApplicationData();
-        
-        // Запускаем анимации
-        initializeAnimations();
-        
-        // Показываем интерфейс
-        showUserInterface();
-        
-        APP_STATE.isInitialized = true;
-        console.log('✅ Portfolio initialized successfully');
-        
-    } catch (error) {
-        console.error('❌ Error during initialization:', error);
-        handleInitializationError(error);
-    }
-}
-
-// Инициализация основных компонентов
-async function initializeCoreComponents() {
-    return new Promise((resolve) => {
-        console.log('🔄 Initializing core components...');
-        
-        // Динамический фон (самый первый)
-        initDynamicBackground();
-        APP_STATE.components.background = true;
-        
-        // Загрузка проектов
-        loadEnhancedProjects();
-        
-        // Инициализация темы
-        initTheme();
-        
-        setTimeout(resolve, 100);
-    });
-}
-
-// Инициализация интерактивных компонентов
-async function initializeInteractiveComponents() {
-    return new Promise((resolve) => {
-        console.log('🔄 Initializing interactive components...');
-        
-        // Инициализация в правильном порядке
-        initInteractiveElements();
-        init3DPortfolio();
-        initEnhancedChatAssistant();
-        initEnhancedMusicPlayer();
-        initEventListeners();
-        initProjectModal();
-        initClickParticles();
-        initAchievements();
-        
-        setTimeout(resolve, 200);
-    });
-}
-
-// Загрузка данных приложения
-async function loadApplicationData() {
-    return new Promise((resolve) => {
-        console.log('📦 Loading application data...');
-        
-        renderEnhancedProjects();
-        initPortfolioFilters();
-        initEnhancedFadeAnimations();
-        
-        setTimeout(resolve, 150);
-    });
-}
-
-// Инициализация анимаций
-function initializeAnimations() {
-    console.log('🎬 Initializing animations...');
+function initializeApp() {
+    // Инициализация темы
+    initTheme();
     
-    // Запускаем анимацию счетчиков
-    initCounters();
+    // Инициализация музыки
+    initMusic();
     
-    // Запускаем параллакс эффект
-    initParallax();
+    // Инициализация обработчиков событий
+    initEventListeners();
     
-    // Запускаем печатающий текст
-    initTypewriter();
-}
-
-// Показ пользовательского интерфейса
-function showUserInterface() {
-    console.log('👤 Showing user interface...');
+    // Инициализация анимаций
+    initAnimations();
     
-    // Скрываем прелоадер
-    setTimeout(() => {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-            preloader.classList.add('hidden');
-            setTimeout(() => {
-                preloader.style.display = 'none';
-                showButtonsAfterPreloader();
-                showWelcomeNotification();
-            }, 500);
-        }
-    }, 1000);
-}
-
-// Обработка ошибок инициализации
-function handleInitializationError(error) {
-    console.error('Initialization error:', error);
+    // Инициализация улучшенного динамического фона
+    initEnhancedDynamicBackground();
     
-    // Показываем сообщение об ошибке
-    showNotification('Произошла ошибка при загрузке портфолио. Пожалуйста, обновите страницу.', 'error');
+    // Инициализация прогресса страницы
+    initPageProgress();
     
-    // Все равно пытаемся показать интерфейс
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        preloader.style.display = 'none';
-    }
+    // Инициализация кнопки музыки внизу
+    initBottomMusicButton();
     
-    showButtonsAfterPreloader();
-}
-
-// Приветственное уведомление
-function showWelcomeNotification() {
-    setTimeout(() => {
-        showNotification('Добро пожаловать в мое портфолио! 🚀', 'success');
-        
-        // Показываем подсказку про AI помощника
-        setTimeout(() => {
-            const chatToggle = document.getElementById('chatToggle');
-            if (chatToggle) {
-                showNotification('Нажмите на робота в правом нижнем углу для помощи!', 'info');
-            }
-        }, 2000);
-    }, 500);
+    // Инициализация AI ассистента
+    initEnhancedChatAssistant();
 }
 
 // =============================================
-// ФУНКЦИИ ДЛЯ УПРАВЛЕНИЯ ВИДИМОСТЬЮ КНОПОК
+// УЛУЧШЕННЫЙ ДИНАМИЧЕСКИЙ ФОН
 // =============================================
-function hideButtonsBeforeLoad() {
-    const chatToggle = document.getElementById('chatToggle');
-    const adminLinkBtn = document.getElementById('adminLinkBtn');
+function initEnhancedDynamicBackground() {
+    const bgContainer = document.getElementById('dynamic-bg');
+    if (!bgContainer) return;
+
+    // Очищаем контейнер
+    bgContainer.innerHTML = '';
     
-    if (chatToggle) {
-        chatToggle.style.opacity = '0';
-        chatToggle.style.visibility = 'hidden';
-        chatToggle.classList.remove('visible', 'pulse');
-    }
+    // Создаем градиентный фон
+    const gradientOverlay = document.createElement('div');
+    gradientOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 30% 30%, rgba(124, 252, 0, 0.1) 0%, transparent 50%),
+                   radial-gradient(circle at 70% 70%, rgba(124, 252, 0, 0.05) 0%, transparent 50%);
+        z-index: 1;
+    `;
+    bgContainer.appendChild(gradientOverlay);
+
+    // Создаем сетку из линий
+    createGridLines(bgContainer);
     
-    if (adminLinkBtn) {
-        adminLinkBtn.style.opacity = '0';
-        adminLinkBtn.style.visibility = 'hidden';
-        adminLinkBtn.classList.remove('visible');
-    }
+    // Создаем улучшенные частицы
+    createEnhancedParticles(bgContainer);
     
-    console.log('Buttons hidden before preloader');
+    // Создаем пульсирующие круги
+    createPulsingCircles(bgContainer);
+    
+    console.log('🎨 Enhanced dynamic background initialized');
 }
 
-function showButtonsAfterPreloader() {
-    const chatToggle = document.getElementById('chatToggle');
-    const adminLinkBtn = document.getElementById('adminLinkBtn');
-    
-    // Показываем AI кнопку
-    if (chatToggle) {
-        chatToggle.style.display = 'flex';
-        setTimeout(() => {
-            chatToggle.classList.add('visible');
-            // Добавляем пульсацию через секунду
-            setTimeout(() => {
-                chatToggle.classList.add('pulse');
-            }, 1000);
-        }, 100);
-    }
-    
-    // Показываем админ кнопку
-    if (adminLinkBtn) {
-        adminLinkBtn.style.display = 'flex';
-        setTimeout(() => {
-            adminLinkBtn.classList.add('visible');
-        }, 300);
-    }
-    
-    console.log('All buttons shown after preloader');
+function createGridLines(container) {
+    const gridSize = 50;
+    const gridLines = document.createElement('div');
+    gridLines.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(124, 252, 0, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124, 252, 0, 0.03) 1px, transparent 1px);
+        background-size: ${gridSize}px ${gridSize}px;
+        z-index: 0;
+    `;
+    container.appendChild(gridLines);
 }
 
-// =============================================
-// УЛУЧШЕННЫЙ МУЗЫКАЛЬНЫЙ ПЛЕЙЕР В HEADER
-// =============================================
-function initEnhancedMusicPlayer() {
-    const musicToggleHeader = document.getElementById('musicToggleHeader');
-    const backgroundMusic = document.getElementById('backgroundMusic');
+function createEnhancedParticles(container) {
+    const particleCount = 80;
     
-    if (!musicToggleHeader || !backgroundMusic) {
-        console.warn('Music player elements not found');
-        return;
-    }
-    
-    // Загружаем настройки музыки из localStorage
-    loadMusicSettings();
-    
-    // Устанавливаем начальную громкость
-    backgroundMusic.volume = CONFIG.music.volume;
-    
-    // Автоматически запускаем музыку при загрузке
-    setTimeout(() => {
-        if (CONFIG.music.enabled) {
-            backgroundMusic.play().catch(e => {
-                console.log('Auto-play failed, waiting for user interaction:', e);
-                // Показываем подсказку для пользователя
-                showNotification('Нажмите на кнопку музыки в шапке для включения звука', 'info');
-            });
-            updateMusicIcon(true);
-        }
-    }, 1000);
-    
-    // Переключение музыки
-    musicToggleHeader.addEventListener('click', function() {
-        CONFIG.music.enabled = !CONFIG.music.enabled;
-        
-        if (CONFIG.music.enabled) {
-            backgroundMusic.play().catch(e => {
-                console.log('Audio play failed:', e);
-                CONFIG.music.enabled = false;
-                showNotification('Для воспроизведения музыки требуется взаимодействие с сайтом', 'error');
-            });
-            updateMusicIcon(true);
-            showNotification('Фоновая музыка включена 🎵', 'success');
-            showAchievement('musicEnabled');
-        } else {
-            backgroundMusic.pause();
-            updateMusicIcon(false);
-            showNotification('Фоновая музыка выключена 🔇', 'info');
-        }
-        
-        saveMusicSettings();
-    });
-    
-    // Автоповтор при окончании трека
-    backgroundMusic.addEventListener('ended', function() {
-        this.currentTime = 0;
-        if (CONFIG.music.enabled) {
-            this.play().catch(e => {
-                console.log('Auto-play after ended failed:', e);
-            });
-        }
-    });
-    
-    // Улучшенная обработка ошибок
-    backgroundMusic.addEventListener('error', function(e) {
-        console.error('Audio error:', e);
-        handleMusicError();
-    });
-    
-    APP_STATE.components.music = true;
-    console.log('🎵 Enhanced music player initialized in header');
-}
-
-// Обновление иконки музыки
-function updateMusicIcon(isPlaying) {
-    const musicToggleHeader = document.getElementById('musicToggleHeader');
-    if (!musicToggleHeader) return;
-    
-    const icon = musicToggleHeader.querySelector('i');
-    if (isPlaying) {
-        icon.className = 'fas fa-volume-up';
-        musicToggleHeader.classList.remove('muted');
-    } else {
-        icon.className = 'fas fa-volume-mute';
-        musicToggleHeader.classList.add('muted');
-    }
-}
-
-// Обработка ошибок музыки
-function handleMusicError() {
-    CONFIG.music.enabled = false;
-    updateMusicIcon(false);
-    showNotification('Не удалось загрузить музыку', 'error');
-}
-
-function loadMusicSettings() {
-    const savedSettings = localStorage.getItem('portfolioMusicSettings');
-    if (savedSettings) {
-        const settings = JSON.parse(savedSettings);
-        CONFIG.music.enabled = settings.enabled !== undefined ? settings.enabled : true;
-        CONFIG.music.volume = settings.volume || 0.3;
-    }
-}
-
-function saveMusicSettings() {
-    localStorage.setItem('portfolioMusicSettings', JSON.stringify({
-        enabled: CONFIG.music.enabled,
-        volume: CONFIG.music.volume
-    }));
-}
-
-function toggleMusic() {
-    const musicToggleHeader = document.getElementById('musicToggleHeader');
-    if (musicToggleHeader) {
-        musicToggleHeader.click();
-    }
-}
-
-// =============================================
-// ДИНАМИЧЕСКИЙ ФОН
-// =============================================
-function initDynamicBackground() {
-    const dynamicBg = document.getElementById('dynamic-bg');
-    if (!dynamicBg) {
-        console.error('Dynamic background element not found!');
-        return;
-    }
-
-    // Очищаем существующие элементы
-    dynamicBg.innerHTML = '';
-
-    // Создаем контейнер для частиц
-    const particlesContainer = document.createElement('div');
-    particlesContainer.className = 'particles-container';
-    
-    // Добавляем частицы
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
-        particle.className = 'bg-particle';
+        const size = Math.random() * 4 + 1;
+        const duration = Math.random() * 25 + 15;
+        const delay = Math.random() * 5;
         
-        // Случайные параметры для разнообразия
-        const size = Math.random() * 100 + 50;
-        const top = Math.random() * 100;
-        const left = Math.random() * 100;
-        const delay = Math.random() * 20;
-        const duration = Math.random() * 30 + 20;
-        const opacity = Math.random() * 0.1 + 0.05;
+        particle.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            background: var(--primary);
+            border-radius: 50%;
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            opacity: ${Math.random() * 0.4 + 0.1};
+            animation: enhancedFloat ${duration}s linear infinite ${delay}s;
+            filter: blur(${Math.random() * 2}px);
+        `;
         
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.top = `${top}%`;
-        particle.style.left = `${left}%`;
-        particle.style.animationDelay = `${delay}s`;
-        particle.style.animationDuration = `${duration}s`;
-        particle.style.opacity = opacity;
-        
-        // Добавляем пульсацию для некоторых частиц
-        if (i % 4 === 0) {
-            particle.classList.add('bg-pulse');
-        }
-        
-        particlesContainer.appendChild(particle);
-    }
-
-    // Добавляем сетку
-    const grid = document.createElement('div');
-    grid.className = 'bg-grid';
-    
-    // Добавляем волны
-    const wave = document.createElement('div');
-    wave.className = 'bg-wave';
-
-    // Добавляем все элементы в фон
-    dynamicBg.appendChild(particlesContainer);
-    dynamicBg.appendChild(grid);
-    dynamicBg.appendChild(wave);
-
-    console.log('Dynamic background initialized with', document.querySelectorAll('.bg-particle').length, 'particles');
-}
-
-function updateBackgroundForTheme() {
-    const particles = document.querySelectorAll('.bg-particle');
-    const grid = document.querySelector('.bg-grid');
-    const wave = document.querySelector('.bg-wave');
-    
-    if (CONFIG.theme.current === 'light') {
-        particles.forEach(particle => {
-            particle.style.opacity = '0.03';
-        });
-        if (grid) grid.style.opacity = '0.01';
-        if (wave) wave.style.opacity = '0.02';
-    } else {
-        particles.forEach(particle => {
-            particle.style.opacity = '0.08';
-        });
-        if (grid) grid.style.opacity = '0.03';
-        if (wave) wave.style.opacity = '0.05';
+        container.appendChild(particle);
     }
 }
 
-// =============================================
-// 3D PORTFOLIO WITH WEBGL
-// =============================================
-function init3DPortfolio() {
-    const container = document.getElementById('threejs-container');
-    if (!container) {
-        console.log('3D container not found');
-        return;
-    }
+function createPulsingCircles(container) {
+    const circleCount = 3;
     
-    try {
-        // Проверяем наличие Three.js
-        if (typeof THREE === 'undefined') {
-            console.error('Three.js library not loaded');
-            return;
-        }
+    for (let i = 0; i < circleCount; i++) {
+        const circle = document.createElement('div');
+        const size = Math.random() * 200 + 100;
+        const duration = Math.random() * 8 + 4;
+        const delay = Math.random() * 2;
         
-        // Создаем сцену
-        threeScene = new THREE.Scene();
+        circle.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            border: 1px solid rgba(124, 252, 0, 0.1);
+            border-radius: 50%;
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            opacity: 0;
+            animation: pulseCircle ${duration}s ease-in-out infinite ${delay}s;
+            z-index: 0;
+        `;
         
-        // Создаем камеру
-        threeCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        threeCamera.position.z = 5;
-        
-        // Создаем рендерер
-        threeRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        threeRenderer.setSize(window.innerWidth, window.innerHeight);
-        threeRenderer.setClearColor(0x000000, 0);
-        container.appendChild(threeRenderer.domElement);
-        
-        // Создаем 3D объекты для проектов
-        create3DProjectObjects();
-        
-        // Добавляем освещение
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-        threeScene.add(ambientLight);
-        
-        const directionalLight = new THREE.DirectionalLight(0x7cfc00, 0.8);
-        directionalLight.position.set(1, 1, 1);
-        threeScene.add(directionalLight);
-        
-        // Обработчик изменения размера
-        window.addEventListener('resize', onWindowResize);
-        
-        APP_STATE.components.threejs = true;
-        console.log('3D Portfolio initialized successfully');
-    } catch (error) {
-        console.error('Error initializing 3D portfolio:', error);
-    }
-}
-
-function create3DProjectObjects() {
-    if (!threeScene) return;
-    
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    
-    projects.forEach((project, index) => {
-        const material = new THREE.MeshPhongMaterial({ 
-            color: getProjectColor(project.category),
-            transparent: true,
-            opacity: 0.8
-        });
-        
-        const cube = new THREE.Mesh(geometry, material);
-        
-        // Располагаем кубы по кругу
-        const angle = (index / projects.length) * Math.PI * 2;
-        const radius = 3;
-        cube.position.x = Math.cos(angle) * radius;
-        cube.position.y = Math.sin(angle) * radius;
-        cube.position.z = (Math.random() - 0.5) * 2;
-        
-        // Сохраняем данные проекта
-        cube.userData = { 
-            project: project, 
-            originalY: cube.position.y,
-            originalX: cube.position.x,
-            originalZ: cube.position.z
-        };
-        
-        threeScene.add(cube);
-        threeObjects.push(cube);
-    });
-}
-
-function getProjectColor(category) {
-    const colors = {
-        web: 0x7cfc00,    // Green
-        app: 0x00bfff,    // Blue
-        design: 0xff69b4   // Pink
-    };
-    return colors[category] || 0xffffff;
-}
-
-function animate3DScene() {
-    if (!is3DMode || !threeScene || !threeCamera || !threeRenderer) return;
-    
-    requestAnimationFrame(animate3DScene);
-    
-    // Анимация вращения и плавания
-    threeObjects.forEach((object, index) => {
-        object.rotation.x += 0.01;
-        object.rotation.y += 0.01;
-        
-        // Плавающий эффект
-        const time = Date.now() * 0.001;
-        object.position.y = object.userData.originalY + Math.sin(time + index) * 0.3;
-        object.position.x = object.userData.originalX + Math.cos(time * 0.5 + index) * 0.2;
-    });
-    
-    threeRenderer.render(threeScene, threeCamera);
-}
-
-function onWindowResize() {
-    if (!threeCamera || !threeRenderer) return;
-    
-    threeCamera.aspect = window.innerWidth / window.innerHeight;
-    threeCamera.updateProjectionMatrix();
-    threeRenderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function toggle3DMode() {
-    is3DMode = !is3DMode;
-    const container = document.getElementById('threejs-container');
-    const toggleBtn = document.getElementById('toggle3D');
-    
-    if (is3DMode) {
-        container.classList.add('active');
-        if (toggleBtn) {
-            toggleBtn.innerHTML = '<i class="fas fa-cube"></i> 2D Режим';
-        }
-        showNotification('3D режим активирован!', 'success');
-        showAchievement('3dMode');
-        // Запускаем анимацию
-        animate3DScene();
-    } else {
-        container.classList.remove('active');
-        if (toggleBtn) {
-            toggleBtn.innerHTML = '<i class="fas fa-cube"></i> 3D Режим';
-        }
+        container.appendChild(circle);
     }
 }
 
@@ -577,6 +161,9 @@ function toggle3DMode() {
 // УЛУЧШЕННЫЙ AI CHAT ASSISTANT
 // =============================================
 function initEnhancedChatAssistant() {
+    // Создаем элементы чата если их нет
+    createChatAssistantElements();
+    
     const chatToggle = document.getElementById('chatToggle');
     const chatClose = document.getElementById('chatClose');
     const chatSend = document.getElementById('chatSend');
@@ -605,7 +192,6 @@ function initEnhancedChatAssistant() {
             setTimeout(() => {
                 chatAssistant.classList.add('active');
                 chatInput.focus();
-                showAchievement('chatOpened');
             }, 10);
         }
     });
@@ -656,8 +242,358 @@ function initEnhancedChatAssistant() {
     // Быстрые ответы
     addEnhancedQuickReplies();
     
-    APP_STATE.components.chat = true;
     console.log('🤖 Enhanced chat assistant initialized');
+}
+
+function createChatAssistantElements() {
+    // Проверяем, есть ли уже чат
+    if (document.getElementById('chat-assistant')) return;
+    
+    const chatHTML = `
+        <div class="chat-toggle" id="chatToggle">
+            <i class="fas fa-robot"></i>
+        </div>
+        
+        <div class="chat-assistant" id="chat-assistant">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Помощник</span>
+                </div>
+                <button class="chat-close" id="chatClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Привет! 👋 Я ваш AI-помощник. Могу рассказать о навыках, проектах, опыте работы и многом другом. Чем могу помочь?</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="Задайте вопрос...">
+                <button class="chat-send" id="chatSend">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    const chatContainer = document.createElement('div');
+    chatContainer.innerHTML = chatHTML;
+    document.body.appendChild(chatContainer);
+    
+    // Добавляем стили для чата
+    addChatStyles();
+}
+
+function addChatStyles() {
+    const chatStyles = `
+        .chat-toggle {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: var(--glow);
+        }
+        
+        .chat-assistant {
+            position: fixed;
+            bottom: 170px;
+            right: 30px;
+            width: 400px;
+            height: 500px;
+            background: var(--dark-light);
+            border: 1px solid rgba(124, 252, 0, 0.2);
+            border-radius: var(--border-radius);
+            display: none;
+            flex-direction: column;
+            z-index: 101;
+            box-shadow: var(--shadow);
+            transform: translateY(20px) scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-assistant.active {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+        
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(124, 252, 0, 0.1);
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+        
+        .chat-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--light);
+        }
+        
+        .chat-title i {
+            color: var(--primary);
+        }
+        
+        .chat-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+        
+        .chat-close:hover {
+            color: var(--light);
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        
+        .user-message {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .user-message .message-avatar {
+            background: var(--gray);
+        }
+        
+        .message-content {
+            max-width: 70%;
+            background: rgba(124, 252, 0, 0.1);
+            padding: 12px 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(124, 252, 0, 0.2);
+        }
+        
+        .user-message .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .message-content p {
+            margin: 0;
+            color: var(--light);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        .quick-replies.enhanced {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .quick-reply.enhanced {
+            background: rgba(124, 252, 0, 0.1);
+            border: 1px solid rgba(124, 252, 0, 0.3);
+            color: var(--primary);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .quick-reply.enhanced:hover {
+            background: rgba(124, 252, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .chat-input-container {
+            display: flex;
+            padding: 20px;
+            border-top: 1px solid rgba(124, 252, 0, 0.1);
+            gap: 10px;
+        }
+        
+        #chatInput {
+            flex: 1;
+            padding: 12px 15px;
+            background: var(--dark);
+            border: 1px solid rgba(124, 252, 0, 0.2);
+            border-radius: 25px;
+            color: var(--light);
+            font-size: 0.9rem;
+        }
+        
+        #chatInput:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .chat-send {
+            width: 45px;
+            height: 45px;
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-send:hover {
+            transform: scale(1.1);
+            box-shadow: var(--glow);
+        }
+        
+        @keyframes typingBounce {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes enhancedFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-30px) translateX(15px) rotate(90deg);
+            }
+            50% {
+                transform: translateY(-15px) translateX(30px) rotate(180deg);
+            }
+            75% {
+                transform: translateY(-25px) translateX(-15px) rotate(270deg);
+            }
+        }
+        
+        @keyframes pulseCircle {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .chat-assistant {
+                width: 350px;
+                height: 450px;
+                right: 20px;
+                bottom: 150px;
+            }
+            
+            .chat-toggle {
+                right: 20px;
+                bottom: 90px;
+            }
+            
+            .quick-replies.enhanced {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .chat-assistant {
+                width: 300px;
+                height: 400px;
+                right: 10px;
+                left: 10px;
+                bottom: 140px;
+            }
+        }
+    `;
+    
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = chatStyles;
+    document.head.appendChild(styleSheet);
 }
 
 // Закрытие чата
@@ -691,9 +627,6 @@ function addMessage(text, sender) {
     
     chatMessages.appendChild(messageDiv);
     scrollChatToBottom();
-    
-    // Сохраняем в историю
-    chatHistory.push({ sender, text, timestamp: new Date() });
 }
 
 function showTypingIndicator() {
@@ -796,7 +729,7 @@ function generateEnhancedAIResponse(userMessage) {
 • Svelte (70%) - Современный компилируемый фреймворк
 • UI/UX Design (75%) - Прототипирование, дизайн-системы
 
-Также имею опыт работы с Three.js, WebGL и различными API.`,
+Также имею опыт работы с различными API.`,
 
         projects: `В моем портфолио представлены различные проекты:
 
@@ -821,9 +754,8 @@ function generateEnhancedAIResponse(userMessage) {
 
 Работал над проектами различной сложности - от лендингов до сложных веб-приложений.`,
 
-        contact: `📧 **Email**: ert34vh@gmail.com
-📞 **Телефон**: +7 (926) 718-55-52
-✈️ **Telegram**: @districk
+        contact: `📧 **Email**: districkov@yandex.ru
+✈️ **Telegram**: @districkov
 💻 **GitHub**: Districkov
 
 📍 **Локация**: Москва
@@ -850,16 +782,17 @@ function generateEnhancedAIResponse(userMessage) {
 • **Frontend**: HTML5, CSS3, JavaScript (ES6+), React, Svelte
 • **Styling**: CSS Modules, Styled Components, SASS
 • **Tools**: Git, Webpack, Vite, Figma
-• **Libraries**: Three.js, Chart.js, различные API
+• **Libraries**: Chart.js, различные API
 • **Methodologies**: БЭМ, Mobile First, Responsive Design`,
 
         music: `🎵 **Управление музыкой**:
 
-Вы можете управлять фоновой музыкой с помощью кнопки в шапке сайта:
+Вы можете управлять фоновой музыкой с помощью кнопки в правом нижнем углу:
 
-🔊 **Включение/выключение** - кнопка с иконкой динамика в правом верхнем углу
+🔊 **Включение/выключение** - кнопка с иконкой динамика
+🎵 **Функционал**: Автоповтор, регулировка громкости
 
-Музыка автоматически запускается при загрузке сайта и создает приятную атмосферу!`
+Музыка создает приятную атмосферу при просмотре портфолио!`
     };
     
     // Улучшенное определение интента
@@ -899,9 +832,7 @@ function generateEnhancedAIResponse(userMessage) {
 Не забудьте посмотреть мои проекты в разделе "Портфолио" 🚀`;
     } else if (message.includes('пока') || message.includes('bye') || message.includes('до свидан') || message.includes('выход')) {
         return `До свидания! 👋 
-Буду рад помочь в будущем. Удачи!
-
-P.S. Не забудьте посмотреть 3D режим - это довольно круто! 🎮`;
+Буду рад помочь в будущем. Удачи!`;
     } else if (message.includes('помощь') || message.includes('help') || message.includes('что ты умеешь') || message.includes('команды')) {
         return `🆘 **Что я умею**:
 
@@ -911,7 +842,6 @@ P.S. Не забудьте посмотреть 3D режим - это дово�
 • Показать **контакты** для связи 📞
 • Рассказать об **услугах** 🎯
 • Помочь с **управлением музыкой** 🎵
-• Объяснить про **3D режим** 🎮
 
 Просто спросите о чем-нибудь из этого списка!`;
     } else {
@@ -930,169 +860,23 @@ P.S. Не забудьте посмотреть 3D режим - это дово�
 }
 
 // =============================================
-// ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ
+// ОСТАЛЬНЫЕ ФУНКЦИИ
 // =============================================
-function initInteractiveElements() {
-    // Параллакс эффект для фона
-    initParallax();
+function loadProjects() {
+    const savedProjects = localStorage.getItem('portfolioProjects');
     
-    // Анимация печатающего текста
-    initTypewriter();
-    
-    // Интерактивные навыки
-    initInteractiveSkills();
-    
-    // hover эффекты для карточек
-    initCardHoverEffects();
-    
-    // Прогресс загрузки страницы
-    initPageProgress();
-    
-    // Анимация счетчиков
-    initCounters();
-}
-
-// Параллакс эффект
-function initParallax() {
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const parallaxElements = document.querySelectorAll('.parallax');
-        
-        parallaxElements.forEach(element => {
-            const speed = element.dataset.speed || 0.5;
-            element.style.transform = `translateY(${scrolled * speed}px)`;
-        });
-    });
-}
-
-// Эффект печатающего текста
-function initTypewriter() {
-    const heroTitle = document.querySelector('.hero h1');
-    if (!heroTitle) return;
-    
-    const originalText = heroTitle.textContent;
-    heroTitle.textContent = '';
-    heroTitle.style.borderRight = '2px solid var(--primary)';
-    
-    let i = 0;
-    
-    function typeWriter() {
-        if (i < originalText.length) {
-            heroTitle.textContent += originalText.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100);
-        } else {
-            heroTitle.style.borderRight = 'none';
-        }
+    if (savedProjects) {
+        projects = JSON.parse(savedProjects);
+        console.log(`📁 Loaded ${projects.length} projects from localStorage`);
+    } else {
+        projects = getDefaultProjects();
+        console.log(`📁 Loaded ${projects.length} default projects`);
     }
     
-    // Запускаем после загрузки
-    setTimeout(typeWriter, 1000);
+    renderProjects();
 }
 
-// Интерактивные навыки
-function initInteractiveSkills() {
-    const skills = document.querySelectorAll('.skill-item');
-    
-    skills.forEach(skill => {
-        skill.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.05)';
-            this.style.transition = 'transform 0.3s ease';
-        });
-        
-        skill.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-        });
-    });
-}
-
-// Эффекты при наведении на карточки
-function initCardHoverEffects() {
-    const cards = document.querySelectorAll('.service-card, .portfolio-item');
-    
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.boxShadow = '0 20px 40px rgba(124, 252, 0, 0.2)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.boxShadow = '';
-        });
-    });
-}
-
-// Прогресс загрузки страницы
-function initPageProgress() {
-    const progressBar = document.querySelector('.progress-bar');
-    if (!progressBar) return;
-    
-    window.addEventListener('scroll', () => {
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-        const scrollTop = window.pageYOffset;
-        const progress = (scrollTop / (documentHeight - windowHeight)) * 100;
-        
-        progressBar.style.width = progress + '%';
-    });
-}
-
-// Анимация счетчиков
-function initCounters() {
-    const counters = document.querySelectorAll('.counter');
-    
-    counters.forEach(counter => {
-        const target = +counter.getAttribute('data-target');
-        const duration = 2000;
-        const step = target / (duration / 16);
-        let current = 0;
-        
-        const updateCounter = () => {
-            current += step;
-            if (current < target) {
-                counter.textContent = Math.ceil(current);
-                requestAnimationFrame(updateCounter);
-            } else {
-                counter.textContent = target;
-            }
-        };
-        
-        // Запускаем когда элемент в зоне видимости
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    updateCounter();
-                    observer.unobserve(entry.target);
-                }
-            });
-        });
-        
-        observer.observe(counter);
-    });
-}
-
-// =============================================
-// УЛУЧШЕННОЕ УПРАВЛЕНИЕ ПРОЕКТАМИ
-// =============================================
-function loadEnhancedProjects() {
-    const saved = localStorage.getItem('portfolioProjects');
-    projects = saved ? JSON.parse(saved) : getEnhancedDefaultProjects();
-    
-    // Добавляем проверку на валидность данных
-    projects = projects.filter(project => 
-        project && 
-        project.id && 
-        project.title && 
-        project.category
-    );
-    
-    console.log(`📁 Loaded ${projects.length} projects`);
-}
-
-function saveProjects() {
-    localStorage.setItem('portfolioProjects', JSON.stringify(projects));
-}
-
-function getEnhancedDefaultProjects() {
+function getDefaultProjects() {
     return [
         {
             "id": 1,
@@ -1130,103 +914,266 @@ function getEnhancedDefaultProjects() {
     ];
 }
 
-function renderEnhancedProjects() {
-    const grid = document.getElementById('portfolio-grid');
-    if (!grid) return;
+function renderProjects() {
+    const portfolioGrid = document.getElementById('portfolioGrid');
+    if (!portfolioGrid) return;
 
-    if (projects.length === 0) {
-        grid.innerHTML = createEnhancedEmptyState();
-        return;
-    }
-
-    grid.innerHTML = projects.map(project => createEnhancedProjectCard(project)).join('');
-    initEnhancedFadeAnimations();
-}
-
-function createEnhancedEmptyState() {
-    return `
-        <div class="empty-state">
-            <i class="fas fa-folder-open"></i>
-            <h3>Пока нет проектов</h3>
-            <p>Свяжитесь с администратором для добавления проектов</p>
-        </div>
-    `;
-}
-
-function createEnhancedProjectCard(project) {
-    const icon = getCategoryIcon(project.category);
-    const technologies = project.technologies ? project.technologies.slice(0, 3).join(', ') : '';
-    
-    return `
-        <div class="portfolio-item fade-in-enhanced" data-category="${project.category}">
-            <div class="portfolio-image ${project.image ? 'has-image' : ''}">
-                ${project.image ? 
-                    `<img src="images/${project.image}" alt="${project.title}" loading="lazy" 
-                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI4MCIgdmlld0JveD0iMCAwIDQwMCAyODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjgwIiBmaWxsPSIjMmEyYTJhIi8+CjxwYXRoIGQ9Ik0yMDAgMTQwTDE2MCAxMDBIMTIwTDIwMCAxODBMMjgwIDEwMEgyNDBMMjAwIDE0MFoiIGZpbGw9IiM3Y2ZjMDAiLz4KPC9zdmc+'; this.alt='Изображение не загружено'">` : 
-                    ''
-                }
-                <i class="fas fa-${icon} fa-icon"></i>
-                <div class="portfolio-overlay">
-                    <div class="portfolio-links">
-                        ${project.demoLink ? `
-                            <a href="${project.demoLink}" target="_blank" class="portfolio-link" title="Демо">
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        ` : ''}
-                        ${project.githubLink ? `
-                            <a href="${project.githubLink}" target="_blank" class="portfolio-link" title="GitHub">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        ` : ''}
+    portfolioGrid.innerHTML = projects.map(project => `
+        <div class="portfolio-item ${project.category}" data-category="${project.category}">
+            <div class="portfolio-card">
+                <div class="portfolio-img">
+                    <img src="images/${project.image}" alt="${project.title}" onerror="this.src='images/default-project.png'">
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-links">
+                            ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="portfolio-link"><i class="fas fa-external-link-alt"></i></a>` : ''}
+                            ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="portfolio-link"><i class="fab fa-github"></i></a>` : ''}
+                            <a href="#" class="portfolio-link view-details" data-project="${project.id}"><i class="fas fa-eye"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-content">
+                    <span class="portfolio-category">${getCategoryName(project.category)}</span>
+                    <h3>${project.title}</h3>
+                    <p>${project.description}</p>
+                    <div class="portfolio-tech">
+                        ${project.technologies.slice(0, 3).map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
                     </div>
                 </div>
             </div>
-            <div class="portfolio-content">
-                <h3>${project.title}</h3>
-                <p>${project.description}</p>
-                ${technologies ? `
-                    <div class="project-technologies">
-                        <small>Технологии: ${technologies}${project.technologies.length > 3 ? '...' : ''}</small>
+        </div>
+    `).join('');
+
+    initProjectFilter();
+    initProjectDetails();
+}
+
+function getCategoryName(category) {
+    const names = {
+        web: 'Веб-сайт',
+        app: 'Приложение', 
+        design: 'Дизайн'
+    };
+    return names[category] || category;
+}
+
+function initProjectFilter() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const filterValue = btn.getAttribute('data-filter');
+            
+            portfolioItems.forEach(item => {
+                if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                    item.style.display = 'block';
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 100);
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        item.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    });
+}
+
+function initProjectDetails() {
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.view-details')) {
+            e.preventDefault();
+            const projectId = parseInt(e.target.closest('.view-details').getAttribute('data-project'));
+            showProjectDetails(projectId);
+        }
+    });
+}
+
+function showProjectDetails(projectId) {
+    const project = projects.find(p => p.id === projectId);
+    if (!project) return;
+
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div class="modal-header">
+                <span class="project-category">${getCategoryName(project.category)}</span>
+                <h2>${project.title}</h2>
+            </div>
+            <div class="modal-body">
+                <div class="project-image">
+                    <img src="images/${project.image}" alt="${project.title}" onerror="this.src='images/default-project.png'">
+                </div>
+                <div class="project-info">
+                    <div class="project-description">
+                        <h3>Описание проекта</h3>
+                        <p>${project.description}</p>
                     </div>
-                ` : ''}
+                    <div class="project-technologies">
+                        <h3>Технологии</h3>
+                        <div class="tech-tags">
+                            ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="project-features">
+                        <h3>Основные возможности</h3>
+                        <ul>
+                            ${project.features.map(feature => `<li>${feature}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="project-links">
+                        ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="btn"><i class="fas fa-external-link-alt"></i> Демо</a>` : ''}
+                        ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> GitHub</a>` : ''}
+                    </div>
+                </div>
             </div>
         </div>
     `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelector('.modal-close').addEventListener('click', () => {
+        modal.remove();
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
 }
 
-function getCategoryIcon(category) {
-    const icons = {
-        web: 'globe',
-        app: 'mobile-alt',
-        design: 'palette'
-    };
-    return icons[category] || 'code';
-}
-
-// Улучшенная анимация появления
-function initEnhancedFadeAnimations() {
-    const elements = document.querySelectorAll('.fade-in-enhanced');
+function initMusic() {
+    const music = document.getElementById('backgroundMusic');
+    const musicToggle = document.getElementById('musicToggle');
     
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
+    if (!music) {
+        console.warn('Background music element not found');
+        CONFIG.musicEnabled = false;
+        return;
+    }
+
+    const musicSettings = JSON.parse(localStorage.getItem('portfolioMusicSettings') || '{"enabled":true,"volume":0.3}');
+    CONFIG.musicEnabled = musicSettings.enabled;
+    
+    music.volume = musicSettings.volume;
+
+    function updateMusicIcon() {
+        const icon = musicToggle?.querySelector('i');
+        
+        if (CONFIG.musicEnabled) {
+            icon?.classList.replace('fa-volume-mute', 'fa-volume-up');
+        } else {
+            icon?.classList.replace('fa-volume-up', 'fa-volume-mute');
+        }
+    }
+
+    function toggleMusic() {
+        CONFIG.musicEnabled = !CONFIG.musicEnabled;
+        
+        if (CONFIG.musicEnabled) {
+            music.play().catch(e => console.log('Autoplay prevented:', e));
+        } else {
+            music.pause();
+        }
+        
+        const musicSettings = {
+            enabled: CONFIG.musicEnabled,
+            volume: music.volume
+        };
+        localStorage.setItem('portfolioMusicSettings', JSON.stringify(musicSettings));
+        
+        updateMusicIcon();
+    }
+
+    if (musicToggle) {
+        musicToggle.addEventListener('click', toggleMusic);
+    }
+
+    if (CONFIG.musicEnabled) {
+        document.addEventListener('click', function startMusic() {
+            music.play().catch(e => console.log('Autoplay prevented:', e));
+            document.removeEventListener('click', startMusic);
+        }, { once: true });
+    }
+
+    updateMusicIcon();
+}
+
+function initBottomMusicButton() {
+    if (!document.getElementById('musicToggle')) {
+        const musicButton = document.createElement('button');
+        musicButton.id = 'musicToggle';
+        musicButton.className = 'music-toggle-bottom';
+        musicButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+        musicButton.title = 'Включить/выключить музыку';
+        
+        musicButton.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            color: var(--dark);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 252, 0, 0.3);
+        `;
+
+        musicButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+            this.style.boxShadow = '0 6px 20px rgba(124, 252, 0, 0.5)';
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
-    
-    elements.forEach(element => {
-        observer.observe(element);
-    });
+
+        musicButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+            this.style.boxShadow = '0 4px 15px rgba(124, 252, 0, 0.3)';
+        });
+
+        document.body.appendChild(musicButton);
+
+        musicButton.addEventListener('click', function() {
+            const music = document.getElementById('backgroundMusic');
+            if (!music) return;
+
+            CONFIG.musicEnabled = !CONFIG.musicEnabled;
+            
+            if (CONFIG.musicEnabled) {
+                music.play().catch(e => console.log('Autoplay prevented:', e));
+                this.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                music.pause();
+                this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+            
+            const musicSettings = {
+                enabled: CONFIG.musicEnabled,
+                volume: music.volume
+            };
+            localStorage.setItem('portfolioMusicSettings', JSON.stringify(musicSettings));
+        });
+
+        console.log('✅ Bottom music button initialized');
+    }
 }
 
-// =============================================
-// ТЕМЫ
-// =============================================
 function initTheme() {
     const savedTheme = localStorage.getItem('portfolioTheme') || 'dark';
     setTheme(savedTheme);
@@ -1239,15 +1186,11 @@ function initTheme() {
 }
 
 function toggleTheme() {
-    const newTheme = CONFIG.theme.current === 'dark' ? 'light' : 'dark';
+    const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    updateBackgroundForTheme();
-    showAchievement('themeChanged');
-    showNotification(`Тема изменена на ${newTheme === 'dark' ? 'тёмную' : 'светлую'}`, 'success');
 }
 
 function setTheme(theme) {
-    CONFIG.theme.current = theme;
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('portfolioTheme', theme);
     updateThemeIcon(theme);
@@ -1260,14 +1203,205 @@ function updateThemeIcon(theme) {
     }
 }
 
-// =============================================
-// УВЕДОМЛЕНИЯ
-// =============================================
+function initAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in, .service-card, .portfolio-item').forEach(el => {
+        observer.observe(el);
+    });
+
+    initCounters();
+    initSkillsAnimation();
+}
+
+function initCounters() {
+    const counters = document.querySelectorAll('.counter');
+    
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const counter = entry.target;
+                const target = +counter.getAttribute('data-target');
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const updateCounter = () => {
+                    current += step;
+                    if (current < target) {
+                        counter.textContent = Math.ceil(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                
+                updateCounter();
+                counterObserver.unobserve(counter);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    counters.forEach(counter => counterObserver.observe(counter));
+}
+
+function initSkillsAnimation() {
+    const skillBars = document.querySelectorAll('.skill-progress');
+    
+    const skillsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const skillBar = entry.target;
+                const width = skillBar.getAttribute('data-width');
+                skillBar.style.width = width + '%';
+                skillsObserver.unobserve(skillBar);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    skillBars.forEach(bar => skillsObserver.observe(bar));
+}
+
+function initPageProgress() {
+    const progressBar = document.querySelector('.progress-bar');
+    if (!progressBar) return;
+
+    window.addEventListener('scroll', () => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight - windowHeight;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const progress = (scrollTop / documentHeight) * 100;
+        
+        progressBar.style.width = progress + '%';
+    });
+}
+
+function initEventListeners() {
+    initNavigation();
+    initContactForm();
+    
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500);
+            }
+        }, 1000);
+    });
+}
+
+function initNavigation() {
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const navbar = document.getElementById('navbar');
+    
+    if (menuBtn && navbar) {
+        menuBtn.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            menuBtn.innerHTML = navbar.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+    }
+
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            
+            if (pageYOffset >= sectionTop - 200) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const target = document.querySelector(targetId);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                if (navbar && navbar.classList.contains('active')) {
+                    navbar.classList.remove('active');
+                    menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            }
+        });
+    });
+}
+
+function initContactForm() {
+    const contactForm = document.getElementById('contactForm');
+    if (!contactForm) return;
+
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value
+        };
+
+        console.log('Contact form submitted:', formData);
+        
+        showNotification('Сообщение отправлено! Я свяжусь с вами в ближайшее время.', 'success');
+        
+        this.reset();
+    });
+}
+
 function showNotification(message, type = 'info') {
     removeExistingNotifications();
     
-    const notification = createNotification(message, type);
+    const notification = document.createElement('div');
+    notification.className = `notification ${type} slide-in`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-message">${message}</div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
     document.body.appendChild(notification);
+    
+    notification.querySelector('.notification-close').addEventListener('click', () => {
+        notification.remove();
+    });
     
     setTimeout(() => {
         if (notification.parentElement) {
@@ -1281,138 +1415,113 @@ function removeExistingNotifications() {
     existing.forEach(notification => notification.remove());
 }
 
-function createNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type} slide-in`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <div class="notification-message">${message}</div>
-            <button class="notification-close">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `;
-    
-    notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.remove();
-    });
-    
-    return notification;
-}
-
-// =============================================
-// ФОРМЫ
-// =============================================
-function initForms() {
-    initContactForm();
-}
-
-function initContactForm() {
-    const form = document.getElementById('contactForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            
-            if (!validateContactForm(data)) {
-                showNotification('Пожалуйста, заполните все поля формы.', 'error');
-                return;
-            }
-            
-            simulateFormSubmission(this);
-        });
+// Добавляем CSS анимации для нового фона
+const additionalStyles = `
+    @keyframes enhancedFloat {
+        0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+        25% { transform: translateY(-30px) translateX(15px) rotate(90deg); }
+        50% { transform: translateY(-15px) translateX(30px) rotate(180deg); }
+        75% { transform: translateY(-25px) translateX(-15px) rotate(270deg); }
     }
-}
-
-function validateContactForm(data) {
-    return data.name && data.email && data.subject && data.message;
-}
-
-function simulateFormSubmission(form) {
-    const submitBtn = document.getElementById('submitBtn');
-    const originalText = submitBtn.innerHTML;
     
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
-    submitBtn.disabled = true;
-    
-    setTimeout(() => {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        form.reset();
-        showAchievement('contactSent');
-        showNotification('Спасибо! Ваше сообщение отправлено. Я свяжусь с вами в ближайшее время.', 'success');
-    }, 2000);
-}
-
-// =============================================
-// ФИЛЬТРЫ ПОРТФОЛИО
-// =============================================
-function initPortfolioFilters() {
-    const buttons = document.querySelectorAll('.filter-btn');
-    const items = document.querySelectorAll('.portfolio-item');
-    
-    buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            buttons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            const filterValue = button.getAttribute('data-filter');
-            filterProjects(items, filterValue);
-        });
-    });
-}
-
-function filterProjects(items, filter) {
-    items.forEach(item => {
-        const category = item.getAttribute('data-category');
-        const shouldShow = filter === 'all' || category === filter;
-        
-        if (shouldShow) {
-            item.style.display = 'block';
-            setTimeout(() => {
-                item.style.opacity = '1';
-                item.style.transform = 'translateY(0)';
-            }, 50);
-        } else {
-            item.style.opacity = '0';
-            item.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-                item.style.display = 'none';
-            }, 300);
+    @keyframes pulseCircle {
+        0% {
+            transform: scale(0.8);
+            opacity: 0;
         }
-    });
-}
-
-// =============================================
-// МОДАЛЬНОЕ ОКНО ДЛЯ ПРОЕКТОВ
-// =============================================
-function initProjectModal() {
-    const portfolioGrid = document.getElementById('portfolio-grid');
-    if (!portfolioGrid) return;
-    
-    portfolioGrid.addEventListener('click', function(e) {
-        const projectElement = e.target.closest('.portfolio-item');
-        if (!projectElement) return;
-        
-        // Не открываем модалку при клике на ссылки
-        if (e.target.closest('a')) return;
-        
-        const projectId = projectElement.querySelector('.project-id')?.textContent.replace('ID: ', '');
-        const project = projects.find(p => p.id == projectId);
-        
-        if (project) {
-            showProjectModal(project);
-            showAchievement('projectViewed');
+        50% {
+            opacity: 0.3;
         }
-    });
-}
-
-function showProjectModal(project) {
-    const modal = document.createElement('div');
-    modal.className = 'project-modal';
-    modal.style.cssText = `
+        100% {
+            transform: scale(2);
+            opacity: 0;
+        }
+    }
+    
+    .slide-in {
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .animate-in {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--dark-light);
+        border: 1px solid var(--primary);
+        border-radius: var(--border-radius);
+        padding: 15px 20px;
+        min-width: 300px;
+        max-width: 500px;
+        z-index: 10000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .notification.success {
+        border-color: #00ff00;
+    }
+    
+    .notification.error {
+        border-color: #ff4444;
+    }
+    
+    .notification.info {
+        border-color: #4444ff;
+    }
+    
+    .notification-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .notification-message {
+        color: var(--light);
+        flex: 1;
+    }
+    
+    .notification-close {
+        background: none;
+        border: none;
+        color: var(--gray);
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 3px;
+        transition: var(--transition);
+    }
+    
+    .notification-close:hover {
+        color: var(--light);
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .modal {
         position: fixed;
         top: 0;
         left: 0;
@@ -1420,340 +1529,140 @@ function showProjectModal(project) {
         height: 100%;
         background: rgba(0,0,0,0.8);
         display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        padding: 20px;
+    }
+    
+    .modal-content {
+        background: var(--dark-light);
+        border-radius: var(--border-radius);
+        padding: 30px;
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        border: 1px solid var(--primary);
+    }
+    
+    .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+        color: var(--gray);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .modal-close:hover {
+        color: var(--light);
+    }
+    
+    .modal-header {
+        margin-bottom: 20px;
+        padding-right: 30px;
+    }
+    
+    .modal-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+    
+    @media (max-width: 768px) {
+        .modal-body {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .project-image img {
+        width: 100%;
+        border-radius: var(--border-radius);
+        border: 1px solid rgba(124, 252, 0, 0.2);
+    }
+    
+    .project-info h3 {
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+    
+    .project-description,
+    .project-technologies,
+    .project-features {
+        margin-bottom: 20px;
+    }
+    
+    .tech-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .tech-tag {
+        background: rgba(124, 252, 0, 0.1);
+        color: var(--primary);
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        border: 1px solid rgba(124, 252, 0, 0.2);
+    }
+    
+    .project-features ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .project-features li {
+        padding: 5px 0;
+        color: var(--gray);
+        position: relative;
+        padding-left: 15px;
+    }
+    
+    .project-features li:before {
+        content: '▸';
+        color: var(--primary);
+        position: absolute;
+        left: 0;
+    }
+    
+    .project-links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .music-toggle-bottom {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary);
+        border: none;
+        color: var(--dark);
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 100;
+        display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 10000;
-    `;
-    
-    modal.innerHTML = `
-        <div class="modal-content" style="
-            background: var(--dark-light);
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            border: 2px solid var(--primary);
-        ">
-            <button class="modal-close" style="
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                background: none;
-                border: none;
-                color: var(--light);
-                font-size: 24px;
-                cursor: pointer;
-            ">&times;</button>
-            <h2 style="color: var(--light); margin-bottom: 20px;">${project.title}</h2>
-            <div class="modal-image">
-                <img src="images/${project.image}" alt="${project.title}" style="width: 100%; border-radius: 10px; margin: 20px 0;">
-            </div>
-            <p style="color: var(--gray); line-height: 1.6;">${project.description}</p>
-            ${project.technologies && project.technologies.length > 0 ? `
-                <div style="margin: 20px 0;">
-                    <h4 style="color: var(--light); margin-bottom: 10px;">Технологии:</h4>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                        ${project.technologies.map(tech => `<span style="background: var(--primary); color: var(--dark); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">${tech}</span>`).join('')}
-                    </div>
-                </div>
-            ` : ''}
-            <div class="modal-links" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="btn"><i class="fas fa-external-link-alt"></i> Демо</a>` : ''}
-                ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> GitHub</a>` : ''}
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Закрытие модального окна
-    modal.querySelector('.modal-close').addEventListener('click', () => {
-        modal.remove();
-    });
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.remove();
-        }
-    });
-    
-    // Закрытие по ESC
-    document.addEventListener('keydown', function closeModal(e) {
-        if (e.key === 'Escape') {
-            modal.remove();
-            document.removeEventListener('keydown', closeModal);
-        }
-    });
-}
-
-// =============================================
-// ЭФФЕКТ ЧАСТИЦ ПРИ КЛИКЕ
-// =============================================
-function initClickParticles() {
-    document.addEventListener('click', function(e) {
-        createParticles(e.clientX, e.clientY);
-    });
-}
-
-function createParticles(x, y) {
-    const particlesContainer = document.createElement('div');
-    particlesContainer.className = 'click-particles';
-    
-    for (let i = 0; i < 8; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        const angle = (i / 8) * Math.PI * 2;
-        const distance = 50 + Math.random() * 50;
-        const particleX = Math.cos(angle) * distance;
-        const particleY = Math.sin(angle) * distance;
-        
-        particle.style.setProperty('--x', `${particleX}px`);
-        particle.style.setProperty('--y', `${particleY}px`);
-        particle.style.left = `${x}px`;
-        particle.style.top = `${y}px`;
-        
-        particlesContainer.appendChild(particle);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(124, 252, 0, 0.3);
     }
     
-    document.body.appendChild(particlesContainer);
-    
-    setTimeout(() => {
-        particlesContainer.remove();
-    }, 1000);
-}
-
-// =============================================
-// СИСТЕМА ДОСТИЖЕНИЙ
-// =============================================
-function initAchievements() {
-    // Проверяем достижения
-    checkAchievements();
-}
-
-function checkAchievements() {
-    if (!localStorage.getItem('firstVisit')) {
-        showAchievement('firstVisit');
-        localStorage.setItem('firstVisit', 'true');
+    .music-toggle-bottom:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(124, 252, 0, 0.5);
     }
-}
+`;
 
-function showAchievement(achievementId) {
-    const achievement = document.createElement('div');
-    achievement.className = 'achievement-notification';
-    achievement.innerHTML = `
-        <div class="achievement-content">
-            <i class="fas fa-trophy"></i>
-            <div class="achievement-text">
-                <strong>Достижение разблокировано!</strong>
-                <span>${getAchievementName(achievementId)}</span>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(achievement);
-    
-    setTimeout(() => {
-        achievement.classList.add('show');
-    }, 100);
-    
-    setTimeout(() => {
-        achievement.classList.remove('show');
-        setTimeout(() => {
-            achievement.remove();
-        }, 500);
-    }, 3000);
-}
+const styleSheet = document.createElement('style');
+styleSheet.textContent = additionalStyles;
+document.head.appendChild(styleSheet);
 
-function getAchievementName(id) {
-    const names = {
-        firstVisit: 'Первое посещение',
-        themeChanged: 'Исследователь тем',
-        projectViewed: 'Любознательный',
-        contactSent: 'Социальная активность',
-        chatOpened: 'Диалог начат',
-        '3dMode': '3D Исследователь',
-        musicEnabled: 'Меломания'
-    };
-    
-    return names[id] || 'Неизвестное достижение';
-}
-
-// =============================================
-// НАВИГАЦИЯ И АНИМАЦИИ
-// =============================================
-function initNavigation() {
-    initMobileMenu();
-    initNavLinks();
-    initSmoothScroll();
-    initScrollSpy();
-}
-
-function initMobileMenu() {
-    const menuBtn = document.getElementById('mobileMenuBtn');
-    const navbar = document.getElementById('navbar');
-    
-    if (menuBtn && navbar) {
-        // Показываем/скрываем меню только на мобильных устройствах
-        if (window.innerWidth <= 768) {
-            menuBtn.style.display = 'flex';
-            
-            menuBtn.addEventListener('click', () => {
-                navbar.classList.toggle('active');
-                menuBtn.innerHTML = navbar.classList.contains('active') 
-                    ? '<i class="fas fa-times"></i>' 
-                    : '<i class="fas fa-bars"></i>';
-            });
-        } else {
-            // На десктопе скрываем бургер-меню
-            menuBtn.style.display = 'none';
-            navbar.classList.remove('active');
-        }
-    }
-}
-
-function initNavLinks() {
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            const navbar = document.getElementById('navbar');
-            const menuBtn = document.getElementById('mobileMenuBtn');
-            
-            if (navbar && window.innerWidth <= 768) {
-                navbar.classList.remove('active');
-                if (menuBtn) {
-                    menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                }
-            }
-        });
-    });
-}
-
-function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const target = document.querySelector(targetId);
-            if (target) {
-                window.scrollTo({
-                    top: target.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-}
-
-function initScrollSpy() {
-    window.addEventListener('scroll', () => {
-        const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            if (window.scrollY >= sectionTop - 100) {
-                current = section.getAttribute('id');
-            }
-        });
-        
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
-        });
-    });
-}
-
-function initFadeAnimations() {
-    const elements = document.querySelectorAll('.fade-in');
-    
-    const checkVisibility = () => {
-        elements.forEach(element => {
-            const elementTop = element.getBoundingClientRect().top;
-            const elementVisible = 150;
-            
-            if (elementTop < window.innerHeight - elementVisible) {
-                element.classList.add('visible');
-            }
-        });
-    };
-    
-    window.addEventListener('scroll', checkVisibility);
-    checkVisibility();
-}
-
-function initSkillBars() {
-    const bars = document.querySelectorAll('.skill-progress');
-    
-    const animateBars = () => {
-        bars.forEach(bar => {
-            const width = bar.getAttribute('data-width');
-            const elementTop = bar.getBoundingClientRect().top;
-            
-            if (elementTop < window.innerHeight - 100) {
-                bar.style.width = width + '%';
-            }
-        });
-    };
-    
-    window.addEventListener('scroll', animateBars);
-    setTimeout(animateBars, 100);
-}
-
-// =============================================
-// ОБРАБОТЧИКИ СОБЫТИЙ
-// =============================================
-function initEventListeners() {
-    initNavigation();
-    initForms();
-    initPortfolioFilters();
-    initSkillBars();
-    initClickOutside();
-    
-    // Обработчик для 3D режима
-    const toggle3DBtn = document.getElementById('toggle3D');
-    if (toggle3DBtn) {
-        toggle3DBtn.addEventListener('click', toggle3DMode);
-    }
-    
-    // Обработчик изменения размера окна
-    window.addEventListener('resize', function() {
-        initMobileMenu();
-        onWindowResize();
-    });
-}
-
-function initClickOutside() {
-    document.addEventListener('click', function(e) {
-        // Закрытие чата при клике вне его
-        const chatAssistant = document.getElementById('chat-assistant');
-        if (chatAssistant && chatAssistant.classList.contains('active') && 
-            !chatAssistant.contains(e.target) && 
-            !e.target.closest('#chatToggle')) {
-            closeChatAssistant();
-        }
-    });
-}
-
-// =============================================
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ ОБРАТНОЙ СОВМЕСТИМОСТИ
-// =============================================
-window.toggle3DMode = toggle3DMode;
-window.toggleMusic = toggleMusic;
-
-// Для обратной совместимости
-window.initializeApp = initializeEnhancedApp;
-window.initChatAssistant = initEnhancedChatAssistant;
-window.initMusicPlayer = initEnhancedMusicPlayer;
-window.loadProjects = loadEnhancedProjects;
-window.renderProjects = renderEnhancedProjects;
-
-console.log('🚀 Portfolio JavaScript loaded successfully!');
+console.log('🎨 Enhanced features loaded successfully!');

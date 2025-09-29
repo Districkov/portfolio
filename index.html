@@ -40,12 +40,11 @@
                         <li><a href="#services" class="nav-link">Услуги</a></li>
                         <li><a href="#portfolio" class="nav-link">Портфолио</a></li>
                         <li><a href="#contact" class="nav-link">Контакты</a></li>
+                        <li><a href="admin.html" class="nav-link admin-link"><i class="fas fa-lock"></i> Админка</a></li>
                     </ul>
                 </nav>
                 <div class="header-actions">
-                    <!-- Music Toggle in Header -->
-                    <button class="music-toggle-header" id="musicToggleHeader" title="Включить/выключить музыку">
-                        <i class="fas fa-volume-up"></i>
+                    
                     </button>
                     <button class="theme-toggle" id="themeToggle" title="Переключить тему">
                         <i class="fas fa-moon"></i>
@@ -66,13 +65,7 @@
                 <p>Фронтенд разработчик с опытом создания современных веб-приложений</p>
                 <div class="hero-btns">
                     <a href="#portfolio" class="btn floating-btn">Мои работы</a>
-                    <a href="#contact" class="btn btn-outline glow-effect">Связаться со мной</a>
-                    <button class="btn btn-outline" id="toggle3D">
-                        <i class="fas fa-cube"></i> 3D Режим
-                    </button>
-                </div>
-                <div class="hero-image parallax" data-speed="0.3">
-                    <i class="fas fa-code"></i>
+                    <a href="#contact" class="btn btn-outline glow-effect">Связаться со мной</a>    
                 </div>
             </div>
         </div>
@@ -185,6 +178,13 @@
                     <h3>UI/UX Дизайн</h3>
                     <p>Создание интуитивно понятных и визуально привлекательных пользовательских интерфейсов.</p>
                 </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Оптимизация</h3>
+                    <p>Повышение производительности и скорости загрузки веб-приложений для лучшего пользовательского опыта.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -194,16 +194,16 @@
         <div class="container">
             <div class="section-title">
                 <h2>Мои работы</h2>
-                <p>Примеры проектов, которые я реализовал</p>
+                <p>Примеры моих последних проектов</p>
             </div>
-            <div class="portfolio-filters">
+            <div class="portfolio-filter">
                 <button class="filter-btn active" data-filter="all">Все</button>
                 <button class="filter-btn" data-filter="web">Веб-сайты</button>
                 <button class="filter-btn" data-filter="app">Приложения</button>
                 <button class="filter-btn" data-filter="design">Дизайн</button>
             </div>
-            <div class="portfolio-grid" id="portfolio-grid">
-                <!-- Projects loaded dynamically -->
+            <div class="portfolio-grid" id="portfolioGrid">
+                <!-- Projects will be loaded here -->
             </div>
         </div>
     </section>
@@ -212,64 +212,64 @@
     <section class="contact" id="contact">
         <div class="container">
             <div class="section-title">
-                <h2>Свяжитесь со мной</h2>
-                <p>Готовы начать новый проект? Напишите мне!</p>
+                <h2>Контакты</h2>
+                <p>Свяжитесь со мной для сотрудничества</p>
             </div>
             <div class="contact-content">
                 <div class="contact-info">
-                    <h3>Давайте обсудим ваш проект</h3>
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div class="contact-text">
-                                <h4>Email</h4>
-                                <p>ert34vh@gmail.com</p>
-                            </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
                         </div>
-                        <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-phone"></i>
-                            </div>
-                            <div class="contact-text">
-                                <h4>Телефон</h4>
-                                <p>+7 (926) 718-55-52</p>
-                            </div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <p>districkov@yandex.ru</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Телефон</h3>
+                            <p>+7 (999) 999-99-99</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Локация</h3>
+                            <p>Москва, Россия</p>
                         </div>
                     </div>
                     <div class="social-links">
-                        <a href="https://t.me/districk" target="_blank" class="social-link">
+                        <a href="https://github.com/Districkov" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://t.me/districkov" class="social-link">
                             <i class="fab fa-telegram"></i>
                         </a>
-                        <a href="https://github.com/Districkov" target="_blank" class="social-link">
-                            <i class="fab fa-github"></i>
+                        <a href="https://vk.com/solomin.ivan" class="social-link">
+                            <i class="fab fa-vk"></i>
                         </a>
                     </div>
                 </div>
-                <div class="contact-form">
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <label for="name">Ваше имя</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">Тема</label>
-                            <input type="text" id="subject" name="subject" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Сообщение</label>
-                            <textarea id="message" name="message" required></textarea>
-                        </div>
-                        <button type="submit" class="btn" id="submitBtn">
-                            <i class="fas fa-paper-plane"></i> Отправить сообщение
-                        </button>
-                    </form>
-                </div>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="name" placeholder="Ваше имя" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder="Ваш email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" placeholder="Ваше сообщение" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-paper-plane"></i> Отправить сообщение
+                    </button>
+                </form>
             </div>
         </div>
     </section>
@@ -279,14 +279,13 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">Dis<span>Portfolio</span></div>
-                <p class="footer-text">Фронтенд разработчик, специализирующийся на создании современных и отзывчивых веб-приложений.</p>
-                <div class="social-links">
-                    <a href="https://t.me/districk" target="_blank" class="social-link">
-                        <i class="fab fa-telegram"></i>
-                    </a>
-                    <a href="https://github.com/Districkov" target="_blank" class="social-link">
-                        <i class="fab fa-github"></i>
-                    </a>
+                <p class="footer-text">Создаю современные и функциональные веб-приложения</p>
+                <div class="footer-links">
+                    <a href="#home">Главная</a>
+                    <a href="#about">Обо мне</a>
+                    <a href="#portfolio">Портфолио</a>
+                    <a href="#contact">Контакты</a>
+                    <a href="admin.html">Админка</a>
                 </div>
             </div>
             <div class="copyright">
@@ -295,41 +294,10 @@
         </div>
     </footer>
 
-    <!-- AI Chat Assistant -->
-    <div id="chat-assistant" class="chat-assistant">
-        <div class="chat-header">
-            <h3><i class="fas fa-robot"></i> AI Помощник</h3>
-            <button class="chat-close" id="chatClose">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot-message">
-                <div class="message-avatar">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <div class="message-content">
-                    <p>Привет! Я ваш AI помощник. Могу рассказать о навыках, проектах или помочь с навигацией по портфолио. Чем могу помочь?</p>
-                </div>
-            </div>
-        </div>
-        <div class="chat-input-container">
-            <input type="text" id="chatInput" placeholder="Задайте вопрос...">
-            <button id="chatSend">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Chat Toggle Button -->
-    <button class="chat-toggle-btn" id="chatToggle">
-        <i class="fas fa-robot"></i>
+    <!-- Music Toggle Button -->
+    <button class="music-toggle" id="musicToggle" title="Включить/выключить музыку">
+        <i class="fas fa-volume-up"></i>
     </button>
-
-    <!-- Admin Link Button -->
-    <a href="admin.html" class="admin-link-btn" id="adminLinkBtn" title="Панель администратора">
-        <i class="fas fa-lock"></i>
-    </a>
 
     <!-- Audio Element -->
     <audio id="backgroundMusic" loop>
