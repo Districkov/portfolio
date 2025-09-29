@@ -4,13 +4,11 @@
 const CONFIG = {
     enable3D: false,
     musicEnabled: true,
-    particlesEnabled: true,
-    autoOpenChat: true
+    particlesEnabled: true
 };
 
 let projects = [];
 let threeScene = null;
-let currentAudio = null;
 
 // =============================================
 // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
@@ -51,17 +49,6 @@ function initializeApp() {
     
     // Инициализация AI ассистента
     initEnhancedChatAssistant();
-    
-    // Автоматическое открытие чата через 20 секунд
-    if (CONFIG.autoOpenChat) {
-        setTimeout(() => {
-            const chatToggle = document.getElementById('chatToggle');
-            if (chatToggle && !document.getElementById('chat-assistant').classList.contains('active')) {
-                chatToggle.click();
-                showNotification('🤖 AI помощник готов помочь! Задайте любой вопрос о моих навыках и проектах.', 'info');
-            }
-        }, 20000);
-    }
 }
 
 // =============================================
@@ -82,10 +69,8 @@ function initEnhancedDynamicBackground() {
         left: 0;
         width: 100%;
         height: 100%;
-        background: 
-            radial-gradient(circle at 20% 20%, rgba(124, 252, 0, 0.15) 0%, transparent 40%),
-            radial-gradient(circle at 80% 80%, rgba(124, 252, 0, 0.1) 0%, transparent 40%),
-            radial-gradient(circle at 40% 60%, rgba(124, 252, 0, 0.08) 0%, transparent 30%);
+        background: radial-gradient(circle at 30% 30%, rgba(124, 252, 0, 0.1) 0%, transparent 50%),
+                   radial-gradient(circle at 70% 70%, rgba(124, 252, 0, 0.05) 0%, transparent 50%);
         z-index: 1;
     `;
     bgContainer.appendChild(gradientOverlay);
@@ -99,14 +84,11 @@ function initEnhancedDynamicBackground() {
     // Создаем пульсирующие круги
     createPulsingCircles(bgContainer);
     
-    // Создаем соединительные линии
-    createConnectionLines(bgContainer);
-    
     console.log('🎨 Enhanced dynamic background initialized');
 }
 
 function createGridLines(container) {
-    const gridSize = 60;
+    const gridSize = 50;
     const gridLines = document.createElement('div');
     gridLines.style.cssText = `
         position: absolute;
@@ -115,37 +97,34 @@ function createGridLines(container) {
         width: 100%;
         height: 100%;
         background-image: 
-            linear-gradient(rgba(124, 252, 0, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(124, 252, 0, 0.04) 1px, transparent 1px);
+            linear-gradient(rgba(124, 252, 0, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124, 252, 0, 0.03) 1px, transparent 1px);
         background-size: ${gridSize}px ${gridSize}px;
         z-index: 0;
-        animation: gridMove 20s linear infinite;
     `;
     container.appendChild(gridLines);
 }
 
 function createEnhancedParticles(container) {
-    const particleCount = 100;
+    const particleCount = 80;
     
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
-        const size = Math.random() * 5 + 1;
-        const duration = Math.random() * 30 + 20;
-        const delay = Math.random() * 10;
-        const colorVariation = Math.random() * 40 - 20;
+        const size = Math.random() * 4 + 1;
+        const duration = Math.random() * 25 + 15;
+        const delay = Math.random() * 5;
         
         particle.style.cssText = `
             position: absolute;
             width: ${size}px;
             height: ${size}px;
-            background: hsl(${120 + colorVariation}, 100%, 65%);
-            border-radius: ${Math.random() > 0.5 ? '50%' : '30%'};
+            background: var(--primary);
+            border-radius: 50%;
             left: ${Math.random() * 100}%;
             top: ${Math.random() * 100}%;
-            opacity: ${Math.random() * 0.3 + 0.1};
+            opacity: ${Math.random() * 0.4 + 0.1};
             animation: enhancedFloat ${duration}s linear infinite ${delay}s;
-            filter: blur(${Math.random() * 3}px);
-            box-shadow: 0 0 ${size * 2}px currentColor;
+            filter: blur(${Math.random() * 2}px);
         `;
         
         container.appendChild(particle);
@@ -153,56 +132,28 @@ function createEnhancedParticles(container) {
 }
 
 function createPulsingCircles(container) {
-    const circleCount = 5;
+    const circleCount = 3;
     
     for (let i = 0; i < circleCount; i++) {
         const circle = document.createElement('div');
-        const size = Math.random() * 300 + 150;
-        const duration = Math.random() * 10 + 6;
-        const delay = Math.random() * 5;
+        const size = Math.random() * 200 + 100;
+        const duration = Math.random() * 8 + 4;
+        const delay = Math.random() * 2;
         
         circle.style.cssText = `
             position: absolute;
             width: ${size}px;
             height: ${size}px;
-            border: 2px solid rgba(124, 252, 0, 0.15);
+            border: 1px solid rgba(124, 252, 0, 0.1);
             border-radius: 50%;
             left: ${Math.random() * 100}%;
             top: ${Math.random() * 100}%;
             opacity: 0;
             animation: pulseCircle ${duration}s ease-in-out infinite ${delay}s;
             z-index: 0;
-            box-shadow: 0 0 50px rgba(124, 252, 0, 0.1);
         `;
         
         container.appendChild(circle);
-    }
-}
-
-function createConnectionLines(container) {
-    const lineCount = 8;
-    
-    for (let i = 0; i < lineCount; i++) {
-        const line = document.createElement('div');
-        const length = Math.random() * 200 + 100;
-        const angle = Math.random() * 360;
-        const duration = Math.random() * 15 + 10;
-        const delay = Math.random() * 5;
-        
-        line.style.cssText = `
-            position: absolute;
-            width: ${length}px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(124, 252, 0, 0.3), transparent);
-            left: ${Math.random() * 100}%;
-            top: ${Math.random() * 100}%;
-            transform: rotate(${angle}deg);
-            opacity: ${Math.random() * 0.4 + 0.1};
-            animation: linePulse ${duration}s ease-in-out infinite ${delay}s;
-            z-index: 0;
-        `;
-        
-        container.appendChild(line);
     }
 }
 
@@ -241,8 +192,6 @@ function initEnhancedChatAssistant() {
             setTimeout(() => {
                 chatAssistant.classList.add('active');
                 chatInput.focus();
-                // Добавляем быстрые ответы при открытии
-                addEnhancedQuickReplies();
             }, 10);
         }
     });
@@ -270,12 +219,7 @@ function initEnhancedChatAssistant() {
             const response = generateEnhancedAIResponse(message);
             addMessage(response, 'bot');
             scrollChatToBottom();
-            
-            // Добавляем новые быстрые ответы после ответа бота
-            setTimeout(() => {
-                addEnhancedQuickReplies();
-            }, 500);
-        }, 1000 + Math.random() * 1500);
+        }, 1000 + Math.random() * 2000);
     }
     
     if (chatSend) {
@@ -286,12 +230,6 @@ function initEnhancedChatAssistant() {
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
-        
-        // Авто-рост текстового поля
-        chatInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
-        });
     }
     
     // Добавляем обработчик для Escape
@@ -300,6 +238,9 @@ function initEnhancedChatAssistant() {
             closeChatAssistant();
         }
     });
+    
+    // Быстрые ответы
+    addEnhancedQuickReplies();
     
     console.log('🤖 Enhanced chat assistant initialized');
 }
@@ -311,18 +252,13 @@ function createChatAssistantElements() {
     const chatHTML = `
         <div class="chat-toggle" id="chatToggle">
             <i class="fas fa-robot"></i>
-            <div class="chat-pulse"></div>
         </div>
         
         <div class="chat-assistant" id="chat-assistant">
             <div class="chat-header">
                 <div class="chat-title">
                     <i class="fas fa-robot"></i>
-                    <span>AI Помощник Districk</span>
-                    <div class="chat-status">
-                        <div class="status-dot"></div>
-                        <span>Online</span>
-                    </div>
+                    <span>AI Помощник</span>
                 </div>
                 <button class="chat-close" id="chatClose">
                     <i class="fas fa-times"></i>
@@ -336,16 +272,12 @@ function createChatAssistantElements() {
                     </div>
                     <div class="message-content">
                         <p>Привет! 👋 Я ваш AI-помощник. Могу рассказать о навыках, проектах, опыте работы и многом другом. Чем могу помочь?</p>
-                        <div class="message-time">${getCurrentTime()}</div>
                     </div>
                 </div>
             </div>
             
             <div class="chat-input-container">
-                <div class="chat-input-wrapper">
-                    <input type="text" id="chatInput" placeholder="Задайте вопрос..." maxlength="500">
-                    <div class="char-counter">0/500</div>
-                </div>
+                <input type="text" id="chatInput" placeholder="Задайте вопрос...">
                 <button class="chat-send" id="chatSend">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -359,34 +291,6 @@ function createChatAssistantElements() {
     
     // Добавляем стили для чата
     addChatStyles();
-    
-    // Инициализируем счетчик символов
-    initCharCounter();
-}
-
-function initCharCounter() {
-    const chatInput = document.getElementById('chatInput');
-    const charCounter = document.querySelector('.char-counter');
-    
-    if (chatInput && charCounter) {
-        chatInput.addEventListener('input', function() {
-            charCounter.textContent = `${this.value.length}/500`;
-            
-            if (this.value.length > 450) {
-                charCounter.style.color = '#ff4757';
-            } else if (this.value.length > 400) {
-                charCounter.style.color = '#ffa502';
-            } else {
-                charCounter.style.color = 'var(--gray)';
-            }
-        });
-    }
-}
-
-function getCurrentTime() {
-    const now = new Date();
-    return now.getHours().toString().padStart(2, '0') + ':' + 
-           now.getMinutes().toString().padStart(2, '0');
 }
 
 function addChatStyles() {
@@ -395,9 +299,9 @@ function addChatStyles() {
             position: fixed;
             bottom: 100px;
             right: 30px;
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--primary), #6be000);
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
             color: var(--dark);
             border: none;
             border-radius: 50%;
@@ -407,43 +311,31 @@ function addChatStyles() {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            box-shadow: 0 8px 25px rgba(124, 252, 0, 0.4);
-            animation: chatBounce 3s ease-in-out infinite;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
         }
         
         .chat-toggle:hover {
-            transform: scale(1.15) rotate(5deg);
-            box-shadow: 0 12px 35px rgba(124, 252, 0, 0.6);
-        }
-        
-        .chat-pulse {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: var(--primary);
-            animation: chatPulse 2s ease-out infinite;
-            z-index: -1;
+            transform: scale(1.1);
+            box-shadow: var(--glow);
         }
         
         .chat-assistant {
             position: fixed;
-            bottom: 180px;
+            bottom: 170px;
             right: 30px;
-            width: 420px;
-            height: 550px;
+            width: 400px;
+            height: 500px;
             background: var(--dark-light);
-            border: 2px solid rgba(124, 252, 0, 0.3);
-            border-radius: 20px;
+            border: 1px solid rgba(124, 252, 0, 0.2);
+            border-radius: var(--border-radius);
             display: none;
             flex-direction: column;
             z-index: 101;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            transform: translateY(20px) scale(0.95);
+            box-shadow: var(--shadow);
+            transform: translateY(20px) scale(0.9);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
         
         .chat-assistant.active {
@@ -455,60 +347,37 @@ function addChatStyles() {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 25px;
-            border-bottom: 1px solid rgba(124, 252, 0, 0.2);
-            background: linear-gradient(135deg, rgba(10, 10, 10, 0.9), rgba(26, 26, 26, 0.9));
-            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            border-bottom: 1px solid rgba(124, 252, 0, 0.1);
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
         }
         
         .chat-title {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             font-weight: 600;
             color: var(--light);
         }
         
         .chat-title i {
             color: var(--primary);
-            font-size: 1.2rem;
-        }
-        
-        .chat-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            color: var(--gray);
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #00d26a;
-            border-radius: 50%;
-            animation: statusPulse 2s infinite;
         }
         
         .chat-close {
-            background: rgba(255, 255, 255, 0.1);
+            background: none;
             border: none;
             color: var(--gray);
             cursor: pointer;
-            padding: 8px;
-            border-radius: 10px;
+            padding: 5px;
+            border-radius: 3px;
             transition: var(--transition);
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         .chat-close:hover {
             color: var(--light);
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
+            background: rgba(255,255,255,0.1);
         }
         
         .chat-messages {
@@ -517,15 +386,13 @@ function addChatStyles() {
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            background: rgba(10, 10, 10, 0.5);
+            gap: 15px;
         }
         
         .message {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: flex-start;
-            animation: messageSlide 0.3s ease-out;
         }
         
         .user-message {
@@ -533,63 +400,51 @@ function addChatStyles() {
         }
         
         .message-avatar {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #6be000);
+            background: var(--primary);
             color: var(--dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 0.9rem;
             flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(124, 252, 0, 0.3);
         }
         
         .user-message .message-avatar {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            background: var(--gray);
         }
         
         .message-content {
-            max-width: 75%;
+            max-width: 70%;
             background: rgba(124, 252, 0, 0.1);
-            padding: 15px 18px;
-            border-radius: 18px;
+            padding: 12px 15px;
+            border-radius: 15px;
             border: 1px solid rgba(124, 252, 0, 0.2);
-            position: relative;
-            backdrop-filter: blur(5px);
         }
         
         .user-message .message-content {
-            background: rgba(102, 126, 234, 0.15);
-            border-color: rgba(102, 126, 234, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
         }
         
         .message-content p {
             margin: 0;
             color: var(--light);
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        
-        .message-time {
-            font-size: 0.75rem;
-            color: var(--gray);
-            margin-top: 8px;
-            text-align: right;
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
         
         .typing-indicator {
             display: flex;
-            gap: 5px;
+            gap: 4px;
             align-items: center;
-            padding: 5px 0;
         }
         
         .typing-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: var(--primary);
             border-radius: 50%;
             animation: typingBounce 1.4s infinite ease-in-out;
@@ -601,88 +456,57 @@ function addChatStyles() {
         .quick-replies.enhanced {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-            animation: quickRepliesSlide 0.4s ease-out;
+            gap: 8px;
+            margin-top: 10px;
         }
         
         .quick-reply.enhanced {
             background: rgba(124, 252, 0, 0.1);
-            border: 1px solid rgba(124, 252, 0, 0.4);
+            border: 1px solid rgba(124, 252, 0, 0.3);
             color: var(--primary);
-            padding: 10px 15px;
-            border-radius: 25px;
-            font-size: 0.85rem;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             justify-content: center;
             text-align: center;
-            backdrop-filter: blur(5px);
         }
         
         .quick-reply.enhanced:hover {
             background: rgba(124, 252, 0, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(124, 252, 0, 0.3);
-        }
-        
-        .quick-reply.enhanced:active {
-            transform: translateY(0);
         }
         
         .chat-input-container {
             display: flex;
             padding: 20px;
             border-top: 1px solid rgba(124, 252, 0, 0.1);
-            gap: 12px;
-            align-items: flex-end;
-            background: rgba(10, 10, 10, 0.8);
-            border-radius: 0 0 20px 20px;
-        }
-        
-        .chat-input-wrapper {
-            flex: 1;
-            position: relative;
+            gap: 10px;
         }
         
         #chatInput {
-            width: 100%;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(124, 252, 0, 0.2);
+            flex: 1;
+            padding: 12px 15px;
+            background: var(--dark);
+            border: 1px solid rgba(124, 252, 0, 0.2);
             border-radius: 25px;
             color: var(--light);
-            font-size: 0.95rem;
-            resize: none;
-            transition: var(--transition);
-            min-height: 50px;
-            max-height: 120px;
+            font-size: 0.9rem;
         }
         
         #chatInput:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(124, 252, 0, 0.1);
-        }
-        
-        .char-counter {
-            position: absolute;
-            bottom: 8px;
-            right: 15px;
-            font-size: 0.75rem;
-            color: var(--gray);
-            background: rgba(10, 10, 10, 0.8);
-            padding: 2px 6px;
-            border-radius: 10px;
         }
         
         .chat-send {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), #6be000);
+            width: 45px;
+            height: 45px;
+            background: var(--primary);
             color: var(--dark);
             border: none;
             border-radius: 50%;
@@ -691,38 +515,11 @@ function addChatStyles() {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(124, 252, 0, 0.4);
         }
         
         .chat-send:hover {
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 6px 20px rgba(124, 252, 0, 0.6);
-        }
-        
-        .chat-send:active {
-            transform: scale(0.95);
-        }
-        
-        @keyframes chatBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes chatPulse {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.5);
-                opacity: 0;
-            }
-        }
-        
-        @keyframes statusPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            transform: scale(1.1);
+            box-shadow: var(--glow);
         }
         
         @keyframes typingBounce {
@@ -736,40 +533,18 @@ function addChatStyles() {
             }
         }
         
-        @keyframes messageSlide {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes quickRepliesSlide {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
         @keyframes enhancedFloat {
             0%, 100% {
                 transform: translateY(0) translateX(0) rotate(0deg);
             }
             25% {
-                transform: translateY(-40px) translateX(20px) rotate(90deg);
+                transform: translateY(-30px) translateX(15px) rotate(90deg);
             }
             50% {
-                transform: translateY(-20px) translateX(40px) rotate(180deg);
+                transform: translateY(-15px) translateX(30px) rotate(180deg);
             }
             75% {
-                transform: translateY(-30px) translateX(-20px) rotate(270deg);
+                transform: translateY(-25px) translateX(-15px) rotate(270deg);
             }
         }
         
@@ -779,47 +554,25 @@ function addChatStyles() {
                 opacity: 0;
             }
             50% {
-                opacity: 0.4;
+                opacity: 0.3;
             }
             100% {
-                transform: scale(2.5);
+                transform: scale(2);
                 opacity: 0;
-            }
-        }
-        
-        @keyframes gridMove {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 60px 60px;
-            }
-        }
-        
-        @keyframes linePulse {
-            0%, 100% {
-                opacity: 0.1;
-            }
-            50% {
-                opacity: 0.4;
             }
         }
         
         @media (max-width: 768px) {
             .chat-assistant {
-                width: 90vw;
-                height: 70vh;
-                right: 5vw;
-                left: 5vw;
-                bottom: 100px;
+                width: 350px;
+                height: 450px;
+                right: 20px;
+                bottom: 150px;
             }
             
             .chat-toggle {
                 right: 20px;
-                bottom: 80px;
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
+                bottom: 90px;
             }
             
             .quick-replies.enhanced {
@@ -829,15 +582,11 @@ function addChatStyles() {
         
         @media (max-width: 480px) {
             .chat-assistant {
-                width: 95vw;
-                height: 75vh;
-                right: 2.5vw;
-                left: 2.5vw;
-                bottom: 90px;
-            }
-            
-            .message-content {
-                max-width: 85%;
+                width: 300px;
+                height: 400px;
+                right: 10px;
+                left: 10px;
+                bottom: 140px;
             }
         }
     `;
@@ -865,9 +614,7 @@ function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}-message`;
     
-    const avatar = sender === 'user' ? 
-        '<i class="fas fa-user"></i>' : 
-        '<i class="fas fa-robot"></i>';
+    const avatar = sender === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
     
     messageDiv.innerHTML = `
         <div class="message-avatar">
@@ -875,7 +622,6 @@ function addMessage(text, sender) {
         </div>
         <div class="message-content">
             <p>${text}</p>
-            <div class="message-time">${getCurrentTime()}</div>
         </div>
     `;
     
@@ -927,21 +673,13 @@ function addEnhancedQuickReplies() {
     const chatMessages = document.getElementById('chatMessages');
     if (!chatMessages) return;
     
-    // Удаляем старые быстрые ответы
-    const existingReplies = chatMessages.querySelector('.quick-replies.enhanced');
-    if (existingReplies) {
-        existingReplies.remove();
-    }
-    
     const quickReplies = [
-        { text: "💻 О навыках", icon: "fas fa-code" },
-        { text: "🚀 Мои проекты", icon: "fas fa-briefcase" },
-        { text: "📈 Опыт работы", icon: "fas fa-history" },
-        { text: "📞 Контакты", icon: "fas fa-phone" },
-        { text: "🎯 Услуги", icon: "fas fa-cogs" },
-        { text: "🛠 Технологии", icon: "fas fa-tools" },
-        { text: "🎵 Музыка", icon: "fas fa-music" },
-        { text: "❓ Помощь", icon: "fas fa-question" }
+        { text: "Расскажи о навыках", icon: "fas fa-code" },
+        { text: "Покажи проекты", icon: "fas fa-briefcase" },
+        { text: "Опыт работы", icon: "fas fa-history" },
+        { text: "Как связаться?", icon: "fas fa-phone" },
+        { text: "Какие услуги?", icon: "fas fa-cogs" },
+        { text: "Управление музыкой", icon: "fas fa-music" }
     ];
     
     const quickRepliesDiv = document.createElement('div');
@@ -958,8 +696,11 @@ function addEnhancedQuickReplies() {
         quickRepliesDiv.appendChild(button);
     });
     
-    chatMessages.appendChild(quickRepliesDiv);
-    scrollChatToBottom();
+    // Добавляем только если нет других быстрых ответов
+    const existingReplies = chatMessages.querySelector('.quick-replies.enhanced');
+    if (!existingReplies) {
+        chatMessages.appendChild(quickRepliesDiv);
+    }
 }
 
 // Обработка быстрых ответов
@@ -981,219 +722,157 @@ function generateEnhancedAIResponse(userMessage) {
     
     // Расширенная база знаний
     const responses = {
-        skills: `💻 **Мои ключевые навыки**:
-
-🎨 **Frontend Development:**
-• HTML5/CSS3 (95%) - Семантическая верстка, адаптивный дизайн
-• JavaScript (90%) - ES6+, асинхронное программирование, модули
-• React (85%) - Хуки, Context API, React Router, Redux
+        skills: `Мои ключевые навыки включают:
+• HTML/CSS (95%) - Семантическая верстка, адаптивный дизайн
+• JavaScript (90%) - ES6+, асинхронное программирование
+• React (85%) - Хуки, Context API, React Router
 • Svelte (70%) - Современный компилируемый фреймворк
+• UI/UX Design (75%) - Прототипирование, дизайн-системы
 
-🛠 **Технологии и инструменты:**
-• TypeScript (75%) - Статическая типизация
-• SASS/SCSS (80%) - Препроцессоры CSS
-• Webpack/Vite (70%) - Сборка проектов
-• Git (85%) - Контроль версий
-• Figma (75%) - UI/UX дизайн и прототипирование
+Также имею опыт работы с различными API.`,
 
-🚀 **Дополнительные навыки:**
-• PWA (65%) - Прогрессивные веб-приложения
-• SEO (70%) - Оптимизация для поисковых систем
-• Performance (75%) - Оптимизация производительности`,
-
-        projects: `🚀 **Мои проекты**:
+        projects: `В моем портфолио представлены различные проекты:
 
 🏪 **Moscow RP** - Интернет-магазин для GTA 5 RP
-• **Технологии**: HTML5, CSS3, JavaScript, Responsive Design
-• **Особенности**: Корзина покупок, фильтрация товаров, адаптивный дизайн
-• **Ссылка**: [Посмотреть проект](${getDefaultProjects()[0].demoLink})
+• Технологии: HTML, CSS, JavaScript
+• Особенности: Корзина, фильтры, адаптивный дизайн
 
 📱 **Pyrometer** - Веб-приложение для управления задачами
-• **Технологии**: React, Node.js, WebSocket, REST API
-• **Особенности**: Совместная работа, уведомления, аналитика
-• **Ссылка**: [Посмотреть проект](${getDefaultProjects()[1].demoLink})
+• Технологии: React, Node.js
+• Особенности: Совместная работа, уведомления
 
 🎨 **Astra GTA 5 RP** - UI/UX дизайн
-• **Инструменты**: Figma, Adobe XD, Prototyping
-• **Особенности**: Современный интерфейс, пользовательские flow, дизайн-система
-• **Ссылка**: [Посмотреть проект](${getDefaultProjects()[2].demoLink})`,
+• Инструменты: Figma, Adobe XD
+• Особенности: Современный интерфейс, пользовательские flow`,
 
-        experience: `📈 **Мой опыт**:
+        experience: `Мой опыт во фронтенд разработке:
 
-⏳ **2+ года** коммерческого опыта во фронтенд разработке
-✅ **15+ завершенных проектов** различной сложности
-👥 **8+ довольных клиентов** и долгосрочных партнеров
-🎯 **Специализация**: Современные веб-приложения и интерфейсы
+⏳ **2+ года** коммерческого опыта
+✅ **10+ завершенных проектов**
+👥 **6+ довольных клиентов**
+🎯 **Специализация**: Современные веб-приложения
 
-💼 **Основные направления:**
-• Разработка SPA и PWA приложений
-• Создание адаптивных интерфейсов
-• UI/UX дизайн и прототипирование
-• Оптимизация производительности
-• Интеграция с REST API`,
+Работал над проектами различной сложности - от лендингов до сложных веб-приложений.`,
 
-        contact: `📞 **Контакты для связи**:
-
-📧 **Email**: districkov@yandex.ru
+        contact: `📧 **Email**: districkov@yandex.ru
 ✈️ **Telegram**: @districkov
-💻 **GitHub**: github.com/Districkov
+💻 **GitHub**: Districkov
 
-📍 **Локация**: Москва, Россия
-🕒 **Доступность**: В течение 1-2 часов в рабочее время
-💬 **Предпочтительный способ связи**: Telegram или Email
+📍 **Локация**: Москва
+🕒 **Доступность**: В течение 1-2 часов
 
-📋 **Готов к обсуждению:**
-• Новых проектов и сотрудничества
-• Технических консультаций
-• Удаленной работы
-• Фриланс заказов`,
+Буду рад обсудить ваш проект!`,
 
         services: `🎯 **Мои услуги**:
 
-💻 **Веб-разработка под ключ**
-Создание современных веб-сайтов и приложений любой сложности
+💻 **Веб-разработка**
+Создание современных веб-сайтов и приложений
 
-📱 **Адаптивная верстка**
-Идеальное отображение на всех устройствах и браузерах
+📱 **Адаптивный дизайн**
+Идеальное отображение на всех устройствах
 
 🎨 **UI/UX Дизайн**
-Проектирование интуитивных и привлекательных интерфейсов
+Интуитивные и привлекательные интерфейсы
 
-⚡ **Оптимизация производительности**
-Ускорение загрузки и улучшение пользовательского опыта
-
-🔧 **Техническая поддержка**
-Обслуживание и доработка существующих проектов
-
-📊 **Консультации**
-Помощь в выборе технологий и архитектурных решений`,
+⚡ **Оптимизация**
+Ускорение загрузки и улучшение производительности`,
 
         technology: `🛠 **Мой технический стек**:
 
-**Frontend:**
-• HTML5, CSS3, JavaScript (ES6+)
-• React, Svelte, TypeScript
-• Redux, Context API, React Router
-
-**Styling:**
-• CSS Modules, Styled Components
-• SASS/SCSS, Tailwind CSS
-• Bootstrap, Material-UI
-
-**Tools & Other:**
-• Git, Webpack, Vite
-• Figma, Adobe XD
-• REST API, GraphQL
-• Jest, Testing Library
-
-**Methodologies:**
-• БЭМ, Mobile First
-• Responsive Design
-• Component-Driven Development`,
+• **Frontend**: HTML5, CSS3, JavaScript (ES6+), React, Svelte
+• **Styling**: CSS Modules, Styled Components, SASS
+• **Tools**: Git, Webpack, Vite, Figma
+• **Libraries**: Chart.js, различные API
+• **Methodologies**: БЭМ, Mobile First, Responsive Design`,
 
         music: `🎵 **Управление музыкой**:
 
-Вы можете управлять фоновой музыкой с помощью кнопки в правом нижнем углу экрана:
+Вы можете управлять фоновой музыкой с помощью кнопки в правом нижнем углу:
 
 🔊 **Включение/выключение** - кнопка с иконкой динамика
-🎵 **Функционал**: Автоповтор, плавное переключение
-🎶 **Назначение**: Создание приятной атмосферы при просмотре портфолио
+🎵 **Функционал**: Автоповтор, регулировка громкости
 
-Музыка помогает создать правильное настроение и делает просмотр более комфортным!`,
-
-        help: `❓ **Что я умею**:
-
-• Рассказать о **навыках** и технологиях 💻
-• Показать **проекты** из портфолио 🚀
-• Рассказать об **опыте** работы 📈
-• Показать **контакты** для связи 📞
-• Рассказать об **услугах** 🎯
-• Показать **технологический стек** 🛠
-• Помочь с **управлением музыкой** 🎵
-
-💡 **Совет**: Используйте кнопки быстрых ответов для быстрой навигации или просто задайте любой вопрос!`
+Музыка создает приятную атмосферу при просмотре портфолио!`
     };
     
     // Улучшенное определение интента
-    if (message.includes('навык') || message.includes('skill') || message.includes('умение') || message.match(/что.*умеешь/)) {
+    if (message.includes('навык') || message.includes('skill') || message.includes('умение') || message.includes('технолог') || message.includes('stack')) {
         return responses.skills;
-    } else if (message.includes('проект') || message.includes('работ') || message.includes('portfolio') || message.includes('кейс') || message.includes('moscow') || message.includes('pyrometer') || message.includes('astra')) {
+    } else if (message.includes('проект') || message.includes('работ') || message.includes('portfolio') || message.includes('кейс') || message.includes('moscow') || message.includes('pyrometer')) {
         return responses.projects;
     } else if (message.includes('опыт') || message.includes('experience') || message.includes('стаж') || message.includes('лет') || message.includes('год')) {
         return responses.experience;
-    } else if (message.includes('контакт') || message.includes('связать') || message.includes('contact') || message.includes('телефон') || message.includes('email') || message.includes('telegram') || message.includes('github')) {
+    } else if (message.includes('контакт') || message.includes('связать') || message.includes('contact') || message.includes('телефон') || message.includes('email') || message.includes('telegram')) {
         return responses.contact;
     } else if (message.includes('услуг') || message.includes('service') || message.includes('предложен') || message.includes('делаешь') || message.includes('предлагаешь')) {
         return responses.services;
-    } else if (message.includes('технолог') || message.includes('stack') || message.includes('инструмент') || message.includes('используешь') || message.includes('библиотек') || message.includes('стек')) {
+    } else if (message.includes('технолог') || message.includes('stack') || message.includes('инструмент') || message.includes('используешь') || message.includes('библиотек')) {
         return responses.technology;
     } else if (message.includes('музык') || message.includes('sound') || message.includes('audio') || message.includes('звук') || message.includes('плеер')) {
         return responses.music;
-    } else if (message.includes('помощь') || message.includes('help') || message.includes('что ты умеешь') || message.includes('команды') || message.includes('функции')) {
-        return responses.help;
-    } else if (message.includes('привет') || message.includes('hello') || message.includes('hi') || message.includes('здравств') || message.includes('начать') || message.includes('start')) {
+    } else if (message.includes('привет') || message.includes('hello') || message.includes('hi') || message.includes('здравств') || message.includes('начать')) {
         return `Привет! 👋 
 
-Я ваш AI-помощник в портфолио **Districk**. Рад вас видеть! 
+Я ваш AI-помощник в портфолио Districk. Рад вас видеть!
 
-Я могу подробно рассказать о:
-• 💻 **Навыках и технологиях** 
-• 🚀 **Проектах из портфолио**
-• 📈 **Опыте работы**
-• 📞 **Контактах для связи**
-• 🎯 **Предлагаемых услугах**
-• 🛠 **Технологическом стеке**
+Я могу рассказать о:
+• Навыках и технологиях 🛠
+• Проектах из портфолио 💼
+• Опыте работы 📈
+• Контактах для связи 📞
+• Предлагаемых услугах 🎯
 
 Также могу помочь с управлением музыкой 🎵 и навигацией по сайту.
 
-Что вас интересует в первую очередь?`;
+Что вас интересует?`;
     } else if (message.includes('спасибо') || message.includes('thanks') || message.includes('thank you') || message.includes('благодар')) {
         return `Пожалуйста! 😊 
-Всегда рад помочь. Если возникнут еще вопросы - не стесняйтесь обращаться!
+Всегда рад помочь. Если возникнут еще вопросы - обращайтесь!
 
-Не забудьте посмотреть мои проекты в разделе "Портфолио" 🚀
-
-Хорошего дня! ✨`;
-    } else if (message.includes('пока') || message.includes('bye') || message.includes('до свидан') || message.includes('выход') || message.includes('close')) {
+Не забудьте посмотреть мои проекты в разделе "Портфолио" 🚀`;
+    } else if (message.includes('пока') || message.includes('bye') || message.includes('до свидан') || message.includes('выход')) {
         return `До свидания! 👋 
-Буду рад помочь в будущем. Удачи в ваших проектах! 
+Буду рад помочь в будущем. Удачи!`;
+    } else if (message.includes('помощь') || message.includes('help') || message.includes('что ты умеешь') || message.includes('команды')) {
+        return `🆘 **Что я умею**:
 
-Не забудьте сохранить контакты для связи 📞`;
+• Рассказать о **навыках** и технологиях 🛠
+• Показать **проекты** из портфолио 💼
+• Рассказать об **опыте** работы 📈
+• Показать **контакты** для связи 📞
+• Рассказать об **услугах** 🎯
+• Помочь с **управлением музыкой** 🎵
+
+Просто спросите о чем-нибудь из этого списка!`;
     } else {
         return `🤔 Кажется, я не совсем понял ваш вопрос.
 
 Я могу рассказать о:
-• 💻 Моих навыках и технологиях
-• 🚀 Проектах в портфолио  
-• 📈 Опыте работы
-• 📞 Контактных данных
-• 🎯 Предлагаемых услугах
-• 🛠 Технологическом стеке
-• 🎵 Управлении музыкой на сайте
+• Моих навыках и технологиях
+• Проектах в портфолио  
+• Опыте работы
+• Контактных данных
+• Предлагаемых услугах
+• Управлении музыкой на сайте
 
-Попробуйте задать вопрос по-другому или используйте кнопки быстрых ответов ниже для удобной навигации!`;
+Попробуйте задать вопрос по-другому или используйте кнопки быстрых ответов ниже!`;
     }
 }
 
 // =============================================
-// ОСТАЛЬНЫЕ ФУНКЦИИ (ОБНОВЛЕННЫЕ)
+// ОСТАЛЬНЫЕ ФУНКЦИИ
 // =============================================
 function loadProjects() {
     const savedProjects = localStorage.getItem('portfolioProjects');
     
     if (savedProjects) {
-        try {
-            projects = JSON.parse(savedProjects);
-            console.log(`📁 Loaded ${projects.length} projects from localStorage`);
-        } catch (e) {
-            console.error('Error loading projects from localStorage:', e);
-            projects = getDefaultProjects();
-        }
+        projects = JSON.parse(savedProjects);
+        console.log(`📁 Loaded ${projects.length} projects from localStorage`);
     } else {
         projects = getDefaultProjects();
+        console.log(`📁 Loaded ${projects.length} default projects`);
     }
     
-    console.log(`📁 Loaded ${projects.length} projects`);
     renderProjects();
 }
 
@@ -1208,8 +887,7 @@ function getDefaultProjects() {
             "demoLink": "https://districkov.github.io/Moscow___RP/",
             "githubLink": "https://github.com/Districkov/Moscow___RP",
             "technologies": ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
-            "features": ["Корзина покупок", "Фильтрация товаров", "Адаптивный дизайн", "Быстрый поиск", "Система оплаты"],
-            "status": "Завершен"
+            "features": ["Корзина покупок", "Фильтрация товаров", "Адаптивный дизайн", "Быстрый поиск"]
         },
         {
             "id": 2,
@@ -1220,8 +898,7 @@ function getDefaultProjects() {
             "demoLink": "https://pyrometer.tilda.ws/",
             "githubLink": "",
             "technologies": ["React", "Node.js", "WebSocket", "REST API"],
-            "features": ["Управление задачами", "Совместная работа", "Аналитика", "Уведомления", "Дашборд"],
-            "status": "В разработке"
+            "features": ["Управление задачами", "Совместная работа", "Аналитика", "Уведомления"]
         },
         {
             "id": 3,
@@ -1232,8 +909,7 @@ function getDefaultProjects() {
             "demoLink": "https://www.figma.com/design/XbDdfTxHWDtniMplxhkvcu/Astra-Project-%7C-Figma?node-id=310-3098&p=f&t=t1uig8AF5IQqlOv7-0",
             "githubLink": "",
             "technologies": ["Figma", "UI/UX Design", "Prototyping", "Design Systems"],
-            "features": ["Дизайн-система", "Прототипы", "User Flow", "Адаптивный дизайн", "UI Kit"],
-            "status": "Завершен"
+            "features": ["Дизайн-система", "Прототипы", "User Flow", "Адаптивный дизайн"]
         }
     ];
 }
@@ -1248,13 +924,10 @@ function renderProjects() {
                 <div class="portfolio-img">
                     <img src="images/${project.image}" alt="${project.title}" onerror="this.src='images/default-project.png'">
                     <div class="portfolio-overlay">
-                        <div class="project-status ${project.status === 'Завершен' ? 'completed' : 'in-progress'}">
-                            ${project.status}
-                        </div>
                         <div class="portfolio-links">
-                            ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="portfolio-link" title="Демо"><i class="fas fa-external-link-alt"></i></a>` : ''}
-                            ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="portfolio-link" title="GitHub"><i class="fab fa-github"></i></a>` : ''}
-                            <a href="#" class="portfolio-link view-details" data-project="${project.id}" title="Подробнее"><i class="fas fa-eye"></i></a>
+                            ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="portfolio-link"><i class="fas fa-external-link-alt"></i></a>` : ''}
+                            ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="portfolio-link"><i class="fab fa-github"></i></a>` : ''}
+                            <a href="#" class="portfolio-link view-details" data-project="${project.id}"><i class="fas fa-eye"></i></a>
                         </div>
                     </div>
                 </div>
@@ -1263,8 +936,7 @@ function renderProjects() {
                     <h3>${project.title}</h3>
                     <p>${project.description}</p>
                     <div class="portfolio-tech">
-                        ${project.technologies.slice(0, 4).map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
-                        ${project.technologies.length > 4 ? `<span class="tech-tag-more">+${project.technologies.length - 4}</span>` : ''}
+                        ${project.technologies.slice(0, 3).map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
                     </div>
                 </div>
             </div>
@@ -1277,9 +949,9 @@ function renderProjects() {
 
 function getCategoryName(category) {
     const names = {
-        web: '🌐 Веб-сайт',
-        app: '📱 Приложение', 
-        design: '🎨 Дизайн'
+        web: 'Веб-сайт',
+        app: 'Приложение', 
+        design: 'Дизайн'
     };
     return names[category] || category;
 }
@@ -1290,12 +962,6 @@ function initProjectFilter() {
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Анимация кнопки
-            btn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                btn.style.transform = 'scale(1)';
-            }, 150);
-            
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
@@ -1306,11 +972,11 @@ function initProjectFilter() {
                     item.style.display = 'block';
                     setTimeout(() => {
                         item.style.opacity = '1';
-                        item.style.transform = 'translateY(0) scale(1)';
+                        item.style.transform = 'translateY(0)';
                     }, 100);
                 } else {
                     item.style.opacity = '0';
-                    item.style.transform = 'translateY(20px) scale(0.95)';
+                    item.style.transform = 'translateY(20px)';
                     setTimeout(() => {
                         item.style.display = 'none';
                     }, 300);
@@ -1340,10 +1006,7 @@ function showProjectDetails(projectId) {
         <div class="modal-content">
             <span class="modal-close">&times;</span>
             <div class="modal-header">
-                <div class="project-meta">
-                    <span class="project-category">${getCategoryName(project.category)}</span>
-                    <span class="project-status-badge ${project.status === 'Завершен' ? 'completed' : 'in-progress'}">${project.status}</span>
-                </div>
+                <span class="project-category">${getCategoryName(project.category)}</span>
                 <h2>${project.title}</h2>
             </div>
             <div class="modal-body">
@@ -1352,24 +1015,24 @@ function showProjectDetails(projectId) {
                 </div>
                 <div class="project-info">
                     <div class="project-description">
-                        <h3>📋 Описание проекта</h3>
+                        <h3>Описание проекта</h3>
                         <p>${project.description}</p>
                     </div>
                     <div class="project-technologies">
-                        <h3>🛠 Технологии</h3>
+                        <h3>Технологии</h3>
                         <div class="tech-tags">
                             ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
                         </div>
                     </div>
                     <div class="project-features">
-                        <h3>⭐ Основные возможности</h3>
+                        <h3>Основные возможности</h3>
                         <ul>
                             ${project.features.map(feature => `<li>${feature}</li>`).join('')}
                         </ul>
                     </div>
                     <div class="project-links">
-                        ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Посмотреть демо</a>` : ''}
-                        ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> Исходный код</a>` : ''}
+                        ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="btn"><i class="fas fa-external-link-alt"></i> Демо</a>` : ''}
+                        ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> GitHub</a>` : ''}
                     </div>
                 </div>
             </div>
@@ -1377,68 +1040,40 @@ function showProjectDetails(projectId) {
     `;
 
     document.body.appendChild(modal);
-    document.body.style.overflow = 'hidden';
-
-    // Анимация появления
-    setTimeout(() => {
-        modal.style.opacity = '1';
-    }, 10);
 
     modal.querySelector('.modal-close').addEventListener('click', () => {
-        closeModal(modal);
+        modal.remove();
     });
 
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-            closeModal(modal);
-        }
-    });
-
-    // Закрытие по ESC
-    document.addEventListener('keydown', function closeOnEscape(e) {
-        if (e.key === 'Escape') {
-            closeModal(modal);
-            document.removeEventListener('keydown', closeOnEscape);
+            modal.remove();
         }
     });
 }
 
-function closeModal(modal) {
-    modal.style.opacity = '0';
-    setTimeout(() => {
-        modal.remove();
-        document.body.style.overflow = '';
-    }, 300);
-}
-
-// =============================================
-// УЛУЧШЕННАЯ СИСТЕМА МУЗЫКИ
-// =============================================
 function initMusic() {
+    const music = document.getElementById('backgroundMusic');
     const musicToggle = document.getElementById('musicToggle');
-    const backgroundMusic = document.getElementById('backgroundMusic');
     
-    if (!musicToggle || !backgroundMusic) {
-        console.warn('Music elements not found');
+    if (!music) {
+        console.warn('Background music element not found');
         CONFIG.musicEnabled = false;
         return;
     }
 
-    // Загружаем настройки
-    const musicSettings = JSON.parse(localStorage.getItem('portfolioMusicSettings') || '{"enabled":true,"volume":0.4}');
+    const musicSettings = JSON.parse(localStorage.getItem('portfolioMusicSettings') || '{"enabled":true,"volume":0.3}');
     CONFIG.musicEnabled = musicSettings.enabled;
     
-    backgroundMusic.volume = musicSettings.volume;
-    backgroundMusic.loop = true;
+    music.volume = musicSettings.volume;
 
     function updateMusicIcon() {
-        const icon = musicToggle.querySelector('i');
+        const icon = musicToggle?.querySelector('i');
+        
         if (CONFIG.musicEnabled) {
-            icon.className = 'fas fa-volume-up';
-            musicToggle.style.background = 'linear-gradient(135deg, var(--primary), #6be000)';
+            icon?.classList.replace('fa-volume-mute', 'fa-volume-up');
         } else {
-            icon.className = 'fas fa-volume-mute';
-            musicToggle.style.background = 'linear-gradient(135deg, #666, #888)';
+            icon?.classList.replace('fa-volume-up', 'fa-volume-mute');
         }
     }
 
@@ -1446,39 +1081,32 @@ function initMusic() {
         CONFIG.musicEnabled = !CONFIG.musicEnabled;
         
         if (CONFIG.musicEnabled) {
-            backgroundMusic.play().catch(e => {
-                console.log('Autoplay prevented, waiting for user interaction');
-            });
-            showMusicNotification('Фоновая музыка включена 🎵', true);
+            music.play().catch(e => console.log('Autoplay prevented:', e));
         } else {
-            backgroundMusic.pause();
-            showMusicNotification('Музыка выключена 🔇', false);
+            music.pause();
         }
         
-        // Сохраняем настройки
         const musicSettings = {
             enabled: CONFIG.musicEnabled,
-            volume: backgroundMusic.volume
+            volume: music.volume
         };
         localStorage.setItem('portfolioMusicSettings', JSON.stringify(musicSettings));
         
         updateMusicIcon();
     }
 
-    musicToggle.addEventListener('click', toggleMusic);
+    if (musicToggle) {
+        musicToggle.addEventListener('click', toggleMusic);
+    }
 
-    // Пробуем запустить музыку при первом взаимодействии
     if (CONFIG.musicEnabled) {
-        document.addEventListener('click', function startMusicOnInteraction() {
-            backgroundMusic.play().catch(e => {
-                console.log('Autoplay prevented');
-            });
-            document.removeEventListener('click', startMusicOnInteraction);
+        document.addEventListener('click', function startMusic() {
+            music.play().catch(e => console.log('Autoplay prevented:', e));
+            document.removeEventListener('click', startMusic);
         }, { once: true });
     }
 
     updateMusicIcon();
-    console.log('🎵 Music system initialized');
 }
 
 function initBottomMusicButton() {
@@ -1496,27 +1124,27 @@ function initBottomMusicButton() {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #6be000);
+            background: var(--primary);
             border: none;
             color: var(--dark);
-            font-size: 1.3rem;
+            font-size: 20px;
             cursor: pointer;
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(124, 252, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(124, 252, 0, 0.3);
         `;
 
         musicButton.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.15) rotate(5deg)';
-            this.style.boxShadow = '0 8px 25px rgba(124, 252, 0, 0.6)';
+            this.style.transform = 'scale(1.1)';
+            this.style.boxShadow = '0 6px 20px rgba(124, 252, 0, 0.5)';
         });
 
         musicButton.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1) rotate(0deg)';
-            this.style.boxShadow = '0 6px 20px rgba(124, 252, 0, 0.4)';
+            this.style.transform = 'scale(1)';
+            this.style.boxShadow = '0 4px 15px rgba(124, 252, 0, 0.3)';
         });
 
         document.body.appendChild(musicButton);
@@ -1530,13 +1158,9 @@ function initBottomMusicButton() {
             if (CONFIG.musicEnabled) {
                 music.play().catch(e => console.log('Autoplay prevented:', e));
                 this.innerHTML = '<i class="fas fa-volume-up"></i>';
-                this.style.background = 'linear-gradient(135deg, var(--primary), #6be000)';
-                showMusicNotification('Фоновая музыка включена 🎵', true);
             } else {
                 music.pause();
                 this.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                this.style.background = 'linear-gradient(135deg, #666, #888)';
-                showMusicNotification('Музыка выключена 🔇', false);
             }
             
             const musicSettings = {
@@ -1550,179 +1174,6 @@ function initBottomMusicButton() {
     }
 }
 
-// =============================================
-// СИСТЕМА УВЕДОМЛЕНИЙ (ОБНОВЛЕННАЯ)
-// =============================================
-function showNotification(message, type = 'info') {
-    removeExistingNotifications();
-    
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    
-    const icons = {
-        success: 'fas fa-check-circle',
-        error: 'fas fa-exclamation-circle',
-        info: 'fas fa-info-circle',
-        warning: 'fas fa-exclamation-triangle'
-    };
-    
-    const icon = icons[type] || icons.info;
-    
-    notification.innerHTML = `
-        <div class="notification-content">
-            <div class="notification-icon">
-                <i class="${icon}"></i>
-            </div>
-            <div class="notification-message">
-                <div class="notification-title">${getNotificationTitle(type)}</div>
-                <div class="notification-text">${message}</div>
-            </div>
-            <button class="notification-close">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="notification-progress"></div>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Анимация появления
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 10);
-    
-    // Прогресс бар
-    const progressBar = notification.querySelector('.notification-progress');
-    if (progressBar) {
-        setTimeout(() => {
-            progressBar.style.width = '0%';
-        }, 100);
-    }
-    
-    // Закрытие по клику
-    notification.querySelector('.notification-close').addEventListener('click', () => {
-        closeNotification(notification);
-    });
-    
-    // Автоматическое закрытие через 5 секунд
-    setTimeout(() => {
-        if (notification.parentElement) {
-            closeNotification(notification);
-        }
-    }, 5000);
-}
-
-function getNotificationTitle(type) {
-    const titles = {
-        success: 'Успешно!',
-        error: 'Ошибка!',
-        info: 'Информация',
-        warning: 'Внимание!'
-    };
-    return titles[type] || 'Уведомление';
-}
-
-function closeNotification(notification) {
-    notification.classList.remove('show');
-    notification.classList.add('hide');
-    
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 300);
-}
-
-function removeExistingNotifications() {
-    const existing = document.querySelectorAll('.notification');
-    existing.forEach(notification => {
-        if (!notification.classList.contains('show')) {
-            notification.remove();
-        }
-    });
-}
-
-function showMusicNotification(message, isPlaying) {
-    const notification = document.createElement('div');
-    notification.className = 'notification notification-music';
-    
-    const icon = isPlaying ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-    const title = isPlaying ? 'Музыка включена' : 'Музыка выключена';
-    
-    notification.innerHTML = `
-        <div class="notification-content">
-            <div class="notification-icon">
-                <i class="${icon}"></i>
-            </div>
-            <div class="notification-message">
-                <div class="notification-title">🎵 ${title}</div>
-                <div class="notification-text">${message}</div>
-            </div>
-            <button class="notification-close">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="notification-progress"></div>
-        </div>
-    `;
-    
-    showCustomNotification(notification);
-}
-
-function showWelcomeNotification() {
-    const notification = document.createElement('div');
-    notification.className = 'notification notification-info';
-    
-    notification.innerHTML = `
-        <div class="notification-content">
-            <div class="notification-icon">
-                <i class="fas fa-rocket"></i>
-            </div>
-            <div class="notification-message">
-                <div class="notification-title">🚀 Добро пожаловать!</div>
-                <div class="notification-text">Рад видеть вас в моем портфолио! Через 20 секунд откроется AI помощник для ответов на вопросы.</div>
-            </div>
-            <button class="notification-close">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="notification-progress"></div>
-        </div>
-    `;
-    
-    showCustomNotification(notification);
-}
-
-function showCustomNotification(notificationElement) {
-    document.body.appendChild(notificationElement);
-    
-    // Анимация появления
-    setTimeout(() => {
-        notificationElement.classList.add('show');
-    }, 10);
-    
-    // Прогресс бар
-    const progressBar = notificationElement.querySelector('.notification-progress');
-    if (progressBar) {
-        setTimeout(() => {
-            progressBar.style.width = '0%';
-        }, 100);
-    }
-    
-    // Закрытие по клику
-    notificationElement.querySelector('.notification-close').addEventListener('click', () => {
-        closeNotification(notificationElement);
-    });
-    
-    // Автоматическое закрытие
-    setTimeout(() => {
-        if (notificationElement.parentElement) {
-            closeNotification(notificationElement);
-        }
-    }, 5000);
-}
-
-// =============================================
-// ОСТАЛЬНЫЕ ФУНКЦИИ ИНИЦИАЛИЗАЦИИ
-// =============================================
 function initTheme() {
     const savedTheme = localStorage.getItem('portfolioTheme') || 'dark';
     setTheme(savedTheme);
@@ -1737,7 +1188,6 @@ function initTheme() {
 function toggleTheme() {
     const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    showNotification(`Тема изменена на ${newTheme === 'dark' ? 'тёмную' : 'светлую'}`, 'info');
 }
 
 function setTheme(theme) {
@@ -1767,7 +1217,7 @@ function initAnimations() {
         });
     }, observerOptions);
 
-    document.querySelectorAll('.fade-in, .service-card, .portfolio-item, .skill-item').forEach(el => {
+    document.querySelectorAll('.fade-in, .service-card, .portfolio-item').forEach(el => {
         observer.observe(el);
     });
 
@@ -1818,7 +1268,7 @@ function initSkillsAnimation() {
                 skillsObserver.unobserve(skillBar);
             }
         });
-    }, { threshold: 0.3 });
+    }, { threshold: 0.5 });
     
     skillBars.forEach(bar => skillsObserver.observe(bar));
 }
@@ -1920,59 +1370,58 @@ function initContactForm() {
         e.preventDefault();
         
         const formData = {
-            name: document.getElementById('name').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            message: document.getElementById('message').value.trim()
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value
         };
-
-        // Валидация
-        if (!formData.name || !formData.email || !formData.message) {
-            showNotification('Пожалуйста, заполните все поля формы', 'error');
-            return;
-        }
-
-        if (!isValidEmail(formData.email)) {
-            showNotification('Пожалуйста, введите корректный email адрес', 'error');
-            return;
-        }
 
         console.log('Contact form submitted:', formData);
         
-        // Имитация отправки
         showNotification('Сообщение отправлено! Я свяжусь с вами в ближайшее время.', 'success');
         
-        // Сброс формы
         this.reset();
-        
-        // Показать дополнительное уведомление через 2 секунды
-        setTimeout(() => {
-            showNotification('Обычно я отвечаю в течение 1-2 часов в рабочее время', 'info');
-        }, 2000);
     });
 }
 
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+function showNotification(message, type = 'info') {
+    removeExistingNotifications();
+    
+    const notification = document.createElement('div');
+    notification.className = `notification ${type} slide-in`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-message">${message}</div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    notification.querySelector('.notification-close').addEventListener('click', () => {
+        notification.remove();
+    });
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
 }
 
-// =============================================
-// ДОБАВЛЕНИЕ CSS СТИЛЕЙ
-// =============================================
+function removeExistingNotifications() {
+    const existing = document.querySelectorAll('.notification');
+    existing.forEach(notification => notification.remove());
+}
+
+// Добавляем CSS анимации для нового фона
 const additionalStyles = `
     @keyframes enhancedFloat {
-        0%, 100% {
-            transform: translateY(0) translateX(0) rotate(0deg);
-        }
-        25% {
-            transform: translateY(-40px) translateX(20px) rotate(90deg);
-        }
-        50% {
-            transform: translateY(-20px) translateX(40px) rotate(180deg);
-        }
-        75% {
-            transform: translateY(-30px) translateX(-20px) rotate(270deg);
-        }
+        0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+        25% { transform: translateY(-30px) translateX(15px) rotate(90deg); }
+        50% { transform: translateY(-15px) translateX(30px) rotate(180deg); }
+        75% { transform: translateY(-25px) translateX(-15px) rotate(270deg); }
     }
     
     @keyframes pulseCircle {
@@ -1981,118 +1430,700 @@ const additionalStyles = `
             opacity: 0;
         }
         50% {
-            opacity: 0.4;
+            opacity: 0.3;
         }
         100% {
-            transform: scale(2.5);
+            transform: scale(2);
             opacity: 0;
         }
     }
     
-    @keyframes gridMove {
-        0% {
-            background-position: 0 0;
+    .slide-in {
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
         }
-        100% {
-            background-position: 60px 60px;
+        to {
+            transform: translateX(0);
+            opacity: 1;
         }
     }
     
-    @keyframes linePulse {
-        0%, 100% {
-            opacity: 0.1;
+    .animate-in {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
         }
-        50% {
-            opacity: 0.4;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
     
-    .project-status {
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--dark-light);
+        border: 1px solid var(--primary);
+        border-radius: var(--border-radius);
+        padding: 15px 20px;
+        min-width: 300px;
+        max-width: 500px;
+        z-index: 10000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .notification.success {
+        border-color: #00ff00;
+    }
+    
+    .notification.error {
+        border-color: #ff4444;
+    }
+    
+    .notification.info {
+        border-color: #4444ff;
+    }
+    
+    .notification-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .notification-message {
+        color: var(--light);
+        flex: 1;
+    }
+    
+    .notification-close {
+        background: none;
+        border: none;
+        color: var(--gray);
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 3px;
+        transition: var(--transition);
+    }
+    
+    .notification-close:hover {
+        color: var(--light);
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        padding: 20px;
+    }
+    
+    .modal-content {
+        background: var(--dark-light);
+        border-radius: var(--border-radius);
+        padding: 30px;
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        border: 1px solid var(--primary);
+    }
+    
+    .modal-close {
         position: absolute;
         top: 15px;
-        left: 15px;
-        padding: 5px 12px;
-        border-radius: 15px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        z-index: 2;
+        right: 15px;
+        font-size: 24px;
+        color: var(--gray);
+        cursor: pointer;
+        transition: var(--transition);
     }
     
-    .project-status.completed {
-        background: rgba(0, 210, 106, 0.2);
-        color: #00d26a;
-        border: 1px solid rgba(0, 210, 106, 0.3);
+    .modal-close:hover {
+        color: var(--light);
     }
     
-    .project-status.in-progress {
-        background: rgba(255, 159, 67, 0.2);
-        color: #ff9f43;
-        border: 1px solid rgba(255, 159, 67, 0.3);
+    .modal-header {
+        margin-bottom: 20px;
+        padding-right: 30px;
     }
     
-    .project-status-badge {
-        padding: 5px 12px;
-        border-radius: 15px;
-        font-size: 0.8rem;
-        font-weight: 600;
+    .modal-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
     }
     
-    .project-status-badge.completed {
-        background: rgba(0, 210, 106, 0.2);
-        color: #00d26a;
-        border: 1px solid rgba(0, 210, 106, 0.3);
+    @media (max-width: 768px) {
+        .modal-body {
+            grid-template-columns: 1fr;
+        }
     }
     
-    .project-status-badge.in-progress {
-        background: rgba(255, 159, 67, 0.2);
-        color: #ff9f43;
-        border: 1px solid rgba(255, 159, 67, 0.3);
+    .project-image img {
+        width: 100%;
+        border-radius: var(--border-radius);
+        border: 1px solid rgba(124, 252, 0, 0.2);
     }
     
-    .tech-tag-more {
+    .project-info h3 {
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+    
+    .project-description,
+    .project-technologies,
+    .project-features {
+        margin-bottom: 20px;
+    }
+    
+    .tech-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .tech-tag {
         background: rgba(124, 252, 0, 0.1);
         color: var(--primary);
         padding: 5px 10px;
         border-radius: 15px;
         font-size: 0.8rem;
         border: 1px solid rgba(124, 252, 0, 0.2);
-        cursor: help;
     }
     
-    .project-meta {
+    .project-features ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .project-features li {
+        padding: 5px 0;
+        color: var(--gray);
+        position: relative;
+        padding-left: 15px;
+    }
+    
+    .project-features li:before {
+        content: '▸';
+        color: var(--primary);
+        position: absolute;
+        left: 0;
+    }
+    
+    .project-links {
         display: flex;
         gap: 10px;
-        align-items: center;
-        margin-bottom: 10px;
+        flex-wrap: wrap;
     }
     
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary), #6be000);
-        color: var(--dark);
+    .music-toggle-bottom {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary);
         border: none;
+        color: var(--dark);
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(124, 252, 0, 0.3);
     }
     
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(124, 252, 0, 0.4);
+    .music-toggle-bottom:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(124, 252, 0, 0.5);
+    }
+`;
+// =============================================
+// КРАСИВЫЕ УВЕДОМЛЕНИЯ
+// =============================================
+function showNotification(message, type = 'info') {
+    // Удаляем старые уведомления
+    removeExistingNotifications();
+    
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-exclamation-circle',
+        info: 'fas fa-info-circle',
+        warning: 'fas fa-exclamation-triangle'
+    };
+    
+    const icon = icons[type] || icons.info;
+    
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="${icon}"></i>
+            </div>
+            <div class="notification-message">
+                <div class="notification-title">${getNotificationTitle(type)}</div>
+                <div class="notification-text">${message}</div>
+            </div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="notification-progress"></div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Анимация появления
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    // Прогресс бар
+    const progressBar = notification.querySelector('.notification-progress');
+    if (progressBar) {
+        setTimeout(() => {
+            progressBar.style.width = '0%';
+        }, 100);
+    }
+    
+    // Закрытие по клику
+    notification.querySelector('.notification-close').addEventListener('click', () => {
+        closeNotification(notification);
+    });
+    
+    // Автоматическое закрытие через 5 секунд
+    setTimeout(() => {
+        if (notification.parentElement) {
+            closeNotification(notification);
+        }
+    }, 5000);
+}
+
+function getNotificationTitle(type) {
+    const titles = {
+        success: 'Успешно!',
+        error: 'Ошибка!',
+        info: 'Информация',
+        warning: 'Внимание!'
+    };
+    return titles[type] || 'Уведомление';
+}
+
+function closeNotification(notification) {
+    notification.classList.remove('show');
+    notification.classList.add('hide');
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 300);
+}
+
+function removeExistingNotifications() {
+    const existing = document.querySelectorAll('.notification');
+    existing.forEach(notification => {
+        if (!notification.classList.contains('show')) {
+            notification.remove();
+        }
+    });
+}
+
+// =============================================
+// СТИЛИ ДЛЯ УВЕДОМЛЕНИЙ
+// =============================================
+const notificationStyles = `
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        min-width: 320px;
+        max-width: 400px;
+        background: var(--dark-light);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border-left: 4px solid var(--primary);
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        z-index: 10000;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+
+    .notification.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .notification.hide {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+
+    .notification-success {
+        border-left-color: #00d26a;
+        background: linear-gradient(135deg, var(--dark-light) 0%, rgba(0, 210, 106, 0.1) 100%);
+    }
+
+    .notification-error {
+        border-left-color: #ff4757;
+        background: linear-gradient(135deg, var(--dark-light) 0%, rgba(255, 71, 87, 0.1) 100%);
+    }
+
+    .notification-info {
+        border-left-color: #2e86de;
+        background: linear-gradient(135deg, var(--dark-light) 0%, rgba(46, 134, 222, 0.1) 100%);
+    }
+
+    .notification-warning {
+        border-left-color: #ff9f43;
+        background: linear-gradient(135deg, var(--dark-light) 0%, rgba(255, 159, 67, 0.1) 100%);
+    }
+
+    .notification-content {
+        padding: 20px;
+        position: relative;
+    }
+
+    .notification-icon {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .notification-success .notification-icon {
+        background: rgba(0, 210, 106, 0.2);
+        color: #00d26a;
+    }
+
+    .notification-error .notification-icon {
+        background: rgba(255, 71, 87, 0.2);
+        color: #ff4757;
+    }
+
+    .notification-info .notification-icon {
+        background: rgba(46, 134, 222, 0.2);
+        color: #2e86de;
+    }
+
+    .notification-warning .notification-icon {
+        background: rgba(255, 159, 67, 0.2);
+        color: #ff9f43;
+    }
+
+    .notification-message {
+        margin-left: 55px;
+        margin-right: 30px;
+    }
+
+    .notification-title {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--light);
+        margin-bottom: 4px;
+    }
+
+    .notification-text {
+        color: var(--gray);
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .notification-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        color: var(--gray);
+        cursor: pointer;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-size: 0.8rem;
+    }
+
+    .notification-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--light);
+        transform: rotate(90deg);
+    }
+
+    .notification-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: var(--primary);
+        width: 100%;
+        transition: width 5s linear;
+    }
+
+    .notification-success .notification-progress {
+        background: #00d26a;
+    }
+
+    .notification-error .notification-progress {
+        background: #ff4757;
+    }
+
+    .notification-info .notification-progress {
+        background: #2e86de;
+    }
+
+    .notification-warning .notification-progress {
+        background: #ff9f43;
+    }
+
+    /* Анимация появления для нескольких уведомлений */
+    .notification:nth-child(1) { top: 20px; }
+    .notification:nth-child(2) { top: 110px; }
+    .notification:nth-child(3) { top: 200px; }
+    .notification:nth-child(4) { top: 290px; }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .notification {
+            right: 10px;
+            left: 10px;
+            min-width: auto;
+            max-width: none;
+        }
+        
+        .notification:nth-child(1) { top: 10px; }
+        .notification:nth-child(2) { top: 120px; }
+        .notification:nth-child(3) { top: 230px; }
+        .notification:nth-child(4) { top: 340px; }
+    }
+
+    /* Специальные уведомления */
+    .notification-achievement {
+        border-left-color: #ffd700;
+        background: linear-gradient(135deg, var(--dark-light) 0%, rgba(255, 215, 0, 0.1) 100%);
+    }
+
+    .notification-achievement .notification-icon {
+        background: rgba(255, 215, 0, 0.2);
+        color: #ffd700;
+    }
+
+    .notification-achievement .notification-progress {
+        background: #ffd700;
+    }
+
+    .notification-music {
+        border-left-color: #7cfc00;
+        background: linear-gradient(135deg, var(--dark-light) 0%, rgba(124, 252, 0, 0.1) 100%);
+    }
+
+    .notification-music .notification-icon {
+        background: rgba(124, 252, 0, 0.2);
+        color: #7cfc00;
     }
 `;
 
-// Добавляем стили в документ
-const styleSheet = document.createElement('style');
-styleSheet.textContent = additionalStyles;
-document.head.appendChild(styleSheet);
+// Добавляем стили уведомлений
+const notificationStyleSheet = document.createElement('style');
+notificationStyleSheet.textContent = notificationStyles;
+document.head.appendChild(notificationStyleSheet);
 
-// Функция для тестирования уведомлений
+// =============================================
+// СПЕЦИАЛЬНЫЕ УВЕДОМЛЕНИЯ
+// =============================================
+function showAchievementNotification(title, message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification notification-achievement';
+    
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="notification-message">
+                <div class="notification-title">🏆 ${title}</div>
+                <div class="notification-text">${message}</div>
+            </div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="notification-progress"></div>
+        </div>
+    `;
+    
+    showCustomNotification(notification);
+}
+
+function showMusicNotification(message, isPlaying) {
+    const notification = document.createElement('div');
+    notification.className = 'notification notification-music';
+    
+    const icon = isPlaying ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+    const title = isPlaying ? 'Музыка включена' : 'Музыка выключена';
+    
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="${icon}"></i>
+            </div>
+            <div class="notification-message">
+                <div class="notification-title">🎵 ${title}</div>
+                <div class="notification-text">${message}</div>
+            </div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="notification-progress"></div>
+        </div>
+    `;
+    
+    showCustomNotification(notification);
+}
+
+function showWelcomeNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'notification notification-info';
+    
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-rocket"></i>
+            </div>
+            <div class="notification-message">
+                <div class="notification-title">🚀 Добро пожаловать!</div>
+                <div class="notification-text">Рад видеть вас в моем портфолио! Через 20 секунд откроется AI помощник.</div>
+            </div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="notification-progress"></div>
+        </div>
+    `;
+    
+    showCustomNotification(notification);
+}
+
+function showCustomNotification(notificationElement) {
+    document.body.appendChild(notificationElement);
+    
+    // Анимация появления
+    setTimeout(() => {
+        notificationElement.classList.add('show');
+    }, 10);
+    
+    // Прогресс бар
+    const progressBar = notificationElement.querySelector('.notification-progress');
+    if (progressBar) {
+        setTimeout(() => {
+            progressBar.style.width = '0%';
+        }, 100);
+    }
+    
+    // Закрытие по клику
+    notificationElement.querySelector('.notification-close').addEventListener('click', () => {
+        closeNotification(notificationElement);
+    });
+    
+    // Автоматическое закрытие
+    setTimeout(() => {
+        if (notificationElement.parentElement) {
+            closeNotification(notificationElement);
+        }
+    }, 5000);
+}
+
+// =============================================
+// ОБНОВЛЯЕМ ФУНКЦИИ МУЗЫКИ И ЧАТА
+// =============================================
+
+// Обновляем функцию музыки для красивых уведомлений
+function initMusic() {
+    const musicToggle = document.getElementById('musicToggle');
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    
+    if (!musicToggle || !backgroundMusic) return;
+    
+    // Показываем кнопку
+    musicToggle.style.display = 'flex';
+    
+    // Обработчик клика
+    musicToggle.addEventListener('click', function() {
+        if (backgroundMusic.paused) {
+            backgroundMusic.play();
+            musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+            showMusicNotification('Фоновая музыка включена', true);
+        } else {
+            backgroundMusic.pause();
+            musicToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            showMusicNotification('Фоновая музыка выключена', false);
+        }
+    });
+    
+    // Пробуем запустить музыку
+    setTimeout(() => {
+        backgroundMusic.play().catch(e => {
+            console.log('Автозапуск музыки заблокирован');
+        });
+    }, 2000);
+}
+
+// Добавляем приветственное уведомление при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        showWelcomeNotification();
+    }, 1000);
+});
+
+// Функция для тестирования уведомлений (можно удалить после теста)
 function testNotifications() {
-    showNotification('Это тестовое информационное уведомление', 'info');
+    showNotification('Это обычное информационное уведомление', 'info');
     setTimeout(() => showNotification('Операция выполнена успешно!', 'success'), 600);
-    setTimeout(() => showNotification('Произошла ошибка при загрузке данных', 'error'), 1200);
-    setTimeout(() => showNotification('Внимание! Проверьте настройки безопасности', 'warning'), 1800);
-    setTimeout(() => showAchievementNotification('Новое достижение!', 'Вы впервые посетили портфолио'), 2400);
+    setTimeout(() => showNotification('Произошла ошибка при загрузке', 'error'), 1200);
+    setTimeout(() => showNotification('Внимание! Проверьте настройки', 'warning'), 1800);
+    setTimeout(() => showAchievementNotification('Новое достижение!', 'Вы посетили портфолио'), 2400);
 }
 
 // Добавляем тестовую функцию в глобальную область видимости
 window.testNotifications = testNotifications;
 
-console.log('🎨 Enhanced portfolio application loaded successfully!');
+console.log('🎨 Beautiful notifications loaded!');
+const styleSheet = document.createElement('style');
+styleSheet.textContent = additionalStyles;
+document.head.appendChild(styleSheet);
+
+console.log('🎨 Enhanced features loaded successfully!');
