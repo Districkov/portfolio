@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель | Портфолио</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Dynamic Background -->
+    <div class="dynamic-bg" id="dynamic-bg"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Dis<span>Portfolio</span> Admin</div>
+                <nav id="navbar">
+                    <ul>
+                        <li><a href="index.html" class="nav-link">Вернуться на сайт</a></li>
+                        <li><a href="#projects" class="nav-link active">Управление проектами</a></li>
+                        <li><a href="#settings" class="nav-link">Настройки</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" title="Переключить тему">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Admin Content -->
+    <main class="admin-main">
+        <div class="container">
+            <!-- Login Section -->
+            <section class="admin-section" id="login">
+                <div class="section-title">
+                    <h2>Вход в админ панель</h2>
+                    <p>Введите пароль для доступа к управлению</p>
+                </div>
+                <div class="admin-login-form">
+                    <form id="adminLoginForm">
+                        <div class="form-group">
+                            <input type="password" id="adminPassword" placeholder="Введите пароль" required>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-sign-in-alt"></i> Войти
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Projects Management Section -->
+            <section class="admin-section" id="projects" style="display: none;">
+                <div class="section-title">
+                    <h2>Управление проектами</h2>
+                    <p>Добавляйте, редактируйте и удаляйте проекты в портфолио</p>
+                </div>
+
+                <!-- Add Project Form -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-plus"></i> Добавить новый проект</h3>
+                    <form id="projectForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="projectTitle">Название проекта *</label>
+                                <input type="text" id="projectTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="projectCategory">Категория *</label>
+                                <select id="projectCategory" required>
+                                    <option value="">Выберите категорию</option>
+                                    <option value="web">Веб-сайт</option>
+                                    <option value="app">Приложение</option>
+                                    <option value="design">Дизайн</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectDescription">Описание проекта *</label>
+                            <textarea id="projectDescription" required></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="projectImage">Название файла изображения *</label>
+                                <input type="text" id="projectImage" placeholder="project1.jpg" required>
+                                <small>Поместите изображение в папку images/</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="projectTechnologies">Технологии (через запятую)</label>
+                                <input type="text" id="projectTechnologies" placeholder="HTML, CSS, JavaScript">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="projectDemo">Демо ссылка</label>
+                                <input type="url" id="projectDemo" placeholder="https://example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="projectGithub">GitHub ссылка</label>
+                                <input type="url" id="projectGithub" placeholder="https://github.com/username/repo">
+                            </div>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn">
+                                <i class="fas fa-plus"></i> Добавить проект
+                            </button>
+                            <button type="reset" class="btn btn-outline">
+                                <i class="fas fa-redo"></i> Очистить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Projects List -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-list"></i> Существующие проекты</h3>
+                    <div class="projects-list" id="projectsList">
+                        <!-- Projects will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="admin-section" id="settings" style="display: none;">
+                <div class="section-title">
+                    <h2>Настройки</h2>
+                    <p>Управление настройками портфолио</p>
+                </div>
+
+                <div class="admin-card">
+                    <h3><i class="fas fa-cog"></i> Общие настройки</h3>
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label for="adminPasswordChange">Сменить пароль администратора</label>
+                            <input type="password" id="adminPasswordChange" placeholder="Новый пароль">
+                        </div>
+                        <div class="form-group">
+                            <label for="musicEnabled">
+                                <input type="checkbox" id="musicEnabled" checked>
+                                Автоматическое воспроизведение музыки
+                            </label>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn">
+                                <i class="fas fa-save"></i> Сохранить настройки
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Statistics -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-chart-bar"></i> Статистика</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalProjects">0</div>
+                            <div class="stat-label">Всего проектов</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="webProjects">0</div>
+                            <div class="stat-label">Веб-сайты</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="appProjects">0</div>
+                            <div class="stat-label">Приложения</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="designProjects">0</div>
+                            <div class="stat-label">Дизайн</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">Dis<span>Portfolio</span> Admin</div>
+                <p class="footer-text">Панель управления портфолио фронтенд разработчика</p>
+            </div>
+            <div class="copyright">
+                &copy; 2024 Districk Portfolio. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <script src="admin.js"></script>
+</body>
+</html>

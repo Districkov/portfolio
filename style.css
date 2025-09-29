@@ -169,6 +169,30 @@ section {
     box-shadow: 0 10px 25px rgba(124, 252, 0, 0.3);
 }
 
+/* Градиентные кнопки */
+.btn-gradient {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+    z-index: -1;
+}
+
+.btn-gradient:hover::before {
+    left: 100%;
+}
+
 /* =============================================
    ДИНАМИЧЕСКИЙ ФОН
    ============================================= */
@@ -364,15 +388,23 @@ section {
     align-items: center;
     z-index: 9999;
     transition: opacity 0.5s ease, visibility 0.5s ease;
+    opacity: 1 !important;
+    backdrop-filter: none;
 }
 
 .preloader.hidden {
-    opacity: 0;
+    opacity: 0 !important;
     visibility: hidden;
 }
 
 .loader {
     text-align: center;
+    background: var(--dark-light);
+    padding: 40px;
+    border-radius: 20px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    opacity: 1 !important;
 }
 
 .loader-text {
@@ -381,6 +413,7 @@ section {
     margin-bottom: 25px;
     font-weight: 600;
     animation: pulse 2s infinite;
+    opacity: 1 !important;
 }
 
 .loader-spinner {
@@ -391,11 +424,12 @@ section {
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto;
+    opacity: 1 !important;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); opacity: 1; }
+    100% { transform: rotate(360deg); opacity: 1; }
 }
 
 /* =============================================
@@ -488,6 +522,37 @@ nav ul li a.active {
     display: flex;
     align-items: center;
     gap: 15px;
+}
+
+/* Music Toggle in Header */
+.music-toggle-header {
+    background: var(--primary);
+    color: var(--dark);
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(124, 252, 0, 0.3);
+}
+
+.music-toggle-header:hover {
+    background: var(--primary-dark);
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 6px 20px rgba(124, 252, 0, 0.4);
+}
+
+.music-toggle-header.muted {
+    background: var(--gray);
+}
+
+.music-toggle-header.muted:hover {
+    background: #8b8b8b;
 }
 
 .theme-toggle {
@@ -1512,79 +1577,73 @@ footer {
     width: 65px;
     height: 65px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #7cfc00 0%, #b3ff66 100%);
-    border: 3px solid #0a0a0a;
-    color: #0a0a0a;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border: none;
+    color: var(--dark);
     font-size: 1.5rem;
     cursor: pointer;
-    box-shadow: 
-        0 8px 25px rgba(124, 252, 0, 0.6),
-        inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(124, 252, 0, 0.4);
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    opacity: 1;
-    text-decoration: none;
-    outline: none;
+    transition: var(--transition);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.chat-toggle-btn.visible {
+    opacity: 1 !important;
+    visibility: visible;
 }
 
 .chat-toggle-btn:hover {
     transform: scale(1.15) rotate(15deg);
-    box-shadow: 
-        0 12px 30px rgba(124, 252, 0, 0.8),
-        inset 0 2px 6px rgba(255, 255, 255, 0.4);
-    background: linear-gradient(135deg, #6ce000 0%, #a2ff33 100%);
-}
-
-.chat-toggle-btn:active {
-    transform: scale(1.1) rotate(10deg);
+    box-shadow: 0 12px 30px rgba(124, 252, 0, 0.5);
 }
 
 .chat-toggle-btn.pulse {
-    animation: strongPulse 2s infinite;
+    animation: pulse 2s infinite;
 }
 
-@keyframes strongPulse {
-    0%, 100% {
-        box-shadow: 
-            0 8px 25px rgba(124, 252, 0, 0.6),
-            inset 0 2px 4px rgba(255, 255, 255, 0.3);
+/* Typing indicator */
+.typing-indicator {
+    display: flex;
+    gap: 5px;
+    padding: 12px 16px;
+}
+
+.typing-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--gray);
+    animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
     }
-    50% {
-        box-shadow: 
-            0 8px 35px rgba(124, 252, 0, 0.9),
-            0 0 30px rgba(124, 252, 0, 0.5),
-            inset 0 2px 6px rgba(255, 255, 255, 0.4);
+    40% {
+        transform: scale(1);
+        opacity: 1;
     }
 }
 
-/* Для светлой темы */
-[data-theme="light"] .chat-toggle-btn {
-    background: linear-gradient(135deg, #7cfc00 0%, #b3ff66 100%);
-    border: 3px solid #ffffff;
-    color: #0a0a0a;
-    box-shadow: 
-        0 8px 25px rgba(124, 252, 0, 0.6),
-        inset 0 2px 4px rgba(255, 255, 255, 0.3);
-}
-
-[data-theme="light"] .chat-toggle-btn:hover {
-    background: linear-gradient(135deg, #6ce000 0%, #a2ff33 100%);
-    box-shadow: 
-        0 12px 30px rgba(124, 252, 0, 0.8),
-        inset 0 2px 6px rgba(255, 255, 255, 0.4);
-}
-
-/* Гарантируем непрозрачность во всех состояниях */
-.chat-toggle-btn,
-.chat-toggle-btn:hover,
-.chat-toggle-btn:active,
-.chat-toggle-btn:focus {
-    opacity: 1 !important;
-    background: linear-gradient(135deg, #7cfc00 0%, #b3ff66 100%);
-
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* Quick replies */
@@ -1613,90 +1672,27 @@ footer {
     transform: translateY(-2px);
 }
 
-/* =============================================
-   АДМИН ПАНЕЛИ
-   ============================================= */
-.admin-panel {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 10000;
-    backdrop-filter: blur(8px);
+/* Улучшенные быстрые ответы */
+.quick-replies.enhanced {
+    gap: 8px;
 }
 
-.admin-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--dark-light);
-    padding: 35px;
-    border-radius: 20px;
-    border: 2px solid var(--primary);
-    max-width: 500px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    z-index: 10001;
-    transition: var(--transition);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-.admin-content h3 {
-    margin-bottom: 25px;
-    color: var(--primary);
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: 700;
-}
-
-.admin-content .form-group {
-    margin-bottom: 20px;
-}
-
-.admin-content input,
-.admin-content select,
-.admin-content textarea {
-    width: 100%;
-    padding: 14px 18px;
-    border: 2px solid #2a2a2a;
-    border-radius: var(--border-radius);
-    background: var(--dark);
-    color: var(--light);
-    font-size: 1rem;
-    font-family: inherit;
-    transition: var(--transition);
-}
-
-.admin-content input:focus,
-.admin-content select:focus,
-.admin-content textarea:focus {
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(124, 252, 0, 0.1);
-}
-
-.admin-content textarea {
-    height: 100px;
-    resize: vertical;
-}
-
-.form-buttons {
+.quick-reply.enhanced {
     display: flex;
-    gap: 12px;
-    margin-top: 25px;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 15px;
+    font-size: 0.8rem;
 }
 
-.form-buttons .btn {
-    flex: 1;
+.quick-reply.enhanced i {
+    font-size: 0.7rem;
 }
 
-/* Admin Toggle Button */
-.admin-toggle-btn {
+/* =============================================
+   АДМИН КНОПКА ССЫЛКА
+   ============================================= */
+.admin-link-btn {
     position: fixed;
     bottom: 25px;
     left: 25px;
@@ -1714,19 +1710,20 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    text-decoration: none;
 }
 
-.admin-toggle-btn:hover {
+.admin-link-btn.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.admin-link-btn:hover {
     transform: scale(1.1);
     background: var(--primary-dark);
-}
-
-.admin-toggle-btn.locked {
-    background: var(--gray);
-}
-
-.admin-toggle-btn.unlocked {
-    background: var(--success);
+    box-shadow: 0 8px 25px rgba(124, 252, 0, 0.4);
 }
 
 /* =============================================
@@ -1810,6 +1807,18 @@ footer {
 }
 
 .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Улучшенная анимация появления */
+.fade-in-enhanced {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.fade-in-enhanced.visible {
     opacity: 1;
     transform: translateY(0);
 }
@@ -1909,6 +1918,24 @@ footer {
 }
 
 ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Улучшенный скроллбар для чата */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
     background: var(--primary-dark);
 }
 
@@ -2027,14 +2054,6 @@ footer {
         gap: 25px;
     }
     
-    .form-buttons {
-        flex-direction: column;
-    }
-    
-    .admin-content {
-        padding: 25px;
-    }
-    
     section {
         padding: 80px 0;
     }
@@ -2072,6 +2091,11 @@ footer {
         height: 55px;
         font-size: 1.3rem;
     }
+    
+    .admin-link-btn {
+        bottom: 170px;
+        left: 20px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2089,11 +2113,6 @@ footer {
     
     .services-grid {
         grid-template-columns: 1fr;
-    }
-    
-    .admin-content {
-        width: 95%;
-        padding: 20px;
     }
     
     .notification-content {
@@ -2148,6 +2167,13 @@ footer {
         height: 50px;
         font-size: 1.2rem;
     }
+    
+    .admin-link-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+        bottom: 160px;
+    }
 }
 
 /* Print styles */
@@ -2157,7 +2183,7 @@ footer {
     .preloader,
     .chat-assistant,
     .chat-toggle-btn,
-    .admin-toggle-btn {
+    .admin-link-btn {
         display: none !important;
     }
     
@@ -2166,105 +2192,35 @@ footer {
         color: black !important;
     }
 }
-/* =============================================
-   ПРЕЛОАДЕР - НЕПРОЗРАЧНЫЙ
-   ============================================= */
-.preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--dark);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-    opacity: 1 !important;
-    backdrop-filter: none;
+
+/* Анимация загрузки для изображений */
+.loading-image {
+    background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
 }
 
-.preloader.hidden {
-    opacity: 0 !important;
-    visibility: hidden;
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }
 
-.loader {
-    text-align: center;
-    background: var(--dark-light);
-    padding: 40px;
-    border-radius: 20px;
-    border: 2px solid var(--primary);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    opacity: 1 !important;
+/* Анимация для уведомлений */
+@keyframes slideInDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
-.loader-text {
-    color: var(--primary);
-    font-size: 1.25rem;
-    margin-bottom: 25px;
-    font-weight: 600;
-    animation: pulse 2s infinite;
-    opacity: 1 !important;
-}
-
-.loader-spinner {
-    width: 60px;
-    height: 60px;
-    border: 3px solid var(--dark-light);
-    border-top: 3px solid var(--primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-    opacity: 1 !important;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); opacity: 1; }
-    100% { transform: rotate(360deg); opacity: 1; }
-}
-
-/* =============================================
-   КНОПКИ - ПОКАЗ ПОСЛЕ ПРЕЛОАДЕРА
-   ============================================= */
-
-/* Изначально скрываем кнопки */
-.chat-toggle-btn,
-.admin-toggle-btn {
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0.8);
-}
-
-/* Класс для показа после прелоадера */
-.chat-toggle-btn.visible,
-.admin-toggle-btn.visible {
-    opacity: 1 !important;
-    visibility: visible;
-    transform: scale(1);
-    transition: all 0.5s ease;
-}
-
-/* AI кнопка с задержкой */
-.chat-toggle-btn.visible {
-    transition-delay: 0.3s;
-}
-
-/* Админ кнопка с задержкой */
-.admin-toggle-btn.visible {
-    transition-delay: 0.5s;
-}
-
-/* Пульсация для AI кнопки */
-.chat-toggle-btn.pulse {
-    animation: pulse 2s infinite;
-}
-
-/* Гарантируем непрозрачность */
-.chat-toggle-btn,
-.admin-toggle-btn,
-.chat-toggle-btn *,
-.admin-toggle-btn * {
-    opacity: 1 !important;
+.notification.slide-in {
+    animation: slideInDown 0.3s ease;
 }

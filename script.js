@@ -8,6 +8,11 @@ const CONFIG = {
     },
     theme: {
         current: 'dark'
+    },
+    music: {
+        enabled: true,
+        volume: 0.3,
+        currentTime: 0
     }
 };
 
@@ -15,96 +20,331 @@ let projects = [];
 let chatHistory = [];
 let threeScene, threeCamera, threeRenderer, threeObjects = [];
 let is3DMode = false;
+let musicProgressInterval;
+
+// Состояние приложения
+const APP_STATE = {
+    isInitialized: false,
+    components: {
+        music: false,
+        chat: false,
+        threejs: false,
+        background: false
+    }
+};
 
 // =============================================
-// ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
+// УЛУЧШЕННАЯ ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
 // =============================================
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
+    initializeEnhancedApp();
 });
 
-function initializeApp() {
-    // Сначала инициализируем динамический фон
-    initDynamicBackground();
+async function initializeEnhancedApp() {
+    try {
+        console.log('🚀 Starting enhanced portfolio initialization...');
+        
+        // Инициализируем компоненты последовательно
+        await initializeCoreComponents();
+        
+        // Инициализируем интерактивные компоненты
+        await initializeInteractiveComponents();
+        
+        // Загружаем данные
+        await loadApplicationData();
+        
+        // Запускаем анимации
+        initializeAnimations();
+        
+        // Показываем интерфейс
+        showUserInterface();
+        
+        APP_STATE.isInitialized = true;
+        console.log('✅ Portfolio initialized successfully');
+        
+    } catch (error) {
+        console.error('❌ Error during initialization:', error);
+        handleInitializationError(error);
+    }
+}
+
+// Инициализация основных компонентов
+async function initializeCoreComponents() {
+    return new Promise((resolve) => {
+        console.log('🔄 Initializing core components...');
+        
+        // Динамический фон (самый первый)
+        initDynamicBackground();
+        APP_STATE.components.background = true;
+        
+        // Загрузка проектов
+        loadEnhancedProjects();
+        
+        // Инициализация темы
+        initTheme();
+        
+        setTimeout(resolve, 100);
+    });
+}
+
+// Инициализация интерактивных компонентов
+async function initializeInteractiveComponents() {
+    return new Promise((resolve) => {
+        console.log('🔄 Initializing interactive components...');
+        
+        // Инициализация в правильном порядке
+        initInteractiveElements();
+        init3DPortfolio();
+        initEnhancedChatAssistant();
+        initEnhancedMusicPlayer();
+        initEventListeners();
+        initProjectModal();
+        initClickParticles();
+        initAchievements();
+        
+        setTimeout(resolve, 200);
+    });
+}
+
+// Загрузка данных приложения
+async function loadApplicationData() {
+    return new Promise((resolve) => {
+        console.log('📦 Loading application data...');
+        
+        renderEnhancedProjects();
+        initPortfolioFilters();
+        initEnhancedFadeAnimations();
+        
+        setTimeout(resolve, 150);
+    });
+}
+
+// Инициализация анимаций
+function initializeAnimations() {
+    console.log('🎬 Initializing animations...');
     
-    // Затем остальные компоненты
-    loadProjects();
-    checkAuth();
-    initTheme();
-    initInteractiveElements();
-    initProjectModal();
-    initClickParticles();
-    initAchievements();
-    initEventListeners();
-    renderProjects();
+    // Запускаем анимацию счетчиков
+    initCounters();
     
-    // Новые функции
-    init3DPortfolio();
-    initChatAssistant();
+    // Запускаем параллакс эффект
+    initParallax();
     
-    // Скрываем прелоадер и ПОСЛЕ этого показываем AI бота и админку
+    // Запускаем печатающий текст
+    initTypewriter();
+}
+
+// Показ пользовательского интерфейса
+function showUserInterface() {
+    console.log('👤 Showing user interface...');
+    
+    // Скрываем прелоадер
     setTimeout(() => {
         const preloader = document.getElementById('preloader');
         if (preloader) {
             preloader.classList.add('hidden');
             setTimeout(() => {
                 preloader.style.display = 'none';
-                // ПОСЛЕ скрытия прелоадера показываем элементы
-                showElementsAfterPreloader();
+                showButtonsAfterPreloader();
+                showWelcomeNotification();
             }, 500);
         }
     }, 1000);
 }
 
-// =============================================
-// ПОКАЗ ЭЛЕМЕНТОВ ПОСЛЕ ПРЕЛОАДЕРА
-// =============================================
-function showElementsAfterPreloader() {
-    // Показываем кнопку AI бота с анимацией
-    showAIBot();
+// Обработка ошибок инициализации
+function handleInitializationError(error) {
+    console.error('Initialization error:', error);
     
-    // Показываем кнопку админки
-    showAdminButton();
+    // Показываем сообщение об ошибке
+    showNotification('Произошла ошибка при загрузке портфолио. Пожалуйста, обновите страницу.', 'error');
     
-    console.log('All elements shown after preloader');
+    // Все равно пытаемся показать интерфейс
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.style.display = 'none';
+    }
+    
+    showButtonsAfterPreloader();
 }
 
-function showAIBot() {
-    const chatToggle = document.getElementById('chatToggle');
-    if (chatToggle) {
-        // Показываем кнопку
-        chatToggle.style.display = 'flex';
-        chatToggle.style.opacity = '0';
-        chatToggle.style.transform = 'scale(0.5)';
+// Приветственное уведомление
+function showWelcomeNotification() {
+    setTimeout(() => {
+        showNotification('Добро пожаловать в мое портфолио! 🚀', 'success');
         
-        // Анимация появления
+        // Показываем подсказку про AI помощника
         setTimeout(() => {
-            chatToggle.style.transition = 'all 0.5s ease';
-            chatToggle.style.opacity = '1';
-            chatToggle.style.transform = 'scale(1)';
-            
+            const chatToggle = document.getElementById('chatToggle');
+            if (chatToggle) {
+                showNotification('Нажмите на робота в правом нижнем углу для помощи!', 'info');
+            }
+        }, 2000);
+    }, 500);
+}
+
+// =============================================
+// ФУНКЦИИ ДЛЯ УПРАВЛЕНИЯ ВИДИМОСТЬЮ КНОПОК
+// =============================================
+function hideButtonsBeforeLoad() {
+    const chatToggle = document.getElementById('chatToggle');
+    const adminLinkBtn = document.getElementById('adminLinkBtn');
+    
+    if (chatToggle) {
+        chatToggle.style.opacity = '0';
+        chatToggle.style.visibility = 'hidden';
+        chatToggle.classList.remove('visible', 'pulse');
+    }
+    
+    if (adminLinkBtn) {
+        adminLinkBtn.style.opacity = '0';
+        adminLinkBtn.style.visibility = 'hidden';
+        adminLinkBtn.classList.remove('visible');
+    }
+    
+    console.log('Buttons hidden before preloader');
+}
+
+function showButtonsAfterPreloader() {
+    const chatToggle = document.getElementById('chatToggle');
+    const adminLinkBtn = document.getElementById('adminLinkBtn');
+    
+    // Показываем AI кнопку
+    if (chatToggle) {
+        chatToggle.style.display = 'flex';
+        setTimeout(() => {
+            chatToggle.classList.add('visible');
             // Добавляем пульсацию через секунду
             setTimeout(() => {
                 chatToggle.classList.add('pulse');
             }, 1000);
         }, 100);
     }
+    
+    // Показываем админ кнопку
+    if (adminLinkBtn) {
+        adminLinkBtn.style.display = 'flex';
+        setTimeout(() => {
+            adminLinkBtn.classList.add('visible');
+        }, 300);
+    }
+    
+    console.log('All buttons shown after preloader');
 }
 
-function showAdminButton() {
-    const adminToggleBtn = document.getElementById('adminToggleBtn');
-    if (adminToggleBtn) {
-        // Показываем кнопку
-        adminToggleBtn.style.display = 'flex';
-        adminToggleBtn.style.opacity = '0';
-        adminToggleBtn.style.transform = 'scale(0.5)';
+// =============================================
+// УЛУЧШЕННЫЙ МУЗЫКАЛЬНЫЙ ПЛЕЙЕР В HEADER
+// =============================================
+function initEnhancedMusicPlayer() {
+    const musicToggleHeader = document.getElementById('musicToggleHeader');
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    
+    if (!musicToggleHeader || !backgroundMusic) {
+        console.warn('Music player elements not found');
+        return;
+    }
+    
+    // Загружаем настройки музыки из localStorage
+    loadMusicSettings();
+    
+    // Устанавливаем начальную громкость
+    backgroundMusic.volume = CONFIG.music.volume;
+    
+    // Автоматически запускаем музыку при загрузке
+    setTimeout(() => {
+        if (CONFIG.music.enabled) {
+            backgroundMusic.play().catch(e => {
+                console.log('Auto-play failed, waiting for user interaction:', e);
+                // Показываем подсказку для пользователя
+                showNotification('Нажмите на кнопку музыки в шапке для включения звука', 'info');
+            });
+            updateMusicIcon(true);
+        }
+    }, 1000);
+    
+    // Переключение музыки
+    musicToggleHeader.addEventListener('click', function() {
+        CONFIG.music.enabled = !CONFIG.music.enabled;
         
-        // Анимация появления
-        setTimeout(() => {
-            adminToggleBtn.style.transition = 'all 0.5s ease';
-            adminToggleBtn.style.opacity = '1';
-            adminToggleBtn.style.transform = 'scale(1)';
-        }, 300);
+        if (CONFIG.music.enabled) {
+            backgroundMusic.play().catch(e => {
+                console.log('Audio play failed:', e);
+                CONFIG.music.enabled = false;
+                showNotification('Для воспроизведения музыки требуется взаимодействие с сайтом', 'error');
+            });
+            updateMusicIcon(true);
+            showNotification('Фоновая музыка включена 🎵', 'success');
+            showAchievement('musicEnabled');
+        } else {
+            backgroundMusic.pause();
+            updateMusicIcon(false);
+            showNotification('Фоновая музыка выключена 🔇', 'info');
+        }
+        
+        saveMusicSettings();
+    });
+    
+    // Автоповтор при окончании трека
+    backgroundMusic.addEventListener('ended', function() {
+        this.currentTime = 0;
+        if (CONFIG.music.enabled) {
+            this.play().catch(e => {
+                console.log('Auto-play after ended failed:', e);
+            });
+        }
+    });
+    
+    // Улучшенная обработка ошибок
+    backgroundMusic.addEventListener('error', function(e) {
+        console.error('Audio error:', e);
+        handleMusicError();
+    });
+    
+    APP_STATE.components.music = true;
+    console.log('🎵 Enhanced music player initialized in header');
+}
+
+// Обновление иконки музыки
+function updateMusicIcon(isPlaying) {
+    const musicToggleHeader = document.getElementById('musicToggleHeader');
+    if (!musicToggleHeader) return;
+    
+    const icon = musicToggleHeader.querySelector('i');
+    if (isPlaying) {
+        icon.className = 'fas fa-volume-up';
+        musicToggleHeader.classList.remove('muted');
+    } else {
+        icon.className = 'fas fa-volume-mute';
+        musicToggleHeader.classList.add('muted');
+    }
+}
+
+// Обработка ошибок музыки
+function handleMusicError() {
+    CONFIG.music.enabled = false;
+    updateMusicIcon(false);
+    showNotification('Не удалось загрузить музыку', 'error');
+}
+
+function loadMusicSettings() {
+    const savedSettings = localStorage.getItem('portfolioMusicSettings');
+    if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        CONFIG.music.enabled = settings.enabled !== undefined ? settings.enabled : true;
+        CONFIG.music.volume = settings.volume || 0.3;
+    }
+}
+
+function saveMusicSettings() {
+    localStorage.setItem('portfolioMusicSettings', JSON.stringify({
+        enabled: CONFIG.music.enabled,
+        volume: CONFIG.music.volume
+    }));
+}
+
+function toggleMusic() {
+    const musicToggleHeader = document.getElementById('musicToggleHeader');
+    if (musicToggleHeader) {
+        musicToggleHeader.click();
     }
 }
 
@@ -201,6 +441,12 @@ function init3DPortfolio() {
     }
     
     try {
+        // Проверяем наличие Three.js
+        if (typeof THREE === 'undefined') {
+            console.error('Three.js library not loaded');
+            return;
+        }
+        
         // Создаем сцену
         threeScene = new THREE.Scene();
         
@@ -228,6 +474,7 @@ function init3DPortfolio() {
         // Обработчик изменения размера
         window.addEventListener('resize', onWindowResize);
         
+        APP_STATE.components.threejs = true;
         console.log('3D Portfolio initialized successfully');
     } catch (error) {
         console.error('Error initializing 3D portfolio:', error);
@@ -327,9 +574,9 @@ function toggle3DMode() {
 }
 
 // =============================================
-// AI CHAT ASSISTANT
+// УЛУЧШЕННЫЙ AI CHAT ASSISTANT
 // =============================================
-function initChatAssistant() {
+function initEnhancedChatAssistant() {
     const chatToggle = document.getElementById('chatToggle');
     const chatClose = document.getElementById('chatClose');
     const chatSend = document.getElementById('chatSend');
@@ -341,15 +588,18 @@ function initChatAssistant() {
         return;
     }
     
+    // Убедимся, что чат изначально скрыт
+    if (chatAssistant) {
+        chatAssistant.style.display = 'none';
+        chatAssistant.classList.remove('active');
+    }
+    
     // Показываем/скрываем чат
     chatToggle.addEventListener('click', () => {
         const isActive = chatAssistant.classList.contains('active');
         
         if (isActive) {
-            chatAssistant.classList.remove('active');
-            setTimeout(() => {
-                chatAssistant.style.display = 'none';
-            }, 300);
+            closeChatAssistant();
         } else {
             chatAssistant.style.display = 'flex';
             setTimeout(() => {
@@ -360,12 +610,11 @@ function initChatAssistant() {
         }
     });
     
-    chatClose.addEventListener('click', () => {
-        chatAssistant.classList.remove('active');
-        setTimeout(() => {
-            chatAssistant.style.display = 'none';
-        }, 300);
-    });
+    if (chatClose) {
+        chatClose.addEventListener('click', () => {
+            closeChatAssistant();
+        });
+    }
     
     // Отправка сообщения
     function sendMessage() {
@@ -381,21 +630,45 @@ function initChatAssistant() {
         // Имитируем задержку ответа AI
         setTimeout(() => {
             removeTypingIndicator();
-            const response = generateAIResponse(message);
+            const response = generateEnhancedAIResponse(message);
             addMessage(response, 'bot');
             scrollChatToBottom();
         }, 1000 + Math.random() * 2000);
     }
     
-    chatSend.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
+    if (chatSend) {
+        chatSend.addEventListener('click', sendMessage);
+    }
+    
+    if (chatInput) {
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    }
+    
+    // Добавляем обработчик для Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && chatAssistant.classList.contains('active')) {
+            closeChatAssistant();
+        }
     });
     
     // Быстрые ответы
-    addQuickReplies();
+    addEnhancedQuickReplies();
     
-    console.log('Chat assistant initialized');
+    APP_STATE.components.chat = true;
+    console.log('🤖 Enhanced chat assistant initialized');
+}
+
+// Закрытие чата
+function closeChatAssistant() {
+    const chatAssistant = document.getElementById('chat-assistant');
+    if (chatAssistant) {
+        chatAssistant.classList.remove('active');
+        setTimeout(() => {
+            chatAssistant.style.display = 'none';
+        }, 300);
+    }
 }
 
 function addMessage(text, sender) {
@@ -462,82 +735,198 @@ function scrollChatToBottom() {
     }
 }
 
-function generateAIResponse(userMessage) {
-    const message = userMessage.toLowerCase();
-    
-    // База знаний AI помощника
-    const responses = {
-        skills: "Мои ключевые навыки: HTML/CSS (95%), JavaScript (90%), React (85%), Svelte (70%), UI/UX Design (75%). Я специализируюсь на создании современных веб-приложений с использованием передовых технологий.",
-        projects: "В моем портфолио представлены различные проекты: интернет-магазины, веб-приложения, UI/UX дизайн. Самые заметные проекты: Moscow RP (интернет-магазин), Pyrometer (веб-приложение), Astra GTA 5 RP (UI/UX дизайн).",
-        experience: "Я занимаюсь фронтенд разработкой более 2 лет. За это время завершил 10+ проектов и работал с 6+ довольными клиентами. Специализируюсь на создании отзывчивых и современных пользовательских интерфейсов.",
-        contact: "Вы можете связаться со мной через:\n• Email: ert34vh@gmail.com\n• Телефон: +7 (926) 718-55-52\n• Telegram: @districk\n• GitHub: Districkov\nБуду рад обсудить ваш проект!",
-        services: "Я предлагаю следующие услуги:\n• Веб-разработка (современные сайты и приложения)\n• Адаптивный дизайн (идеальное отображение на всех устройствах)\n• UI/UX дизайн (интуитивные и привлекательные интерфейсы)",
-        technology: "В работе использую: HTML5, CSS3, JavaScript (ES6+), React, Svelte, Three.js, Git. Также имею опыт с различными CSS-фреймворками и инструментами сборки.",
-        default: "Я могу рассказать о моих навыках, проектах, опыте работы, услугах или технологиях. Также могу помочь с навигацией по портфолио. Что вас интересует больше всего?"
-    };
-    
-    // Определяем интент сообщения
-    if (message.includes('навык') || message.includes('skill') || message.includes('умение') || message.includes('технолог')) {
-        return responses.skills;
-    } else if (message.includes('проект') || message.includes('работ') || message.includes('portfolio') || message.includes('кейс')) {
-        return responses.projects;
-    } else if (message.includes('опыт') || message.includes('experience') || message.includes('стаж') || message.includes('лет')) {
-        return responses.experience;
-    } else if (message.includes('контакт') || message.includes('связать') || message.includes('contact') || message.includes('телефон') || message.includes('email')) {
-        return responses.contact;
-    } else if (message.includes('услуг') || message.includes('service') || message.includes('предложен') || message.includes('делаешь')) {
-        return responses.services;
-    } else if (message.includes('технолог') || message.includes('stack') || message.includes('инструмент') || message.includes('используешь')) {
-        return responses.technology;
-    } else if (message.includes('привет') || message.includes('hello') || message.includes('hi') || message.includes('здравств')) {
-        return "Привет! 👋 Рад вас видеть в моем портфолио. Я AI-помощник, готовый рассказать о навыках, проектах и опыте разработчика. Чем могу помочь?";
-    } else if (message.includes('спасибо') || message.includes('thanks') || message.includes('thank you')) {
-        return "Пожалуйста! 😊 Всегда рад помочь. Если возникнут еще вопросы - обращайтесь!";
-    } else if (message.includes('пока') || message.includes('bye') || message.includes('до свидан')) {
-        return "До свидания! 👋 Буду рад помочь в будущем. Удачи!";
-    } else if (message.includes('помощь') || message.includes('help') || message.includes('что ты умеешь')) {
-        return "Я могу:\n• Рассказать о навыках и технологиях\n• Показать проекты из портфолио\n• Рассказать об опыте работы\n• Показать контакты\n• Рассказать об услугах\nЧто вас интересует?";
-    } else {
-        return responses.default;
-    }
-}
-
-function addQuickReplies() {
+// Улучшенные быстрые ответы
+function addEnhancedQuickReplies() {
     const chatMessages = document.getElementById('chatMessages');
     if (!chatMessages) return;
     
     const quickReplies = [
-        "Расскажи о навыках",
-        "Покажи проекты", 
-        "Опыт работы",
-        "Как связаться?",
-        "Какие услуги?",
-        "Какие технологии?"
+        { text: "Расскажи о навыках", icon: "fas fa-code" },
+        { text: "Покажи проекты", icon: "fas fa-briefcase" },
+        { text: "Опыт работы", icon: "fas fa-history" },
+        { text: "Как связаться?", icon: "fas fa-phone" },
+        { text: "Какие услуги?", icon: "fas fa-cogs" },
+        { text: "Управление музыкой", icon: "fas fa-music" }
     ];
     
     const quickRepliesDiv = document.createElement('div');
-    quickRepliesDiv.className = 'quick-replies';
+    quickRepliesDiv.className = 'quick-replies enhanced';
     
     quickReplies.forEach(reply => {
         const button = document.createElement('button');
-        button.className = 'quick-reply';
-        button.textContent = reply;
+        button.className = 'quick-reply enhanced';
+        button.innerHTML = `<i class="${reply.icon}"></i> ${reply.text}`;
         button.addEventListener('click', () => {
-            addMessage(reply, 'user');
-            showTypingIndicator();
-            
-            setTimeout(() => {
-                removeTypingIndicator();
-                const response = generateAIResponse(reply);
-                addMessage(response, 'bot');
-                scrollChatToBottom();
-            }, 800);
+            handleQuickReply(reply.text);
         });
         
         quickRepliesDiv.appendChild(button);
     });
     
-    chatMessages.appendChild(quickRepliesDiv);
+    // Добавляем только если нет других быстрых ответов
+    const existingReplies = chatMessages.querySelector('.quick-replies.enhanced');
+    if (!existingReplies) {
+        chatMessages.appendChild(quickRepliesDiv);
+    }
+}
+
+// Обработка быстрых ответов
+function handleQuickReply(replyText) {
+    addMessage(replyText, 'user');
+    showTypingIndicator();
+    
+    setTimeout(() => {
+        removeTypingIndicator();
+        const response = generateEnhancedAIResponse(replyText);
+        addMessage(response, 'bot');
+        scrollChatToBottom();
+    }, 800);
+}
+
+// Улучшенный AI ответ
+function generateEnhancedAIResponse(userMessage) {
+    const message = userMessage.toLowerCase();
+    
+    // Расширенная база знаний
+    const responses = {
+        skills: `Мои ключевые навыки включают:
+• HTML/CSS (95%) - Семантическая верстка, адаптивный дизайн
+• JavaScript (90%) - ES6+, асинхронное программирование
+• React (85%) - Хуки, Context API, React Router
+• Svelte (70%) - Современный компилируемый фреймворк
+• UI/UX Design (75%) - Прототипирование, дизайн-системы
+
+Также имею опыт работы с Three.js, WebGL и различными API.`,
+
+        projects: `В моем портфолио представлены различные проекты:
+
+🏪 **Moscow RP** - Интернет-магазин для GTA 5 RP
+• Технологии: HTML, CSS, JavaScript
+• Особенности: Корзина, фильтры, адаптивный дизайн
+
+📱 **Pyrometer** - Веб-приложение для управления задачами
+• Технологии: React, Node.js
+• Особенности: Совместная работа, уведомления
+
+🎨 **Astra GTA 5 RP** - UI/UX дизайн
+• Инструменты: Figma, Adobe XD
+• Особенности: Современный интерфейс, пользовательские flow`,
+
+        experience: `Мой опыт во фронтенд разработке:
+
+⏳ **2+ года** коммерческого опыта
+✅ **10+ завершенных проектов**
+👥 **6+ довольных клиентов**
+🎯 **Специализация**: Современные веб-приложения
+
+Работал над проектами различной сложности - от лендингов до сложных веб-приложений.`,
+
+        contact: `📧 **Email**: ert34vh@gmail.com
+📞 **Телефон**: +7 (926) 718-55-52
+✈️ **Telegram**: @districk
+💻 **GitHub**: Districkov
+
+📍 **Локация**: Москва
+🕒 **Доступность**: В течение 1-2 часов
+
+Буду рад обсудить ваш проект!`,
+
+        services: `🎯 **Мои услуги**:
+
+💻 **Веб-разработка**
+Создание современных веб-сайтов и приложений
+
+📱 **Адаптивный дизайн**
+Идеальное отображение на всех устройствах
+
+🎨 **UI/UX Дизайн**
+Интуитивные и привлекательные интерфейсы
+
+⚡ **Оптимизация**
+Ускорение загрузки и улучшение производительности`,
+
+        technology: `🛠 **Мой технический стек**:
+
+• **Frontend**: HTML5, CSS3, JavaScript (ES6+), React, Svelte
+• **Styling**: CSS Modules, Styled Components, SASS
+• **Tools**: Git, Webpack, Vite, Figma
+• **Libraries**: Three.js, Chart.js, различные API
+• **Methodologies**: БЭМ, Mobile First, Responsive Design`,
+
+        music: `🎵 **Управление музыкой**:
+
+Вы можете управлять фоновой музыкой с помощью кнопки в шапке сайта:
+
+🔊 **Включение/выключение** - кнопка с иконкой динамика в правом верхнем углу
+
+Музыка автоматически запускается при загрузке сайта и создает приятную атмосферу!`
+    };
+    
+    // Улучшенное определение интента
+    if (message.includes('навык') || message.includes('skill') || message.includes('умение') || message.includes('технолог') || message.includes('stack')) {
+        return responses.skills;
+    } else if (message.includes('проект') || message.includes('работ') || message.includes('portfolio') || message.includes('кейс') || message.includes('moscow') || message.includes('pyrometer')) {
+        return responses.projects;
+    } else if (message.includes('опыт') || message.includes('experience') || message.includes('стаж') || message.includes('лет') || message.includes('год')) {
+        return responses.experience;
+    } else if (message.includes('контакт') || message.includes('связать') || message.includes('contact') || message.includes('телефон') || message.includes('email') || message.includes('telegram')) {
+        return responses.contact;
+    } else if (message.includes('услуг') || message.includes('service') || message.includes('предложен') || message.includes('делаешь') || message.includes('предлагаешь')) {
+        return responses.services;
+    } else if (message.includes('технолог') || message.includes('stack') || message.includes('инструмент') || message.includes('используешь') || message.includes('библиотек')) {
+        return responses.technology;
+    } else if (message.includes('музык') || message.includes('sound') || message.includes('audio') || message.includes('звук') || message.includes('плеер')) {
+        return responses.music;
+    } else if (message.includes('привет') || message.includes('hello') || message.includes('hi') || message.includes('здравств') || message.includes('начать')) {
+        return `Привет! 👋 
+
+Я ваш AI-помощник в портфолио Districk. Рад вас видеть!
+
+Я могу рассказать о:
+• Навыках и технологиях 🛠
+• Проектах из портфолио 💼
+• Опыте работы 📈
+• Контактах для связи 📞
+• Предлагаемых услугах 🎯
+
+Также могу помочь с управлением музыкой 🎵 и навигацией по сайту.
+
+Что вас интересует?`;
+    } else if (message.includes('спасибо') || message.includes('thanks') || message.includes('thank you') || message.includes('благодар')) {
+        return `Пожалуйста! 😊 
+Всегда рад помочь. Если возникнут еще вопросы - обращайтесь!
+
+Не забудьте посмотреть мои проекты в разделе "Портфолио" 🚀`;
+    } else if (message.includes('пока') || message.includes('bye') || message.includes('до свидан') || message.includes('выход')) {
+        return `До свидания! 👋 
+Буду рад помочь в будущем. Удачи!
+
+P.S. Не забудьте посмотреть 3D режим - это довольно круто! 🎮`;
+    } else if (message.includes('помощь') || message.includes('help') || message.includes('что ты умеешь') || message.includes('команды')) {
+        return `🆘 **Что я умею**:
+
+• Рассказать о **навыках** и технологиях 🛠
+• Показать **проекты** из портфолио 💼
+• Рассказать об **опыте** работы 📈
+• Показать **контакты** для связи 📞
+• Рассказать об **услугах** 🎯
+• Помочь с **управлением музыкой** 🎵
+• Объяснить про **3D режим** 🎮
+
+Просто спросите о чем-нибудь из этого списка!`;
+    } else {
+        return `🤔 Кажется, я не совсем понял ваш вопрос.
+
+Я могу рассказать о:
+• Моих навыках и технологиях
+• Проектах в портфолио  
+• Опыте работы
+• Контактных данных
+• Предлагаемых услугах
+• Управлении музыкой на сайте
+
+Попробуйте задать вопрос по-другому или используйте кнопки быстрых ответов ниже!`;
+    }
 }
 
 // =============================================
@@ -682,18 +1071,28 @@ function initCounters() {
 }
 
 // =============================================
-// УПРАВЛЕНИЕ ПРОЕКТАМИ
+// УЛУЧШЕННОЕ УПРАВЛЕНИЕ ПРОЕКТАМИ
 // =============================================
-function loadProjects() {
+function loadEnhancedProjects() {
     const saved = localStorage.getItem('portfolioProjects');
-    projects = saved ? JSON.parse(saved) : getDefaultProjects();
+    projects = saved ? JSON.parse(saved) : getEnhancedDefaultProjects();
+    
+    // Добавляем проверку на валидность данных
+    projects = projects.filter(project => 
+        project && 
+        project.id && 
+        project.title && 
+        project.category
+    );
+    
+    console.log(`📁 Loaded ${projects.length} projects`);
 }
 
 function saveProjects() {
     localStorage.setItem('portfolioProjects', JSON.stringify(projects));
 }
 
-function getDefaultProjects() {
+function getEnhancedDefaultProjects() {
     return [
         {
             "id": 1,
@@ -702,7 +1101,9 @@ function getDefaultProjects() {
             "description": "Разработка современного интернет-магазина с корзиной, фильтрами и системой оплаты для проекта GTA 5 RP.",
             "image": "project1.png",
             "demoLink": "https://districkov.github.io/Moscow___RP/",
-            "githubLink": "https://github.com/Districkov/Moscow___RP"
+            "githubLink": "https://github.com/Districkov/Moscow___RP",
+            "technologies": ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
+            "features": ["Корзина покупок", "Фильтрация товаров", "Адаптивный дизайн", "Быстрый поиск"]
         },
         {
             "id": 2,
@@ -711,7 +1112,9 @@ function getDefaultProjects() {
             "description": "Веб-приложение для управления задачами и проектами с возможностью совместной работы.",
             "image": "project2.png",
             "demoLink": "https://pyrometer.tilda.ws/",
-            "githubLink": ""
+            "githubLink": "",
+            "technologies": ["React", "Node.js", "WebSocket", "REST API"],
+            "features": ["Управление задачами", "Совместная работа", "Аналитика", "Уведомления"]
         },
         {
             "id": 3,
@@ -720,46 +1123,46 @@ function getDefaultProjects() {
             "description": "Создание UI/UX дизайна для проекта по GTA 5 RP с современным интерфейсом.",
             "image": "project3.png",
             "demoLink": "https://www.figma.com/design/XbDdfTxHWDtniMplxhkvcu/Astra-Project-%7C-Figma?node-id=310-3098&p=f&t=t1uig8AF5IQqlOv7-0",
-            "githubLink": ""
+            "githubLink": "",
+            "technologies": ["Figma", "UI/UX Design", "Prototyping", "Design Systems"],
+            "features": ["Дизайн-система", "Прототипы", "User Flow", "Адаптивный дизайн"]
         }
     ];
 }
 
-function renderProjects() {
+function renderEnhancedProjects() {
     const grid = document.getElementById('portfolio-grid');
     if (!grid) return;
 
     if (projects.length === 0) {
-        grid.innerHTML = createEmptyState();
+        grid.innerHTML = createEnhancedEmptyState();
         return;
     }
 
-    grid.innerHTML = projects.map(project => createProjectCard(project)).join('');
-    initFadeAnimations();
+    grid.innerHTML = projects.map(project => createEnhancedProjectCard(project)).join('');
+    initEnhancedFadeAnimations();
 }
 
-function createEmptyState() {
+function createEnhancedEmptyState() {
     return `
         <div class="empty-state">
             <i class="fas fa-folder-open"></i>
             <h3>Пока нет проектов</h3>
-            <p>${CONFIG.admin.isLoggedIn ? 'Добавьте первый проект' : 'Свяжитесь с администратором'}</p>
-            ${CONFIG.admin.isLoggedIn ? 
-                '<button class="btn" onclick="toggleAdminPanel()"><i class="fas fa-plus"></i> Добавить проект</button>' : 
-                ''
-            }
+            <p>Свяжитесь с администратором для добавления проектов</p>
         </div>
     `;
 }
 
-function createProjectCard(project) {
+function createEnhancedProjectCard(project) {
     const icon = getCategoryIcon(project.category);
+    const technologies = project.technologies ? project.technologies.slice(0, 3).join(', ') : '';
     
     return `
-        <div class="portfolio-item fade-in" data-category="${project.category}">
+        <div class="portfolio-item fade-in-enhanced" data-category="${project.category}">
             <div class="portfolio-image ${project.image ? 'has-image' : ''}">
                 ${project.image ? 
-                    `<img src="images/${project.image}" alt="${project.title}" loading="lazy" onerror="this.style.display='none'">` : 
+                    `<img src="images/${project.image}" alt="${project.title}" loading="lazy" 
+                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI4MCIgdmlld0JveD0iMCAwIDQwMCAyODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjgwIiBmaWxsPSIjMmEyYTJhIi8+CjxwYXRoIGQ9Ik0yMDAgMTQwTDE2MCAxMDBIMTIwTDIwMCAxODBMMjgwIDEwMEgyNDBMMjAwIDE0MFoiIGZpbGw9IiM3Y2ZjMDAiLz4KPC9zdmc+'; this.alt='Изображение не загружено'">` : 
                     ''
                 }
                 <i class="fas fa-${icon} fa-icon"></i>
@@ -775,19 +1178,16 @@ function createProjectCard(project) {
                                 <i class="fab fa-github"></i>
                             </a>
                         ` : ''}
-                        ${CONFIG.admin.isLoggedIn ? `
-                            <button class="portfolio-link delete-btn" onclick="deleteProject(${project.id})" title="Удалить проект">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        ` : ''}
                     </div>
                 </div>
             </div>
             <div class="portfolio-content">
                 <h3>${project.title}</h3>
                 <p>${project.description}</p>
-                ${CONFIG.admin.isLoggedIn ? `
-                    <small class="project-id">ID: ${project.id}</small>
+                ${technologies ? `
+                    <div class="project-technologies">
+                        <small>Технологии: ${technologies}${project.technologies.length > 3 ? '...' : ''}</small>
+                    </div>
                 ` : ''}
             </div>
         </div>
@@ -803,106 +1203,25 @@ function getCategoryIcon(category) {
     return icons[category] || 'code';
 }
 
-function deleteProject(projectId) {
-    if (!CONFIG.admin.isLoggedIn) {
-        showNotification('Сначала войдите в систему!', 'error');
-        return;
-    }
+// Улучшенная анимация появления
+function initEnhancedFadeAnimations() {
+    const elements = document.querySelectorAll('.fade-in-enhanced');
     
-    if (confirm('Вы уверены, что хотите удалить этот проект?')) {
-        projects = projects.filter(project => project.id !== projectId);
-        saveProjects();
-        renderProjects();
-        initPortfolioFilters();
-        showNotification('Проект удален!', 'success');
-        
-        // Обновляем 3D сцену
-        if (is3DMode) {
-            update3DScene();
-        }
-    }
-}
-
-function update3DScene() {
-    // Очищаем старые объекты
-    threeObjects.forEach(object => {
-        threeScene.remove(object);
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     });
-    threeObjects = [];
     
-    // Создаем новые объекты
-    create3DProjectObjects();
-}
-
-// =============================================
-// АДМИН ПАНЕЛЬ И АУТЕНТИФИКАЦИЯ
-// =============================================
-function checkAuth() {
-    const savedAuth = localStorage.getItem('portfolioAuth');
-    if (savedAuth) {
-        CONFIG.admin.isLoggedIn = true;
-        updateAdminButton();
-    }
-}
-
-function updateAdminButton() {
-    const btn = document.getElementById('adminToggleBtn');
-    if (!btn) return;
-    
-    const icon = btn.querySelector('i');
-    
-    if (CONFIG.admin.isLoggedIn) {
-        btn.classList.remove('locked');
-        btn.classList.add('unlocked');
-        icon.className = 'fas fa-plus';
-        btn.title = 'Добавить проект';
-    } else {
-        btn.classList.remove('unlocked');
-        btn.classList.add('locked');
-        icon.className = 'fas fa-lock';
-        btn.title = 'Войти как администратор';
-    }
-}
-
-function toggleLoginPanel() {
-    const panel = document.getElementById('login-panel');
-    if (panel) {
-        if (panel.style.display === 'block') {
-            panel.style.display = 'none';
-        } else {
-            panel.style.display = 'block';
-        }
-    }
-}
-
-function toggleAdminPanel() {
-    if (!CONFIG.admin.isLoggedIn) {
-        toggleLoginPanel();
-        return;
-    }
-    
-    const panel = document.getElementById('admin-panel');
-    if (panel) {
-        if (panel.style.display === 'block') {
-            panel.style.display = 'none';
-        } else {
-            panel.style.display = 'block';
-        }
-    }
-}
-
-function logout() {
-    CONFIG.admin.isLoggedIn = false;
-    localStorage.removeItem('portfolioAuth');
-    updateAdminButton();
-    
-    const adminPanel = document.getElementById('admin-panel');
-    if (adminPanel) {
-        adminPanel.style.display = 'none';
-    }
-    
-    renderProjects();
-    showNotification('Вы вышли из системы.', 'success');
+    elements.forEach(element => {
+        observer.observe(element);
+    });
 }
 
 // =============================================
@@ -964,7 +1283,7 @@ function removeExistingNotifications() {
 
 function createNotification(message, type) {
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
+    notification.className = `notification ${type} slide-in`;
     notification.innerHTML = `
         <div class="notification-content">
             <div class="notification-message">${message}</div>
@@ -985,97 +1304,7 @@ function createNotification(message, type) {
 // ФОРМЫ
 // =============================================
 function initForms() {
-    initLoginForm();
-    initProjectForm();
     initContactForm();
-}
-
-function initLoginForm() {
-    const form = document.getElementById('login-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const password = document.getElementById('login-password').value;
-            
-            if (password === CONFIG.admin.password) {
-                CONFIG.admin.isLoggedIn = true;
-                localStorage.setItem('portfolioAuth', 'true');
-                updateAdminButton();
-                toggleLoginPanel();
-                this.reset();
-                showNotification('Успешный вход! Теперь вы можете добавлять проекты.', 'success');
-            } else {
-                showNotification('Неверный пароль!', 'error');
-            }
-        });
-    }
-}
-
-function initProjectForm() {
-    const form = document.getElementById('project-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!CONFIG.admin.isLoggedIn) {
-                showNotification('Сначала войдите в систему!', 'error');
-                toggleLoginPanel();
-                return;
-            }
-            
-            const formData = getFormData(this);
-            const newProject = createProjectFromForm(formData);
-            
-            if (!validateProject(newProject)) {
-                showNotification('Пожалуйста, заполните все обязательные поля!', 'error');
-                return;
-            }
-            
-            projects.push(newProject);
-            saveProjects();
-            renderProjects();
-            initPortfolioFilters();
-            
-            this.reset();
-            toggleAdminPanel();
-            showNotification('Проект успешно добавлен!', 'success');
-            
-            // Обновляем 3D сцену
-            if (is3DMode) {
-                update3DScene();
-            }
-        });
-    }
-}
-
-function getFormData(form) {
-    const data = {};
-    const elements = form.elements;
-    
-    for (let element of elements) {
-        if (element.name && element.type !== 'submit') {
-            data[element.name] = element.value.trim();
-        }
-    }
-    
-    return data;
-}
-
-function createProjectFromForm(data) {
-    return {
-        id: Date.now(),
-        title: data['project-title'],
-        category: data['project-category'],
-        description: data['project-description'],
-        image: data['project-image'],
-        demoLink: data['project-demo'] || '',
-        githubLink: data['project-github'] || ''
-    };
-}
-
-function validateProject(project) {
-    return project.title && project.category && project.description && project.image;
 }
 
 function initContactForm() {
@@ -1167,8 +1396,8 @@ function initProjectModal() {
         const projectElement = e.target.closest('.portfolio-item');
         if (!projectElement) return;
         
-        // Не открываем модалку при клике на ссылки или кнопки удаления
-        if (e.target.closest('a') || e.target.closest('.delete-btn')) return;
+        // Не открываем модалку при клике на ссылки
+        if (e.target.closest('a')) return;
         
         const projectId = projectElement.querySelector('.project-id')?.textContent.replace('ID: ', '');
         const project = projects.find(p => p.id == projectId);
@@ -1223,6 +1452,14 @@ function showProjectModal(project) {
                 <img src="images/${project.image}" alt="${project.title}" style="width: 100%; border-radius: 10px; margin: 20px 0;">
             </div>
             <p style="color: var(--gray); line-height: 1.6;">${project.description}</p>
+            ${project.technologies && project.technologies.length > 0 ? `
+                <div style="margin: 20px 0;">
+                    <h4 style="color: var(--light); margin-bottom: 10px;">Технологии:</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        ${project.technologies.map(tech => `<span style="background: var(--primary); color: var(--dark); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">${tech}</span>`).join('')}
+                    </div>
+                </div>
+            ` : ''}
             <div class="modal-links" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                 ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="btn"><i class="fas fa-external-link-alt"></i> Демо</a>` : ''}
                 ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> GitHub</a>` : ''}
@@ -1338,7 +1575,8 @@ function getAchievementName(id) {
         projectViewed: 'Любознательный',
         contactSent: 'Социальная активность',
         chatOpened: 'Диалог начат',
-        '3dMode': '3D Исследователь'
+        '3dMode': '3D Исследователь',
+        musicEnabled: 'Меломания'
     };
     
     return names[id] || 'Неизвестное достижение';
@@ -1478,7 +1716,6 @@ function initEventListeners() {
     initForms();
     initPortfolioFilters();
     initSkillBars();
-    initAdminButton();
     initClickOutside();
     
     // Обработчик для 3D режима
@@ -1494,44 +1731,29 @@ function initEventListeners() {
     });
 }
 
-function initAdminButton() {
-    const btn = document.getElementById('adminToggleBtn');
-    if (btn) {
-        btn.addEventListener('click', function() {
-            if (CONFIG.admin.isLoggedIn) {
-                toggleAdminPanel();
-            } else {
-                toggleLoginPanel();
-            }
-        });
-    }
-}
-
 function initClickOutside() {
     document.addEventListener('click', function(e) {
-        const loginPanel = document.getElementById('login-panel');
-        const adminPanel = document.getElementById('admin-panel');
-        const adminBtn = document.getElementById('adminToggleBtn');
-        
-        if (loginPanel && loginPanel.style.display === 'block' && 
-            !loginPanel.contains(e.target) && 
-            (!adminBtn || !adminBtn.contains(e.target))) {
-            loginPanel.style.display = 'none';
-        }
-        
-        if (adminPanel && adminPanel.style.display === 'block' && 
-            !adminPanel.contains(e.target) && 
-            (!adminBtn || !adminBtn.contains(e.target))) {
-            adminPanel.style.display = 'none';
+        // Закрытие чата при клике вне его
+        const chatAssistant = document.getElementById('chat-assistant');
+        if (chatAssistant && chatAssistant.classList.contains('active') && 
+            !chatAssistant.contains(e.target) && 
+            !e.target.closest('#chatToggle')) {
+            closeChatAssistant();
         }
     });
 }
 
 // =============================================
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ ОБРАТНОЙ СОВМЕСТИМОСТИ
 // =============================================
-window.toggleLoginPanel = toggleLoginPanel;
-window.toggleAdminPanel = toggleAdminPanel;
-window.logout = logout;
-window.deleteProject = deleteProject;
 window.toggle3DMode = toggle3DMode;
+window.toggleMusic = toggleMusic;
+
+// Для обратной совместимости
+window.initializeApp = initializeEnhancedApp;
+window.initChatAssistant = initEnhancedChatAssistant;
+window.initMusicPlayer = initEnhancedMusicPlayer;
+window.loadProjects = loadEnhancedProjects;
+window.renderProjects = renderEnhancedProjects;
+
+console.log('🚀 Portfolio JavaScript loaded successfully!');
