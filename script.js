@@ -12,6 +12,9 @@ const CONFIG = {
 };
 
 let projects = [];
+let chatHistory = [];
+let threeScene, threeCamera, threeRenderer, threeObjects = [];
+let is3DMode = false;
 
 // =============================================
 // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
@@ -35,14 +38,74 @@ function initializeApp() {
     initEventListeners();
     renderProjects();
     
-    // Скрываем прелоадер
+    // Новые функции
+    init3DPortfolio();
+    initChatAssistant();
+    
+    // Скрываем прелоадер и ПОСЛЕ этого показываем AI бота и админку
     setTimeout(() => {
         const preloader = document.getElementById('preloader');
         if (preloader) {
             preloader.classList.add('hidden');
-            setTimeout(() => preloader.style.display = 'none', 500);
+            setTimeout(() => {
+                preloader.style.display = 'none';
+                // ПОСЛЕ скрытия прелоадера показываем элементы
+                showElementsAfterPreloader();
+            }, 500);
         }
     }, 1000);
+}
+
+// =============================================
+// ПОКАЗ ЭЛЕМЕНТОВ ПОСЛЕ ПРЕЛОАДЕРА
+// =============================================
+function showElementsAfterPreloader() {
+    // Показываем кнопку AI бота с анимацией
+    showAIBot();
+    
+    // Показываем кнопку админки
+    showAdminButton();
+    
+    console.log('All elements shown after preloader');
+}
+
+function showAIBot() {
+    const chatToggle = document.getElementById('chatToggle');
+    if (chatToggle) {
+        // Показываем кнопку
+        chatToggle.style.display = 'flex';
+        chatToggle.style.opacity = '0';
+        chatToggle.style.transform = 'scale(0.5)';
+        
+        // Анимация появления
+        setTimeout(() => {
+            chatToggle.style.transition = 'all 0.5s ease';
+            chatToggle.style.opacity = '1';
+            chatToggle.style.transform = 'scale(1)';
+            
+            // Добавляем пульсацию через секунду
+            setTimeout(() => {
+                chatToggle.classList.add('pulse');
+            }, 1000);
+        }, 100);
+    }
+}
+
+function showAdminButton() {
+    const adminToggleBtn = document.getElementById('adminToggleBtn');
+    if (adminToggleBtn) {
+        // Показываем кнопку
+        adminToggleBtn.style.display = 'flex';
+        adminToggleBtn.style.opacity = '0';
+        adminToggleBtn.style.transform = 'scale(0.5)';
+        
+        // Анимация появления
+        setTimeout(() => {
+            adminToggleBtn.style.transition = 'all 0.5s ease';
+            adminToggleBtn.style.opacity = '1';
+            adminToggleBtn.style.transform = 'scale(1)';
+        }, 300);
+    }
 }
 
 // =============================================
@@ -125,6 +188,356 @@ function updateBackgroundForTheme() {
         if (grid) grid.style.opacity = '0.03';
         if (wave) wave.style.opacity = '0.05';
     }
+}
+
+// =============================================
+// 3D PORTFOLIO WITH WEBGL
+// =============================================
+function init3DPortfolio() {
+    const container = document.getElementById('threejs-container');
+    if (!container) {
+        console.log('3D container not found');
+        return;
+    }
+    
+    try {
+        // Создаем сцену
+        threeScene = new THREE.Scene();
+        
+        // Создаем камеру
+        threeCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        threeCamera.position.z = 5;
+        
+        // Создаем рендерер
+        threeRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        threeRenderer.setSize(window.innerWidth, window.innerHeight);
+        threeRenderer.setClearColor(0x000000, 0);
+        container.appendChild(threeRenderer.domElement);
+        
+        // Создаем 3D объекты для проектов
+        create3DProjectObjects();
+        
+        // Добавляем освещение
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+        threeScene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0x7cfc00, 0.8);
+        directionalLight.position.set(1, 1, 1);
+        threeScene.add(directionalLight);
+        
+        // Обработчик изменения размера
+        window.addEventListener('resize', onWindowResize);
+        
+        console.log('3D Portfolio initialized successfully');
+    } catch (error) {
+        console.error('Error initializing 3D portfolio:', error);
+    }
+}
+
+function create3DProjectObjects() {
+    if (!threeScene) return;
+    
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    
+    projects.forEach((project, index) => {
+        const material = new THREE.MeshPhongMaterial({ 
+            color: getProjectColor(project.category),
+            transparent: true,
+            opacity: 0.8
+        });
+        
+        const cube = new THREE.Mesh(geometry, material);
+        
+        // Располагаем кубы по кругу
+        const angle = (index / projects.length) * Math.PI * 2;
+        const radius = 3;
+        cube.position.x = Math.cos(angle) * radius;
+        cube.position.y = Math.sin(angle) * radius;
+        cube.position.z = (Math.random() - 0.5) * 2;
+        
+        // Сохраняем данные проекта
+        cube.userData = { 
+            project: project, 
+            originalY: cube.position.y,
+            originalX: cube.position.x,
+            originalZ: cube.position.z
+        };
+        
+        threeScene.add(cube);
+        threeObjects.push(cube);
+    });
+}
+
+function getProjectColor(category) {
+    const colors = {
+        web: 0x7cfc00,    // Green
+        app: 0x00bfff,    // Blue
+        design: 0xff69b4   // Pink
+    };
+    return colors[category] || 0xffffff;
+}
+
+function animate3DScene() {
+    if (!is3DMode || !threeScene || !threeCamera || !threeRenderer) return;
+    
+    requestAnimationFrame(animate3DScene);
+    
+    // Анимация вращения и плавания
+    threeObjects.forEach((object, index) => {
+        object.rotation.x += 0.01;
+        object.rotation.y += 0.01;
+        
+        // Плавающий эффект
+        const time = Date.now() * 0.001;
+        object.position.y = object.userData.originalY + Math.sin(time + index) * 0.3;
+        object.position.x = object.userData.originalX + Math.cos(time * 0.5 + index) * 0.2;
+    });
+    
+    threeRenderer.render(threeScene, threeCamera);
+}
+
+function onWindowResize() {
+    if (!threeCamera || !threeRenderer) return;
+    
+    threeCamera.aspect = window.innerWidth / window.innerHeight;
+    threeCamera.updateProjectionMatrix();
+    threeRenderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function toggle3DMode() {
+    is3DMode = !is3DMode;
+    const container = document.getElementById('threejs-container');
+    const toggleBtn = document.getElementById('toggle3D');
+    
+    if (is3DMode) {
+        container.classList.add('active');
+        if (toggleBtn) {
+            toggleBtn.innerHTML = '<i class="fas fa-cube"></i> 2D Режим';
+        }
+        showNotification('3D режим активирован!', 'success');
+        showAchievement('3dMode');
+        // Запускаем анимацию
+        animate3DScene();
+    } else {
+        container.classList.remove('active');
+        if (toggleBtn) {
+            toggleBtn.innerHTML = '<i class="fas fa-cube"></i> 3D Режим';
+        }
+    }
+}
+
+// =============================================
+// AI CHAT ASSISTANT
+// =============================================
+function initChatAssistant() {
+    const chatToggle = document.getElementById('chatToggle');
+    const chatClose = document.getElementById('chatClose');
+    const chatSend = document.getElementById('chatSend');
+    const chatInput = document.getElementById('chatInput');
+    const chatAssistant = document.getElementById('chat-assistant');
+    
+    if (!chatToggle) {
+        console.log('Chat assistant elements not found');
+        return;
+    }
+    
+    // Показываем/скрываем чат
+    chatToggle.addEventListener('click', () => {
+        const isActive = chatAssistant.classList.contains('active');
+        
+        if (isActive) {
+            chatAssistant.classList.remove('active');
+            setTimeout(() => {
+                chatAssistant.style.display = 'none';
+            }, 300);
+        } else {
+            chatAssistant.style.display = 'flex';
+            setTimeout(() => {
+                chatAssistant.classList.add('active');
+                chatInput.focus();
+                showAchievement('chatOpened');
+            }, 10);
+        }
+    });
+    
+    chatClose.addEventListener('click', () => {
+        chatAssistant.classList.remove('active');
+        setTimeout(() => {
+            chatAssistant.style.display = 'none';
+        }, 300);
+    });
+    
+    // Отправка сообщения
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+        
+        addMessage(message, 'user');
+        chatInput.value = '';
+        
+        // Показываем индикатор набора
+        showTypingIndicator();
+        
+        // Имитируем задержку ответа AI
+        setTimeout(() => {
+            removeTypingIndicator();
+            const response = generateAIResponse(message);
+            addMessage(response, 'bot');
+            scrollChatToBottom();
+        }, 1000 + Math.random() * 2000);
+    }
+    
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+    
+    // Быстрые ответы
+    addQuickReplies();
+    
+    console.log('Chat assistant initialized');
+}
+
+function addMessage(text, sender) {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+    
+    const avatar = sender === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+    
+    messageDiv.innerHTML = `
+        <div class="message-avatar">
+            ${avatar}
+        </div>
+        <div class="message-content">
+            <p>${text}</p>
+        </div>
+    `;
+    
+    chatMessages.appendChild(messageDiv);
+    scrollChatToBottom();
+    
+    // Сохраняем в историю
+    chatHistory.push({ sender, text, timestamp: new Date() });
+}
+
+function showTypingIndicator() {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+    
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot-message';
+    typingDiv.id = 'typing-indicator';
+    
+    typingDiv.innerHTML = `
+        <div class="message-avatar">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="message-content">
+            <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+    `;
+    
+    chatMessages.appendChild(typingDiv);
+    scrollChatToBottom();
+}
+
+function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typing-indicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+function scrollChatToBottom() {
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
+
+function generateAIResponse(userMessage) {
+    const message = userMessage.toLowerCase();
+    
+    // База знаний AI помощника
+    const responses = {
+        skills: "Мои ключевые навыки: HTML/CSS (95%), JavaScript (90%), React (85%), Svelte (70%), UI/UX Design (75%). Я специализируюсь на создании современных веб-приложений с использованием передовых технологий.",
+        projects: "В моем портфолио представлены различные проекты: интернет-магазины, веб-приложения, UI/UX дизайн. Самые заметные проекты: Moscow RP (интернет-магазин), Pyrometer (веб-приложение), Astra GTA 5 RP (UI/UX дизайн).",
+        experience: "Я занимаюсь фронтенд разработкой более 2 лет. За это время завершил 10+ проектов и работал с 6+ довольными клиентами. Специализируюсь на создании отзывчивых и современных пользовательских интерфейсов.",
+        contact: "Вы можете связаться со мной через:\n• Email: ert34vh@gmail.com\n• Телефон: +7 (926) 718-55-52\n• Telegram: @districk\n• GitHub: Districkov\nБуду рад обсудить ваш проект!",
+        services: "Я предлагаю следующие услуги:\n• Веб-разработка (современные сайты и приложения)\n• Адаптивный дизайн (идеальное отображение на всех устройствах)\n• UI/UX дизайн (интуитивные и привлекательные интерфейсы)",
+        technology: "В работе использую: HTML5, CSS3, JavaScript (ES6+), React, Svelte, Three.js, Git. Также имею опыт с различными CSS-фреймворками и инструментами сборки.",
+        default: "Я могу рассказать о моих навыках, проектах, опыте работы, услугах или технологиях. Также могу помочь с навигацией по портфолио. Что вас интересует больше всего?"
+    };
+    
+    // Определяем интент сообщения
+    if (message.includes('навык') || message.includes('skill') || message.includes('умение') || message.includes('технолог')) {
+        return responses.skills;
+    } else if (message.includes('проект') || message.includes('работ') || message.includes('portfolio') || message.includes('кейс')) {
+        return responses.projects;
+    } else if (message.includes('опыт') || message.includes('experience') || message.includes('стаж') || message.includes('лет')) {
+        return responses.experience;
+    } else if (message.includes('контакт') || message.includes('связать') || message.includes('contact') || message.includes('телефон') || message.includes('email')) {
+        return responses.contact;
+    } else if (message.includes('услуг') || message.includes('service') || message.includes('предложен') || message.includes('делаешь')) {
+        return responses.services;
+    } else if (message.includes('технолог') || message.includes('stack') || message.includes('инструмент') || message.includes('используешь')) {
+        return responses.technology;
+    } else if (message.includes('привет') || message.includes('hello') || message.includes('hi') || message.includes('здравств')) {
+        return "Привет! 👋 Рад вас видеть в моем портфолио. Я AI-помощник, готовый рассказать о навыках, проектах и опыте разработчика. Чем могу помочь?";
+    } else if (message.includes('спасибо') || message.includes('thanks') || message.includes('thank you')) {
+        return "Пожалуйста! 😊 Всегда рад помочь. Если возникнут еще вопросы - обращайтесь!";
+    } else if (message.includes('пока') || message.includes('bye') || message.includes('до свидан')) {
+        return "До свидания! 👋 Буду рад помочь в будущем. Удачи!";
+    } else if (message.includes('помощь') || message.includes('help') || message.includes('что ты умеешь')) {
+        return "Я могу:\n• Рассказать о навыках и технологиях\n• Показать проекты из портфолио\n• Рассказать об опыте работы\n• Показать контакты\n• Рассказать об услугах\nЧто вас интересует?";
+    } else {
+        return responses.default;
+    }
+}
+
+function addQuickReplies() {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+    
+    const quickReplies = [
+        "Расскажи о навыках",
+        "Покажи проекты", 
+        "Опыт работы",
+        "Как связаться?",
+        "Какие услуги?",
+        "Какие технологии?"
+    ];
+    
+    const quickRepliesDiv = document.createElement('div');
+    quickRepliesDiv.className = 'quick-replies';
+    
+    quickReplies.forEach(reply => {
+        const button = document.createElement('button');
+        button.className = 'quick-reply';
+        button.textContent = reply;
+        button.addEventListener('click', () => {
+            addMessage(reply, 'user');
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                removeTypingIndicator();
+                const response = generateAIResponse(reply);
+                addMessage(response, 'bot');
+                scrollChatToBottom();
+            }, 800);
+        });
+        
+        quickRepliesDiv.appendChild(button);
+    });
+    
+    chatMessages.appendChild(quickRepliesDiv);
 }
 
 // =============================================
@@ -402,7 +815,23 @@ function deleteProject(projectId) {
         renderProjects();
         initPortfolioFilters();
         showNotification('Проект удален!', 'success');
+        
+        // Обновляем 3D сцену
+        if (is3DMode) {
+            update3DScene();
+        }
     }
+}
+
+function update3DScene() {
+    // Очищаем старые объекты
+    threeObjects.forEach(object => {
+        threeScene.remove(object);
+    });
+    threeObjects = [];
+    
+    // Создаем новые объекты
+    create3DProjectObjects();
 }
 
 // =============================================
@@ -438,7 +867,11 @@ function updateAdminButton() {
 function toggleLoginPanel() {
     const panel = document.getElementById('login-panel');
     if (panel) {
-        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        if (panel.style.display === 'block') {
+            panel.style.display = 'none';
+        } else {
+            panel.style.display = 'block';
+        }
     }
 }
 
@@ -447,9 +880,14 @@ function toggleAdminPanel() {
         toggleLoginPanel();
         return;
     }
+    
     const panel = document.getElementById('admin-panel');
     if (panel) {
-        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        if (panel.style.display === 'block') {
+            panel.style.display = 'none';
+        } else {
+            panel.style.display = 'block';
+        }
     }
 }
 
@@ -602,6 +1040,11 @@ function initProjectForm() {
             this.reset();
             toggleAdminPanel();
             showNotification('Проект успешно добавлен!', 'success');
+            
+            // Обновляем 3D сцену
+            if (is3DMode) {
+                update3DScene();
+            }
         });
     }
 }
@@ -740,16 +1183,46 @@ function initProjectModal() {
 function showProjectModal(project) {
     const modal = document.createElement('div');
     modal.className = 'project-modal';
-    modal.style.display = 'block';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+    `;
     
     modal.innerHTML = `
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <h2>${project.title}</h2>
+        <div class="modal-content" style="
+            background: var(--dark-light);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            border: 2px solid var(--primary);
+        ">
+            <button class="modal-close" style="
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: none;
+                border: none;
+                color: var(--light);
+                font-size: 24px;
+                cursor: pointer;
+            ">&times;</button>
+            <h2 style="color: var(--light); margin-bottom: 20px;">${project.title}</h2>
             <div class="modal-image">
                 <img src="images/${project.image}" alt="${project.title}" style="width: 100%; border-radius: 10px; margin: 20px 0;">
             </div>
-            <p>${project.description}</p>
+            <p style="color: var(--gray); line-height: 1.6;">${project.description}</p>
             <div class="modal-links" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                 ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="btn"><i class="fas fa-external-link-alt"></i> Демо</a>` : ''}
                 ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> GitHub</a>` : ''}
@@ -863,7 +1336,9 @@ function getAchievementName(id) {
         firstVisit: 'Первое посещение',
         themeChanged: 'Исследователь тем',
         projectViewed: 'Любознательный',
-        contactSent: 'Социальная активность'
+        contactSent: 'Социальная активность',
+        chatOpened: 'Диалог начат',
+        '3dMode': '3D Исследователь'
     };
     
     return names[id] || 'Неизвестное достижение';
@@ -1006,9 +1481,16 @@ function initEventListeners() {
     initAdminButton();
     initClickOutside();
     
+    // Обработчик для 3D режима
+    const toggle3DBtn = document.getElementById('toggle3D');
+    if (toggle3DBtn) {
+        toggle3DBtn.addEventListener('click', toggle3DMode);
+    }
+    
     // Обработчик изменения размера окна
     window.addEventListener('resize', function() {
         initMobileMenu();
+        onWindowResize();
     });
 }
 
@@ -1052,3 +1534,4 @@ window.toggleLoginPanel = toggleLoginPanel;
 window.toggleAdminPanel = toggleAdminPanel;
 window.logout = logout;
 window.deleteProject = deleteProject;
+window.toggle3DMode = toggle3DMode;

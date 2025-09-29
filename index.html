@@ -6,10 +6,14 @@
     <title>Фронтенд разработчик | Портфолио</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <!-- Dynamic Background -->
     <div class="dynamic-bg" id="dynamic-bg"></div>
+
+    <!-- 3D Portfolio Canvas -->
+    <div id="threejs-container"></div>
 
     <!-- Page Progress -->
     <div class="page-progress">
@@ -59,6 +63,9 @@
                 <div class="hero-btns">
                     <a href="#portfolio" class="btn floating-btn">Мои работы</a>
                     <a href="#contact" class="btn btn-outline glow-effect">Связаться со мной</a>
+                    <button class="btn btn-outline" id="toggle3D">
+                        <i class="fas fa-cube"></i> 3D Режим
+                    </button>
                 </div>
                 <div class="hero-image parallax" data-speed="0.3">
                     <i class="fas fa-code"></i>
@@ -283,6 +290,37 @@
             </div>
         </div>
     </footer>
+
+    <!-- AI Chat Assistant -->
+    <div id="chat-assistant" class="chat-assistant">
+        <div class="chat-header">
+            <h3><i class="fas fa-robot"></i> AI Помощник</h3>
+            <button class="chat-close" id="chatClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <p>Привет! Я ваш AI помощник. Могу рассказать о навыках, проектах или помочь с навигацией по портфолио. Чем могу помочь?</p>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" placeholder="Задайте вопрос...">
+            <button id="chatSend">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle-btn" id="chatToggle">
+        <i class="fas fa-robot"></i>
+    </button>
 
     <!-- Login Panel -->
     <div id="login-panel" class="admin-panel" style="display: none;">
