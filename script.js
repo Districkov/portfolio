@@ -1,15 +1,55 @@
-// Настройки администратора
-const ADMIN_CONFIG = {
-    password: "admin123",
-    isLoggedIn: false
+// =============================================
+// КОНФИГУРАЦИЯ И ПЕРЕМЕННЫЕ
+// =============================================
+const CONFIG = {
+    admin: {
+        password: "admin123",
+        isLoggedIn: false
+    },
+    theme: {
+        current: 'dark'
+    }
 };
 
-// Функция для работы с localStorage
-function getProjectsFromStorage() {
-    const savedProjects = localStorage.getItem('portfolioProjects');
-    if (savedProjects) {
-        return JSON.parse(savedProjects);
-    }
+let projects = [];
+
+// =============================================
+// ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
+// =============================================
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+});
+
+function initializeApp() {
+    loadProjects();
+    checkAuth();
+    initTheme();
+    initEventListeners();
+    renderProjects();
+    
+    // Скрываем прелоадер
+    setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            preloader.classList.add('hidden');
+            setTimeout(() => preloader.style.display = 'none', 500);
+        }
+    }, 1000);
+}
+
+// =============================================
+// УПРАВЛЕНИЕ ПРОЕКТАМИ
+// =============================================
+function loadProjects() {
+    const saved = localStorage.getItem('portfolioProjects');
+    projects = saved ? JSON.parse(saved) : getDefaultProjects();
+}
+
+function saveProjects() {
+    localStorage.setItem('portfolioProjects', JSON.stringify(projects));
+}
+
+function getDefaultProjects() {
     return [
         {
             "id": 1,
@@ -41,110 +81,38 @@ function getProjectsFromStorage() {
     ];
 }
 
-function saveProjectsToStorage(projects) {
-    localStorage.setItem('portfolioProjects', JSON.stringify(projects));
-}
+function renderProjects() {
+    const grid = document.getElementById('portfolio-grid');
+    if (!grid) return;
 
-// Загружаем проекты
-let projects = getProjectsFromStorage();
-
-// Проверяем авторизацию при загрузке
-function checkAuth() {
-    const savedAuth = localStorage.getItem('portfolioAuth');
-    if (savedAuth) {
-        ADMIN_CONFIG.isLoggedIn = true;
-        updateAdminButton();
-    }
-}
-
-// Обновление кнопки администратора
-function updateAdminButton() {
-    const adminBtn = document.querySelector('.admin-toggle-btn');
-    if (!adminBtn) return;
-    
-    const icon = adminBtn.querySelector('i');
-    
-    if (ADMIN_CONFIG.isLoggedIn) {
-        adminBtn.classList.remove('locked');
-        adminBtn.classList.add('unlocked');
-        icon.className = 'fas fa-plus';
-        adminBtn.setAttribute('onclick', 'toggleAdmin()');
-    } else {
-        adminBtn.classList.remove('unlocked');
-        adminBtn.classList.add('locked');
-        icon.className = 'fas fa-lock';
-        adminBtn.setAttribute('onclick', 'toggleLogin()');
-    }
-}
-
-// Форма входа
-function toggleLogin() {
-    const loginPanel = document.getElementById('login-panel');
-    if (loginPanel) {
-        loginPanel.style.display = loginPanel.style.display === 'none' || loginPanel.style.display === '' ? 'block' : 'none';
-    }
-}
-
-// Форма добавления проектов
-function toggleAdmin() {
-    if (!ADMIN_CONFIG.isLoggedIn) {
-        toggleLogin();
-        return;
-    }
-    const adminPanel = document.getElementById('admin-panel');
-    if (adminPanel) {
-        adminPanel.style.display = adminPanel.style.display === 'none' || adminPanel.style.display === '' ? 'block' : 'none';
-    }
-}
-
-// Выход из системы
-function logout() {
-    ADMIN_CONFIG.isLoggedIn = false;
-    localStorage.removeItem('portfolioAuth');
-    updateAdminButton();
-    
-    const adminPanel = document.getElementById('admin-panel');
-    if (adminPanel) {
-        adminPanel.style.display = 'none';
-    }
-    
-    renderProjects(projects);
-    alert('Вы вышли из системы.');
-}
-
-// Функция для отрисовки проектов
-function renderProjects(projects) {
-    const portfolioGrid = document.getElementById('portfolio-grid');
-    if (!portfolioGrid) return;
-    
     if (projects.length === 0) {
-        portfolioGrid.innerHTML = `
-            <div style="text-align: center; color: var(--gray); padding: 60px 20px;">
-                <i class="fas fa-folder-open" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
-                <h3 style="margin-bottom: 10px;">Пока нет проектов</h3>
-                <p style="margin-bottom: 20px;">${ADMIN_CONFIG.isLoggedIn ? 'Добавьте первый проект' : 'Свяжитесь с администратором'}</p>
-                ${ADMIN_CONFIG.isLoggedIn ? 
-                    '<button class="btn" onclick="toggleAdmin()"><i class="fas fa-plus"></i> Добавить проект</button>' : 
-                    ''
-                }
-            </div>
-        `;
+        grid.innerHTML = createEmptyState();
         return;
     }
+
+    grid.innerHTML = projects.map(project => createProjectCard(project)).join('');
+    initFadeAnimations();
+}
+
+function createEmptyState() {
+    return `
+        <div class="empty-state">
+            <i class="fas fa-folder-open"></i>
+            <h3>Пока нет проектов</h3>
+            <p>${CONFIG.admin.isLoggedIn ? 'Добавьте первый проект' : 'Свяжитесь с администратором'}</p>
+            ${CONFIG.admin.isLoggedIn ? 
+                '<button class="btn" onclick="toggleAdminPanel()"><i class="fas fa-plus"></i> Добавить проект</button>' : 
+                ''
+            }
+        </div>
+    `;
+}
+
+function createProjectCard(project) {
+    const icon = getCategoryIcon(project.category);
     
-    portfolioGrid.innerHTML = '';
-
-    projects.forEach(project => {
-        const projectElement = document.createElement('div');
-        projectElement.className = 'portfolio-item';
-        projectElement.setAttribute('data-category', project.category);
-
-        let icon = 'code';
-        if (project.category === 'web') icon = 'globe';
-        if (project.category === 'app') icon = 'mobile-alt';
-        if (project.category === 'design') icon = 'palette';
-
-        projectElement.innerHTML = `
+    return `
+        <div class="portfolio-item fade-in" data-category="${project.category}">
             <div class="portfolio-image ${project.image ? 'has-image' : ''}">
                 ${project.image ? 
                     `<img src="images/${project.image}" alt="${project.title}" loading="lazy" onerror="this.style.display='none'">` : 
@@ -153,13 +121,17 @@ function renderProjects(projects) {
                 <i class="fas fa-${icon} fa-icon"></i>
                 <div class="portfolio-overlay">
                     <div class="portfolio-links">
-                        ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="portfolio-link">
-                            <i class="fas fa-external-link-alt"></i>
-                        </a>` : ''}
-                        ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="portfolio-link">
-                            <i class="fab fa-github"></i>
-                        </a>` : ''}
-                        ${ADMIN_CONFIG.isLoggedIn ? `
+                        ${project.demoLink ? `
+                            <a href="${project.demoLink}" target="_blank" class="portfolio-link" title="Демо">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        ` : ''}
+                        ${project.githubLink ? `
+                            <a href="${project.githubLink}" target="_blank" class="portfolio-link" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        ` : ''}
+                        ${CONFIG.admin.isLoggedIn ? `
                             <button class="portfolio-link delete-btn" onclick="deleteProject(${project.id})" title="Удалить проект">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -170,87 +142,392 @@ function renderProjects(projects) {
             <div class="portfolio-content">
                 <h3>${project.title}</h3>
                 <p>${project.description}</p>
-                ${ADMIN_CONFIG.isLoggedIn ? `
-                    <small style="color: var(--primary); font-size: 12px;">ID: ${project.id}</small>
+                ${CONFIG.admin.isLoggedIn ? `
+                    <small class="project-id">ID: ${project.id}</small>
                 ` : ''}
             </div>
-        `;
-
-        portfolioGrid.appendChild(projectElement);
-    });
+        </div>
+    `;
 }
 
-// Функция удаления проекта
+function getCategoryIcon(category) {
+    const icons = {
+        web: 'globe',
+        app: 'mobile-alt',
+        design: 'palette'
+    };
+    return icons[category] || 'code';
+}
+
 function deleteProject(projectId) {
-    if (!ADMIN_CONFIG.isLoggedIn) {
-        alert('Сначала войдите в систему!');
+    if (!CONFIG.admin.isLoggedIn) {
+        showNotification('Сначала войдите в систему!', 'error');
         return;
     }
     
     if (confirm('Вы уверены, что хотите удалить этот проект?')) {
         projects = projects.filter(project => project.id !== projectId);
-        saveProjectsToStorage(projects);
-        renderProjects(projects);
+        saveProjects();
+        renderProjects();
         initPortfolioFilters();
-        alert('Проект удален!');
+        showNotification('Проект удален!', 'success');
     }
 }
 
-// Инициализация фильтров портфолио
-function initPortfolioFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
+// =============================================
+// АДМИН ПАНЕЛЬ И АУТЕНТИФИКАЦИЯ
+// =============================================
+function checkAuth() {
+    const savedAuth = localStorage.getItem('portfolioAuth');
+    if (savedAuth) {
+        CONFIG.admin.isLoggedIn = true;
+        updateAdminButton();
+    }
+}
+
+function updateAdminButton() {
+    const btn = document.getElementById('adminToggleBtn');
+    if (!btn) return;
     
-    filterButtons.forEach(button => {
+    const icon = btn.querySelector('i');
+    
+    if (CONFIG.admin.isLoggedIn) {
+        btn.classList.remove('locked');
+        btn.classList.add('unlocked');
+        icon.className = 'fas fa-plus';
+        btn.title = 'Добавить проект';
+    } else {
+        btn.classList.remove('unlocked');
+        btn.classList.add('locked');
+        icon.className = 'fas fa-lock';
+        btn.title = 'Войти как администратор';
+    }
+}
+
+function toggleLoginPanel() {
+    const panel = document.getElementById('login-panel');
+    if (panel) {
+        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    }
+}
+
+function toggleAdminPanel() {
+    if (!CONFIG.admin.isLoggedIn) {
+        toggleLoginPanel();
+        return;
+    }
+    const panel = document.getElementById('admin-panel');
+    if (panel) {
+        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    }
+}
+
+function logout() {
+    CONFIG.admin.isLoggedIn = false;
+    localStorage.removeItem('portfolioAuth');
+    updateAdminButton();
+    
+    const adminPanel = document.getElementById('admin-panel');
+    if (adminPanel) {
+        adminPanel.style.display = 'none';
+    }
+    
+    renderProjects();
+    showNotification('Вы вышли из системы.', 'success');
+}
+
+// =============================================
+// ТЕМЫ
+// =============================================
+function initTheme() {
+    const savedTheme = localStorage.getItem('portfolioTheme') || 'dark';
+    setTheme(savedTheme);
+    
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+        updateThemeIcon(savedTheme);
+    }
+}
+
+function toggleTheme() {
+    const newTheme = CONFIG.theme.current === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    showNotification(`Тема изменена на ${newTheme === 'dark' ? 'тёмную' : 'светлую'}`, 'success');
+}
+
+function setTheme(theme) {
+    CONFIG.theme.current = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('portfolioTheme', theme);
+    updateThemeIcon(theme);
+}
+
+function updateThemeIcon(theme) {
+    const icon = document.querySelector('#themeToggle i');
+    if (icon) {
+        icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+}
+
+// =============================================
+// УВЕДОМЛЕНИЯ
+// =============================================
+function showNotification(message, type = 'info') {
+    removeExistingNotifications();
+    
+    const notification = createNotification(message, type);
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+function removeExistingNotifications() {
+    const existing = document.querySelectorAll('.notification');
+    existing.forEach(notification => notification.remove());
+}
+
+function createNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-message">${message}</div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    notification.querySelector('.notification-close').addEventListener('click', () => {
+        notification.remove();
+    });
+    
+    return notification;
+}
+
+// =============================================
+// ФОРМЫ
+// =============================================
+function initForms() {
+    initLoginForm();
+    initProjectForm();
+    initContactForm();
+}
+
+function initLoginForm() {
+    const form = document.getElementById('login-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('login-password').value;
+            
+            if (password === CONFIG.admin.password) {
+                CONFIG.admin.isLoggedIn = true;
+                localStorage.setItem('portfolioAuth', 'true');
+                updateAdminButton();
+                toggleLoginPanel();
+                this.reset();
+                showNotification('Успешный вход! Теперь вы можете добавлять проекты.', 'success');
+            } else {
+                showNotification('Неверный пароль!', 'error');
+            }
+        });
+    }
+}
+
+function initProjectForm() {
+    const form = document.getElementById('project-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!CONFIG.admin.isLoggedIn) {
+                showNotification('Сначала войдите в систему!', 'error');
+                toggleLoginPanel();
+                return;
+            }
+            
+            const formData = getFormData(this);
+            const newProject = createProjectFromForm(formData);
+            
+            if (!validateProject(newProject)) {
+                showNotification('Пожалуйста, заполните все обязательные поля!', 'error');
+                return;
+            }
+            
+            projects.push(newProject);
+            saveProjects();
+            renderProjects();
+            initPortfolioFilters();
+            
+            this.reset();
+            toggleAdminPanel();
+            showNotification('Проект успешно добавлен!', 'success');
+        });
+    }
+}
+
+function getFormData(form) {
+    const data = {};
+    const elements = form.elements;
+    
+    for (let element of elements) {
+        if (element.name && element.type !== 'submit') {
+            data[element.name] = element.value.trim();
+        }
+    }
+    
+    return data;
+}
+
+function createProjectFromForm(data) {
+    return {
+        id: Date.now(),
+        title: data['project-title'],
+        category: data['project-category'],
+        description: data['project-description'],
+        image: data['project-image'],
+        demoLink: data['project-demo'] || '',
+        githubLink: data['project-github'] || ''
+    };
+}
+
+function validateProject(project) {
+    return project.title && project.category && project.description && project.image;
+}
+
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            if (!validateContactForm(data)) {
+                showNotification('Пожалуйста, заполните все поля формы.', 'error');
+                return;
+            }
+            
+            simulateFormSubmission(this);
+        });
+    }
+}
+
+function validateContactForm(data) {
+    return data.name && data.email && data.subject && data.message;
+}
+
+function simulateFormSubmission(form) {
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+    submitBtn.disabled = true;
+    
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        form.reset();
+        showNotification('Спасибо! Ваше сообщение отправлено. Я свяжусь с вами в ближайшее время.', 'success');
+    }, 2000);
+}
+
+// =============================================
+// ФИЛЬТРЫ ПОРТФОЛИО
+// =============================================
+function initPortfolioFilters() {
+    const buttons = document.querySelectorAll('.filter-btn');
+    const items = document.querySelectorAll('.portfolio-item');
+    
+    buttons.forEach(button => {
         button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             
             const filterValue = button.getAttribute('data-filter');
-            
-            portfolioItems.forEach(item => {
-                if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
+            filterProjects(items, filterValue);
         });
     });
 }
 
-// Мобильное меню
+function filterProjects(items, filter) {
+    items.forEach(item => {
+        const category = item.getAttribute('data-category');
+        const shouldShow = filter === 'all' || category === filter;
+        
+        if (shouldShow) {
+            item.style.display = 'block';
+            setTimeout(() => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, 50);
+        } else {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                item.style.display = 'none';
+            }, 300);
+        }
+    });
+}
+
+// =============================================
+// НАВИГАЦИЯ И АНИМАЦИИ
+// =============================================
+function initNavigation() {
+    initMobileMenu();
+    initNavLinks();
+    initSmoothScroll();
+    initScrollSpy();
+}
+
 function initMobileMenu() {
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const menuBtn = document.getElementById('mobileMenuBtn');
     const navbar = document.getElementById('navbar');
     
-    if (mobileMenuBtn && navbar) {
-        mobileMenuBtn.addEventListener('click', () => {
-            navbar.classList.toggle('active');
-            mobileMenuBtn.innerHTML = navbar.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
-        });
+    if (menuBtn && navbar) {
+        // Показываем/скрываем меню только на мобильных устройствах
+        if (window.innerWidth <= 768) {
+            menuBtn.style.display = 'flex';
+            
+            menuBtn.addEventListener('click', () => {
+                navbar.classList.toggle('active');
+                menuBtn.innerHTML = navbar.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+        } else {
+            // На десктопе скрываем бургер-меню
+            menuBtn.style.display = 'none';
+            navbar.classList.remove('active');
+        }
     }
 }
 
-// Закрытие меню при клике на ссылку
 function initNavLinks() {
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             const navbar = document.getElementById('navbar');
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            if (navbar) {
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            
+            if (navbar && window.innerWidth <= 768) {
                 navbar.classList.remove('active');
-                if (mobileMenuBtn) {
-                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                if (menuBtn) {
+                    menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
                 }
             }
         });
     });
 }
 
-// Плавная прокрутка
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -259,10 +536,10 @@ function initSmoothScroll() {
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
             
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
+            const target = document.querySelector(targetId);
+            if (target) {
                 window.scrollTo({
-                    top: targetElement.offsetTop - 80,
+                    top: target.offsetTop - 80,
                     behavior: 'smooth'
                 });
             }
@@ -270,7 +547,6 @@ function initSmoothScroll() {
     });
 }
 
-// Активная навигация при прокрутке
 function initScrollSpy() {
     window.addEventListener('scroll', () => {
         const sections = document.querySelectorAll('section');
@@ -279,8 +555,7 @@ function initScrollSpy() {
         let current = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (scrollY >= (sectionTop - 100)) {
+            if (window.scrollY >= sectionTop - 100) {
                 current = section.getAttribute('id');
             }
         });
@@ -294,12 +569,11 @@ function initScrollSpy() {
     });
 }
 
-// Анимация появления элементов при прокрутке
 function initFadeAnimations() {
-    const fadeElements = document.querySelectorAll('.fade-in');
+    const elements = document.querySelectorAll('.fade-in');
     
-    const fadeInOnScroll = () => {
-        fadeElements.forEach(element => {
+    const checkVisibility = () => {
+        elements.forEach(element => {
             const elementTop = element.getBoundingClientRect().top;
             const elementVisible = 150;
             
@@ -309,16 +583,15 @@ function initFadeAnimations() {
         });
     };
     
-    window.addEventListener('scroll', fadeInOnScroll);
-    fadeInOnScroll();
+    window.addEventListener('scroll', checkVisibility);
+    checkVisibility();
 }
 
-// Анимация прогресс-баров
 function initSkillBars() {
-    const skillBars = document.querySelectorAll('.skill-progress');
+    const bars = document.querySelectorAll('.skill-progress');
     
-    const animateSkillBars = () => {
-        skillBars.forEach(bar => {
+    const animateBars = () => {
+        bars.forEach(bar => {
             const width = bar.getAttribute('data-width');
             const elementTop = bar.getBoundingClientRect().top;
             
@@ -328,146 +601,64 @@ function initSkillBars() {
         });
     };
     
-    window.addEventListener('scroll', animateSkillBars);
+    window.addEventListener('scroll', animateBars);
+    setTimeout(animateBars, 100);
 }
 
-// Обработка формы входа
-function initLoginForm() {
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const passwordInput = document.getElementById('login-password');
-            if (!passwordInput) return;
-            
-            const password = passwordInput.value;
-            
-            if (password === ADMIN_CONFIG.password) {
-                ADMIN_CONFIG.isLoggedIn = true;
-                localStorage.setItem('portfolioAuth', 'true');
-                updateAdminButton();
-                toggleLogin();
-                this.reset();
-                alert('Успешный вход! Теперь вы можете добавлять проекты.');
+// =============================================
+// ОБРАБОТЧИКИ СОБЫТИЙ
+// =============================================
+function initEventListeners() {
+    initNavigation();
+    initForms();
+    initPortfolioFilters();
+    initSkillBars();
+    initAdminButton();
+    initClickOutside();
+    
+    // Обработчик изменения размера окна
+    window.addEventListener('resize', function() {
+        initMobileMenu();
+    });
+}
+
+function initAdminButton() {
+    const btn = document.getElementById('adminToggleBtn');
+    if (btn) {
+        btn.addEventListener('click', function() {
+            if (CONFIG.admin.isLoggedIn) {
+                toggleAdminPanel();
             } else {
-                alert('Неверный пароль!');
+                toggleLoginPanel();
             }
         });
     }
 }
 
-// Обработка формы добавления проекта
-function initProjectForm() {
-    const projectForm = document.getElementById('project-form');
-    if (projectForm) {
-        projectForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!ADMIN_CONFIG.isLoggedIn) {
-                alert('Сначала войдите в систему!');
-                toggleLogin();
-                return;
-            }
-            
-            const titleInput = document.getElementById('project-title');
-            const categoryInput = document.getElementById('project-category');
-            const descriptionInput = document.getElementById('project-description');
-            const imageInput = document.getElementById('project-image');
-            const demoInput = document.getElementById('project-demo');
-            const githubInput = document.getElementById('project-github');
-            
-            if (!titleInput || !categoryInput || !descriptionInput || !imageInput) return;
-            
-            const newProject = {
-                id: Date.now(),
-                title: titleInput.value,
-                category: categoryInput.value,
-                description: descriptionInput.value,
-                image: imageInput.value,
-                demoLink: demoInput ? demoInput.value || '' : '',
-                githubLink: githubInput ? githubInput.value || '' : ''
-            };
-            
-            projects.push(newProject);
-            saveProjectsToStorage(projects);
-            renderProjects(projects);
-            initPortfolioFilters();
-            
-            this.reset();
-            toggleAdmin();
-            alert('Проект успешно добавлен!');
-        });
-    }
-}
-
-// Обработка формы контактов
-function initContactForm() {
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            // Форма будет отправляться через Formspree
-            // Показываем уведомление
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-            
-            if (!name || !email || !subject || !message) {
-                e.preventDefault();
-                alert('Пожалуйста, заполните все поля формы.');
-                return;
-            }
-            
-            // Показываем сообщение об успешной отправке
-            setTimeout(() => {
-                alert('Спасибо! Ваше сообщение отправлено. Я свяжусь с вами в ближайшее время.');
-            }, 1000);
-        });
-    }
-}
-
-// Закрытие админ-панелей при клике вне их
 function initClickOutside() {
     document.addEventListener('click', function(e) {
         const loginPanel = document.getElementById('login-panel');
         const adminPanel = document.getElementById('admin-panel');
-        const adminToggleBtn = document.querySelector('.admin-toggle-btn');
+        const adminBtn = document.getElementById('adminToggleBtn');
         
         if (loginPanel && loginPanel.style.display === 'block' && 
             !loginPanel.contains(e.target) && 
-            (!adminToggleBtn || !adminToggleBtn.contains(e.target))) {
+            (!adminBtn || !adminBtn.contains(e.target))) {
             loginPanel.style.display = 'none';
         }
         
         if (adminPanel && adminPanel.style.display === 'block' && 
             !adminPanel.contains(e.target) && 
-            (!adminToggleBtn || !adminToggleBtn.contains(e.target))) {
+            (!adminBtn || !adminBtn.contains(e.target))) {
             adminPanel.style.display = 'none';
         }
     });
 }
 
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
-    checkAuth();
-    initMobileMenu();
-    initNavLinks();
-    initSmoothScroll();
-    initScrollSpy();
-    initFadeAnimations();
-    initSkillBars();
-    initLoginForm();
-    initProjectForm();
-    initContactForm();
-    initClickOutside();
-    
-    renderProjects(projects);
-    initPortfolioFilters();
-});
-
-// Делаем функции глобальными
-window.toggleLogin = toggleLogin;
-window.toggleAdmin = toggleAdmin;
+// =============================================
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ
+// =============================================
+window.toggleLoginPanel = toggleLoginPanel;
+window.toggleAdminPanel = toggleAdminPanel;
 window.logout = logout;
 window.deleteProject = deleteProject;

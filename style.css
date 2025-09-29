@@ -16,6 +16,19 @@
     --light: #f8fafc;
     --gray: #a0a0a0;
     --success: #10b981;
+    --error: #ff4444;
+}
+
+/* Light Theme Variables */
+[data-theme="light"] {
+    --dark: #ffffff;
+    --dark-light: #f8f9fa;
+    --light: #0a0a0a;
+    --gray: #6c757d;
+    --primary: #7cfc00;
+    --primary-dark: #6ce000;
+    --primary-light: #a2ff33;
+    --secondary: #b3ff66;
 }
 
 html {
@@ -27,6 +40,7 @@ body {
     color: var(--light);
     line-height: 1.6;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -101,7 +115,53 @@ section {
     color: var(--dark);
 }
 
-/* Шапка */
+/* Preloader */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.preloader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader {
+    text-align: center;
+}
+
+.loader-text {
+    color: var(--primary);
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--dark-light);
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Header */
 header {
     background: rgba(10, 10, 10, 0.95);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -110,6 +170,12 @@ header {
     top: 0;
     z-index: 1000;
     backdrop-filter: blur(10px);
+    transition: background-color 0.3s ease;
+}
+
+[data-theme="light"] header {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
@@ -167,6 +233,33 @@ nav ul li a.active {
     color: var(--primary);
 }
 
+/* Header Actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.theme-toggle {
+    background: var(--primary);
+    color: var(--dark);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background: var(--primary-dark);
+    transform: scale(1.1);
+}
+
 .mobile-menu-btn {
     display: none;
     background: none;
@@ -174,15 +267,30 @@ nav ul li a.active {
     font-size: 24px;
     cursor: pointer;
     color: var(--light);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
 }
 
-/* Герой секция */
+.mobile-menu-btn:hover {
+    background: rgba(124, 252, 0, 0.1);
+}
+
+/* Hero Section */
 .hero {
     padding: 180px 0 100px;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     text-align: center;
     position: relative;
     overflow: hidden;
+    transition: background 0.3s ease;
+}
+
+[data-theme="light"] .hero {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
 }
 
 .hero::before {
@@ -257,9 +365,10 @@ nav ul li a.active {
     z-index: 2;
 }
 
-/* Секция о себе */
+/* About Section */
 .about {
     background: var(--dark-light);
+    transition: background-color 0.3s ease;
 }
 
 .about-content {
@@ -302,6 +411,11 @@ nav ul li a.active {
     background: #2a2a2a;
     border-radius: 5px;
     overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+[data-theme="light"] .skill-bar {
+    background: #e9ecef;
 }
 
 .skill-progress {
@@ -312,9 +426,10 @@ nav ul li a.active {
     transition: width 1.5s ease-in-out;
 }
 
-/* Секция услуг */
+/* Services Section */
 .services {
     background: var(--dark);
+    transition: background-color 0.3s ease;
 }
 
 .services-grid {
@@ -327,9 +442,13 @@ nav ul li a.active {
     background: var(--dark-light);
     border-radius: 10px;
     padding: 30px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     text-align: center;
     border-bottom: 4px solid transparent;
+}
+
+[data-theme="light"] .service-card {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
 .service-card:hover {
@@ -361,9 +480,10 @@ nav ul li a.active {
     color: var(--gray);
 }
 
-/* Секция портфолио */
+/* Portfolio Section */
 .portfolio {
     background: var(--dark-light);
+    transition: background-color 0.3s ease;
 }
 
 .portfolio-filters {
@@ -385,6 +505,10 @@ nav ul li a.active {
     color: var(--gray);
 }
 
+[data-theme="light"] .filter-btn {
+    background: #e9ecef;
+}
+
 .filter-btn.active {
     background: var(--primary);
     color: var(--dark);
@@ -400,9 +524,13 @@ nav ul li a.active {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease;
     position: relative;
     background: var(--dark);
+}
+
+[data-theme="light"] .portfolio-item {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
 .portfolio-item:hover {
@@ -490,7 +618,7 @@ nav ul li a.active {
 }
 
 .delete-btn:hover {
-    background: #ff4444 !important;
+    background: var(--error) !important;
     color: white !important;
 }
 
@@ -508,9 +636,37 @@ nav ul li a.active {
     font-size: 14px;
 }
 
-/* Секция контактов */
+.project-id {
+    color: var(--primary);
+    font-size: 12px;
+    display: block;
+    margin-top: 10px;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--gray);
+    padding: 60px 20px;
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    margin-bottom: 20px;
+}
+
+/* Contact Section */
 .contact {
     background: var(--dark);
+    transition: background-color 0.3s ease;
 }
 
 .contact-content {
@@ -605,10 +761,16 @@ nav ul li a.active {
     border: 1px solid #2a2a2a;
     border-radius: 6px;
     font-size: 16px;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, background-color 0.3s, color 0.3s;
     background: var(--dark-light);
     color: var(--light);
     font-family: inherit;
+}
+
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea,
+[data-theme="light"] .form-group select {
+    border-color: #dee2e6;
 }
 
 .form-group input:focus,
@@ -630,12 +792,17 @@ nav ul li a.active {
     display: block;
 }
 
-/* Подвал */
+/* Footer */
 footer {
     background: #0a0a0a;
     color: var(--light);
     padding: 60px 0 30px;
     text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+[data-theme="light"] footer {
+    background: #f8f9fa;
 }
 
 .footer-content {
@@ -664,9 +831,14 @@ footer {
     border-top: 1px solid #2a2a2a;
     color: var(--gray);
     font-size: 14px;
+    transition: border-color 0.3s ease;
 }
 
-/* Админ-панели */
+[data-theme="light"] .copyright {
+    border-top-color: #dee2e6;
+}
+
+/* Admin Panels */
 .admin-panel {
     display: none;
     position: fixed;
@@ -693,6 +865,7 @@ footer {
     max-height: 90vh;
     overflow-y: auto;
     z-index: 10001;
+    transition: background-color 0.3s ease;
 }
 
 .admin-content h3 {
@@ -717,6 +890,7 @@ footer {
     color: var(--light);
     font-size: 16px;
     font-family: inherit;
+    transition: background-color 0.3s ease;
 }
 
 .admin-content input:focus,
@@ -741,7 +915,7 @@ footer {
     flex: 1;
 }
 
-/* Кнопка админа */
+/* Admin Toggle Button */
 .admin-toggle-btn {
     position: fixed;
     bottom: 20px;
@@ -775,7 +949,67 @@ footer {
     background: var(--success);
 }
 
-/* Анимации */
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 10000;
+    background: var(--dark-light);
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
+    transition: background-color 0.3s ease;
+}
+
+.notification.success {
+    border-left-color: var(--success);
+}
+
+.notification.error {
+    border-left-color: var(--error);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    min-width: 300px;
+}
+
+.notification-message {
+    color: var(--light);
+    flex: 1;
+    margin-right: 15px;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.notification-close:hover {
+    color: var(--light);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Animations */
 .fade-in {
     opacity: 0;
     transform: translateY(30px);
@@ -787,7 +1021,7 @@ footer {
     transform: translateY(0);
 }
 
-/* Адаптивность */
+/* Mobile Responsive */
 @media (max-width: 992px) {
     .about-content {
         flex-direction: column;
@@ -808,9 +1042,15 @@ footer {
 
 @media (max-width: 768px) {
     .header-content {
-        padding: 15px 0;
+        padding: 12px 0;
     }
     
+    /* Показываем бургер-меню только на мобилках */
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    /* Скрываем обычную навигацию на мобилках */
     nav {
         position: fixed;
         top: 70px;
@@ -820,6 +1060,7 @@ footer {
         background: var(--dark-light);
         transition: left 0.3s;
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1001;
     }
     
     nav.active {
@@ -835,8 +1076,8 @@ footer {
         margin: 0 0 20px 0;
     }
     
-    .mobile-menu-btn {
-        display: block;
+    .header-actions {
+        gap: 10px;
     }
     
     .hero h1 {
@@ -867,6 +1108,11 @@ footer {
     section {
         padding: 80px 0;
     }
+    
+    .notification-content {
+        min-width: 250px;
+        padding: 12px 15px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -891,5 +1137,25 @@ footer {
     .admin-content {
         width: 95%;
         padding: 15px;
+    }
+    
+    .notification-content {
+        min-width: 200px;
+    }
+    
+    .header-actions {
+        gap: 8px;
+    }
+    
+    .theme-toggle {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    
+    .mobile-menu-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
     }
 }

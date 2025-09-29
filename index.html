@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Шапка -->
+    <!-- Dynamic Background -->
+    <div class="dynamic-bg" id="dynamic-bg"></div>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="loader">
+            <div class="loader-text">Загрузка...</div>
+            <div class="loader-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -22,14 +33,19 @@
                         <li><a href="#contact" class="nav-link">Контакты</a></li>
                     </ul>
                 </nav>
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" title="Переключить тему">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Герой секция -->
+    <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
@@ -46,7 +62,7 @@
         </div>
     </section>
 
-    <!-- Секция о себе -->
+    <!-- About Section -->
     <section class="about" id="about">
         <div class="container">
             <div class="section-title">
@@ -110,7 +126,7 @@
         </div>
     </section>
 
-    <!-- Секция услуг -->
+    <!-- Services Section -->
     <section class="services" id="services">
         <div class="container">
             <div class="section-title">
@@ -143,7 +159,7 @@
         </div>
     </section>
 
-    <!-- Секция портфолио -->
+    <!-- Portfolio Section -->
     <section class="portfolio" id="portfolio">
         <div class="container">
             <div class="section-title">
@@ -157,12 +173,12 @@
                 <button class="filter-btn" data-filter="design">Дизайн</button>
             </div>
             <div class="portfolio-grid" id="portfolio-grid">
-                <!-- Проекты загружаются динамически из JavaScript -->
+                <!-- Projects loaded dynamically -->
             </div>
         </div>
     </section>
 
-    <!-- Секция контактов -->
+    <!-- Contact Section -->
     <section class="contact" id="contact">
         <div class="container">
             <div class="section-title">
@@ -202,7 +218,7 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form id="contactForm" action="https://formspree.io/f/xeorajek" method="POST">
+                    <form id="contactForm">
                         <div class="form-group">
                             <label for="name">Ваше имя</label>
                             <input type="text" id="name" name="name" required>
@@ -219,14 +235,16 @@
                             <label for="message">Сообщение</label>
                             <textarea id="message" name="message" required></textarea>
                         </div>
-                        <button type="submit" class="btn">Отправить сообщение</button>
+                        <button type="submit" class="btn" id="submitBtn">
+                            <i class="fas fa-paper-plane"></i> Отправить сообщение
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Подвал -->
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -247,7 +265,7 @@
         </div>
     </footer>
 
-    <!-- Форма входа -->
+    <!-- Login Panel -->
     <div id="login-panel" class="admin-panel" style="display: none;">
         <div class="admin-content">
             <h3>Вход для администратора</h3>
@@ -257,13 +275,13 @@
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn">Войти</button>
-                    <button type="button" onclick="toggleLogin()" class="btn btn-outline">Отмена</button>
+                    <button type="button" class="btn btn-outline" onclick="toggleLoginPanel()">Отмена</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Админ-панель для добавления проектов -->
+    <!-- Admin Panel -->
     <div id="admin-panel" class="admin-panel" style="display: none;">
         <div class="admin-content">
             <h3>Добавить новый проект</h3>
@@ -294,16 +312,17 @@
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn">Добавить проект</button>
-                    <button type="button" onclick="toggleAdmin()" class="btn btn-outline">Закрыть</button>
+                    <button type="button" class="btn btn-outline" onclick="toggleAdminPanel()">Закрыть</button>
                 </div>
-                <button type="button" onclick="logout()" class="btn btn-outline" style="margin-top: 10px; width: 100%;">
+                <button type="button" class="btn btn-outline" onclick="logout()" style="margin-top: 10px; width: 100%;">
                     <i class="fas fa-sign-out-alt"></i> Выйти
                 </button>
             </form>
         </div>
     </div>
 
-    <button class="admin-toggle-btn locked">
+    <!-- Admin Toggle Button -->
+    <button class="admin-toggle-btn locked" id="adminToggleBtn" title="Войти как администратор">
         <i class="fas fa-lock"></i>
     </button>
 
