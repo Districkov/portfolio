@@ -11,6 +11,11 @@
     <!-- Dynamic Background -->
     <div class="dynamic-bg" id="dynamic-bg"></div>
 
+    <!-- Page Progress -->
+    <div class="page-progress">
+        <div class="progress-bar"></div>
+    </div>
+
     <!-- Preloader -->
     <div class="preloader" id="preloader">
         <div class="loader">
@@ -49,13 +54,13 @@
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
-                <h1>Привет, я <span>Districk</span></h1>
+                <h1 class="typewriter">Привет, я <span>Districk</span></h1>
                 <p>Фронтенд разработчик с опытом создания современных веб-приложений</p>
                 <div class="hero-btns">
-                    <a href="#portfolio" class="btn">Мои работы</a>
-                    <a href="#contact" class="btn btn-outline">Связаться со мной</a>
+                    <a href="#portfolio" class="btn floating-btn">Мои работы</a>
+                    <a href="#contact" class="btn btn-outline glow-effect">Связаться со мной</a>
                 </div>
-                <div class="hero-image">
+                <div class="hero-image parallax" data-speed="0.3">
                     <i class="fas fa-code"></i>
                 </div>
             </div>
@@ -73,6 +78,20 @@
                 <div class="about-text">
                     <h2>Я фронтенд разработчик из Москвы</h2>
                     <p>Занимаюсь разработкой пользовательских интерфейсов уже более 2 лет. Специализируюсь на создании современных, отзывчивых веб-приложений с использованием React, Svelte и чистого JavaScript.</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="counter" data-target="10">0</div>
+                            <span>Завершенных проектов</span>
+                        </div>
+                        <div class="stat-item">
+                            <div class="counter" data-target="2">0</div>
+                            <span>Года опыта</span>
+                        </div>
+                        <div class="stat-item">
+                            <div class="counter" data-target="6">0</div>
+                            <span>Довольных клиентов</span>
+                        </div>
+                    </div>
                     <a href="#contact" class="btn">Связаться со мной</a>
                 </div>
                 <div class="about-skills">

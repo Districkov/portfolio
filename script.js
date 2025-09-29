@@ -21,9 +21,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
+    // Сначала инициализируем динамический фон
+    initDynamicBackground();
+    
+    // Затем остальные компоненты
     loadProjects();
     checkAuth();
     initTheme();
+    initInteractiveElements();
+    initProjectModal();
+    initClickParticles();
+    initAchievements();
     initEventListeners();
     renderProjects();
     
@@ -35,6 +43,229 @@ function initializeApp() {
             setTimeout(() => preloader.style.display = 'none', 500);
         }
     }, 1000);
+}
+
+// =============================================
+// ДИНАМИЧЕСКИЙ ФОН
+// =============================================
+function initDynamicBackground() {
+    const dynamicBg = document.getElementById('dynamic-bg');
+    if (!dynamicBg) {
+        console.error('Dynamic background element not found!');
+        return;
+    }
+
+    // Очищаем существующие элементы
+    dynamicBg.innerHTML = '';
+
+    // Создаем контейнер для частиц
+    const particlesContainer = document.createElement('div');
+    particlesContainer.className = 'particles-container';
+    
+    // Добавляем частицы
+    for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'bg-particle';
+        
+        // Случайные параметры для разнообразия
+        const size = Math.random() * 100 + 50;
+        const top = Math.random() * 100;
+        const left = Math.random() * 100;
+        const delay = Math.random() * 20;
+        const duration = Math.random() * 30 + 20;
+        const opacity = Math.random() * 0.1 + 0.05;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.top = `${top}%`;
+        particle.style.left = `${left}%`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.opacity = opacity;
+        
+        // Добавляем пульсацию для некоторых частиц
+        if (i % 4 === 0) {
+            particle.classList.add('bg-pulse');
+        }
+        
+        particlesContainer.appendChild(particle);
+    }
+
+    // Добавляем сетку
+    const grid = document.createElement('div');
+    grid.className = 'bg-grid';
+    
+    // Добавляем волны
+    const wave = document.createElement('div');
+    wave.className = 'bg-wave';
+
+    // Добавляем все элементы в фон
+    dynamicBg.appendChild(particlesContainer);
+    dynamicBg.appendChild(grid);
+    dynamicBg.appendChild(wave);
+
+    console.log('Dynamic background initialized with', document.querySelectorAll('.bg-particle').length, 'particles');
+}
+
+function updateBackgroundForTheme() {
+    const particles = document.querySelectorAll('.bg-particle');
+    const grid = document.querySelector('.bg-grid');
+    const wave = document.querySelector('.bg-wave');
+    
+    if (CONFIG.theme.current === 'light') {
+        particles.forEach(particle => {
+            particle.style.opacity = '0.03';
+        });
+        if (grid) grid.style.opacity = '0.01';
+        if (wave) wave.style.opacity = '0.02';
+    } else {
+        particles.forEach(particle => {
+            particle.style.opacity = '0.08';
+        });
+        if (grid) grid.style.opacity = '0.03';
+        if (wave) wave.style.opacity = '0.05';
+    }
+}
+
+// =============================================
+// ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ
+// =============================================
+function initInteractiveElements() {
+    // Параллакс эффект для фона
+    initParallax();
+    
+    // Анимация печатающего текста
+    initTypewriter();
+    
+    // Интерактивные навыки
+    initInteractiveSkills();
+    
+    // hover эффекты для карточек
+    initCardHoverEffects();
+    
+    // Прогресс загрузки страницы
+    initPageProgress();
+    
+    // Анимация счетчиков
+    initCounters();
+}
+
+// Параллакс эффект
+function initParallax() {
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallaxElements = document.querySelectorAll('.parallax');
+        
+        parallaxElements.forEach(element => {
+            const speed = element.dataset.speed || 0.5;
+            element.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+    });
+}
+
+// Эффект печатающего текста
+function initTypewriter() {
+    const heroTitle = document.querySelector('.hero h1');
+    if (!heroTitle) return;
+    
+    const originalText = heroTitle.textContent;
+    heroTitle.textContent = '';
+    heroTitle.style.borderRight = '2px solid var(--primary)';
+    
+    let i = 0;
+    
+    function typeWriter() {
+        if (i < originalText.length) {
+            heroTitle.textContent += originalText.charAt(i);
+            i++;
+            setTimeout(typeWriter, 100);
+        } else {
+            heroTitle.style.borderRight = 'none';
+        }
+    }
+    
+    // Запускаем после загрузки
+    setTimeout(typeWriter, 1000);
+}
+
+// Интерактивные навыки
+function initInteractiveSkills() {
+    const skills = document.querySelectorAll('.skill-item');
+    
+    skills.forEach(skill => {
+        skill.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+            this.style.transition = 'transform 0.3s ease';
+        });
+        
+        skill.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+}
+
+// Эффекты при наведении на карточки
+function initCardHoverEffects() {
+    const cards = document.querySelectorAll('.service-card, .portfolio-item');
+    
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.boxShadow = '0 20px 40px rgba(124, 252, 0, 0.2)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.boxShadow = '';
+        });
+    });
+}
+
+// Прогресс загрузки страницы
+function initPageProgress() {
+    const progressBar = document.querySelector('.progress-bar');
+    if (!progressBar) return;
+    
+    window.addEventListener('scroll', () => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.pageYOffset;
+        const progress = (scrollTop / (documentHeight - windowHeight)) * 100;
+        
+        progressBar.style.width = progress + '%';
+    });
+}
+
+// Анимация счетчиков
+function initCounters() {
+    const counters = document.querySelectorAll('.counter');
+    
+    counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += step;
+            if (current < target) {
+                counter.textContent = Math.ceil(current);
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target;
+            }
+        };
+        
+        // Запускаем когда элемент в зоне видимости
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    updateCounter();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        
+        observer.observe(counter);
+    });
 }
 
 // =============================================
@@ -253,6 +484,8 @@ function initTheme() {
 function toggleTheme() {
     const newTheme = CONFIG.theme.current === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
+    updateBackgroundForTheme();
+    showAchievement('themeChanged');
     showNotification(`Тема изменена на ${newTheme === 'dark' ? 'тёмную' : 'светлую'}`, 'success');
 }
 
@@ -436,6 +669,7 @@ function simulateFormSubmission(form) {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         form.reset();
+        showAchievement('contactSent');
         showNotification('Спасибо! Ваше сообщение отправлено. Я свяжусь с вами в ближайшее время.', 'success');
     }, 2000);
 }
@@ -477,6 +711,162 @@ function filterProjects(items, filter) {
             }, 300);
         }
     });
+}
+
+// =============================================
+// МОДАЛЬНОЕ ОКНО ДЛЯ ПРОЕКТОВ
+// =============================================
+function initProjectModal() {
+    const portfolioGrid = document.getElementById('portfolio-grid');
+    if (!portfolioGrid) return;
+    
+    portfolioGrid.addEventListener('click', function(e) {
+        const projectElement = e.target.closest('.portfolio-item');
+        if (!projectElement) return;
+        
+        // Не открываем модалку при клике на ссылки или кнопки удаления
+        if (e.target.closest('a') || e.target.closest('.delete-btn')) return;
+        
+        const projectId = projectElement.querySelector('.project-id')?.textContent.replace('ID: ', '');
+        const project = projects.find(p => p.id == projectId);
+        
+        if (project) {
+            showProjectModal(project);
+            showAchievement('projectViewed');
+        }
+    });
+}
+
+function showProjectModal(project) {
+    const modal = document.createElement('div');
+    modal.className = 'project-modal';
+    modal.style.display = 'block';
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2>${project.title}</h2>
+            <div class="modal-image">
+                <img src="images/${project.image}" alt="${project.title}" style="width: 100%; border-radius: 10px; margin: 20px 0;">
+            </div>
+            <p>${project.description}</p>
+            <div class="modal-links" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                ${project.demoLink ? `<a href="${project.demoLink}" target="_blank" class="btn"><i class="fas fa-external-link-alt"></i> Демо</a>` : ''}
+                ${project.githubLink ? `<a href="${project.githubLink}" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> GitHub</a>` : ''}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Закрытие модального окна
+    modal.querySelector('.modal-close').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // Закрытие по ESC
+    document.addEventListener('keydown', function closeModal(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', closeModal);
+        }
+    });
+}
+
+// =============================================
+// ЭФФЕКТ ЧАСТИЦ ПРИ КЛИКЕ
+// =============================================
+function initClickParticles() {
+    document.addEventListener('click', function(e) {
+        createParticles(e.clientX, e.clientY);
+    });
+}
+
+function createParticles(x, y) {
+    const particlesContainer = document.createElement('div');
+    particlesContainer.className = 'click-particles';
+    
+    for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        const angle = (i / 8) * Math.PI * 2;
+        const distance = 50 + Math.random() * 50;
+        const particleX = Math.cos(angle) * distance;
+        const particleY = Math.sin(angle) * distance;
+        
+        particle.style.setProperty('--x', `${particleX}px`);
+        particle.style.setProperty('--y', `${particleY}px`);
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        
+        particlesContainer.appendChild(particle);
+    }
+    
+    document.body.appendChild(particlesContainer);
+    
+    setTimeout(() => {
+        particlesContainer.remove();
+    }, 1000);
+}
+
+// =============================================
+// СИСТЕМА ДОСТИЖЕНИЙ
+// =============================================
+function initAchievements() {
+    // Проверяем достижения
+    checkAchievements();
+}
+
+function checkAchievements() {
+    if (!localStorage.getItem('firstVisit')) {
+        showAchievement('firstVisit');
+        localStorage.setItem('firstVisit', 'true');
+    }
+}
+
+function showAchievement(achievementId) {
+    const achievement = document.createElement('div');
+    achievement.className = 'achievement-notification';
+    achievement.innerHTML = `
+        <div class="achievement-content">
+            <i class="fas fa-trophy"></i>
+            <div class="achievement-text">
+                <strong>Достижение разблокировано!</strong>
+                <span>${getAchievementName(achievementId)}</span>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(achievement);
+    
+    setTimeout(() => {
+        achievement.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        achievement.classList.remove('show');
+        setTimeout(() => {
+            achievement.remove();
+        }, 500);
+    }, 3000);
+}
+
+function getAchievementName(id) {
+    const names = {
+        firstVisit: 'Первое посещение',
+        themeChanged: 'Исследователь тем',
+        projectViewed: 'Любознательный',
+        contactSent: 'Социальная активность'
+    };
+    
+    return names[id] || 'Неизвестное достижение';
 }
 
 // =============================================
