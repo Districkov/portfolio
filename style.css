@@ -71,7 +71,48 @@
     }
 }
 
+/* =============================================
+   СТИЛИ ДЛЯ АДМИНКИ В РАЗНЫХ ВЕРСИЯХ
+   ============================================= */
 
+/* Кнопка админки для десктопа (в навигации) */
+.admin-desktop {
+    display: block;
+}
+
+/* Кнопка админки для мобильных (в хедере) */
+.admin-mobile {
+    display: none;
+    width: 40px;
+    height: 40px;
+    background: rgba(124, 252, 0, 0.1);
+    border: 1px solid rgba(124, 252, 0, 0.3);
+    border-radius: var(--border-radius-sm);
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.admin-mobile:hover {
+    background: rgba(124, 252, 0, 0.2);
+    color: var(--light);
+}
+
+/* Скрываем админку в мобильном меню */
+@media (max-width: 768px) {
+    /* Скрываем админку в основном меню на мобильных */
+    .admin-desktop {
+        display: none !important;
+    }
+    
+    /* Показываем иконку админки в хедере на мобильных */
+    .admin-mobile {
+        display: flex;
+    }
+}
 
 /* =============================================
    ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА
@@ -1664,59 +1705,6 @@ footer {
 }
 
 /* =============================================
-   УВЕДОМЛЕНИЯ
-   ============================================= */
-.notification {
-    position: fixed;
-    top: 100px;
-    right: 30px;
-    padding: 20px 25px;
-    border-radius: var(--border-radius);
-    color: var(--dark);
-    font-weight: 600;
-    z-index: 10000;
-    box-shadow: var(--shadow);
-    transform: translateX(400px);
-    transition: transform 0.3s ease;
-    max-width: 350px;
-    backdrop-filter: blur(10px);
-}
-
-.notification.show {
-    transform: translateX(0);
-}
-
-.notification.success {
-    background: linear-gradient(135deg, var(--success), #00cc00);
-    border-left: 4px solid #00cc00;
-}
-
-.notification.error {
-    background: linear-gradient(135deg, var(--error), #cc0000);
-    border-left: 4px solid #cc0000;
-}
-
-.notification.warning {
-    background: linear-gradient(135deg, var(--warning), #ff8800);
-    border-left: 4px solid #ff8800;
-}
-
-.notification.info {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-left: 4px solid var(--primary-dark);
-}
-
-.notification-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.notification-content i {
-    font-size: 1.2rem;
-}
-
-/* =============================================
    АДАПТИВНОСТЬ
    ============================================= */
 @media (max-width: 1024px) {
@@ -1851,11 +1839,6 @@ footer {
     
     nav ul a:hover {
         background: rgba(124, 252, 0, 0.1);
-    }
-    
-    .admin-link {
-        margin-top: 10px;
-        text-align: center;
     }
 }
 

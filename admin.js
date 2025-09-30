@@ -1,6 +1,6 @@
 // admin.js
 // =============================================
-// АДМИН ПАНЕЛЬ - УЛУЧШЕННАЯ ВЕРСИЯ С КАСТОМНЫМ КУРСОРОМ
+// АДМИН ПАНЕЛЬ - ИСПРАВЛЕННАЯ ВЕРСИЯ С РАБОЧИМ БУРГЕР МЕНЮ
 // =============================================
 
 class AdminPanel {
@@ -30,7 +30,6 @@ class AdminPanel {
     // КАСТОМНЫЙ КУРСОР ДЛЯ АДМИНКИ
     // =============================================
     initCustomCursor() {
-        // Создаем элемент курсора если его нет
         if (!document.getElementById('customCursor')) {
             const cursor = document.createElement('div');
             cursor.id = 'customCursor';
@@ -51,95 +50,111 @@ class AdminPanel {
         document.documentElement.setAttribute('data-theme', currentTheme);
         this.updateThemeIcon(currentTheme);
 
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            this.updateThemeIcon(newTheme);
-            this.showNotification(`Тема изменена на ${newTheme === 'dark' ? 'тёмную' : 'светлую'}!`, 'success');
-        });
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                this.updateThemeIcon(newTheme);
+                this.showNotification(`Тема изменена на ${newTheme === 'dark' ? 'тёмную' : 'светлую'}!`, 'success');
+            });
+        }
     }
 
     updateThemeIcon(theme) {
         const icon = document.querySelector('#themeToggle i');
-        icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        if (icon) {
+            icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        }
     }
 
     // =============================================
-    // НАВИГАЦИЯ С ИСПРАВЛЕННЫМ БУРГЕР МЕНЮ
+    // НАВИГАЦИЯ С РАБОЧИМ БУРГЕР МЕНЮ
     // =============================================
     initNavigation() {
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navbar = document.getElementById('navbar');
         const navLinks = document.querySelectorAll('.nav-link');
 
-        if (mobileMenuBtn && navbar) {
+        // Функция для переключения меню
+        const toggleMenu = () => {
+            if (navbar) {
+                navbar.classList.toggle('active');
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.innerHTML = navbar.classList.contains('active') 
+                        ? '<i class="fas fa-times"></i>' 
+                        : '<i class="fas fa-bars"></i>';
+                }
+            }
+        };
+
+        // Функция для закрытия меню
+        const closeMenu = () => {
+            if (navbar && navbar.classList.contains('active')) {
+                navbar.classList.remove('active');
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            }
+        };
+
+        // Обработчик кнопки бургер-меню
+        if (mobileMenuBtn) {
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                navbar.classList.toggle('active');
-                mobileMenuBtn.innerHTML = navbar.classList.contains('active') 
-                    ? '<i class="fas fa-times"></i>' 
-                    : '<i class="fas fa-bars"></i>';
-            });
-
-            // Закрытие меню при клике на ссылку
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (navbar.classList.contains('active')) {
-                        navbar.classList.remove('active');
-                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                    }
-                });
-            });
-
-            // Закрытие меню при клике вне его области
-            document.addEventListener('click', (e) => {
-                if (navbar.classList.contains('active') && 
-                    !navbar.contains(e.target) && 
-                    !mobileMenuBtn.contains(e.target)) {
-                    navbar.classList.remove('active');
-                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                }
-            });
-
-            // Закрытие меню при изменении размера окна
-            window.addEventListener('resize', () => {
-                if (window.innerWidth > 768 && navbar.classList.contains('active')) {
-                    navbar.classList.remove('active');
-                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                }
+                toggleMenu();
             });
         }
 
+        // Обработчики для ссылок навигации
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
-                if (link.getAttribute('href') === 'index.html') return;
+                const href = link.getAttribute('href');
                 
-                if (!this.isAuthenticated && !link.getAttribute('href').includes('login')) {
-                    e.preventDefault();
-                    this.showNotification('Пожалуйста, войдите в систему', 'warning');
-                    this.showSection('login');
+                // Для ссылки "Вернуться на сайт" - обычное поведение
+                if (href === 'index.html') {
+                    closeMenu();
                     return;
                 }
 
-                const target = link.getAttribute('href').substring(1);
+                e.preventDefault();
+                
+                // Проверка авторизации для защищенных разделов
+                if (!this.isAuthenticated && !href.includes('login')) {
+                    this.showNotification('Пожалуйста, войдите в систему', 'warning');
+                    this.showSection('login');
+                    closeMenu();
+                    return;
+                }
+
+                // Показать соответствующую секцию
+                const target = href.substring(1);
                 this.showSection(target);
                 
-                // Обновляем статистику при переходе в раздел статистики
+                // Обновить статистику если нужно
                 if (target === 'statistics') {
                     this.updateStatistics();
                     this.initCharts();
                 }
                 
-                if (navbar) {
-                    navbar.classList.remove('active');
-                    if (mobileMenuBtn) {
-                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                    }
-                }
+                closeMenu();
             });
+        });
+
+        // Закрытие меню при клике вне его
+        document.addEventListener('click', (e) => {
+            if (navbar && !navbar.contains(e.target) && mobileMenuBtn && !mobileMenuBtn.contains(e.target)) {
+                closeMenu();
+            }
+        });
+
+        // Закрытие меню при ресайзе
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                closeMenu();
+            }
         });
 
         // Показываем секцию логина по умолчанию
@@ -176,26 +191,31 @@ class AdminPanel {
             currentPasswordElement.textContent = adminPassword;
         }
 
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const password = document.getElementById('adminPassword').value;
-            
-            if (password === adminPassword) {
-                this.isAuthenticated = true;
-                this.showSection('projects');
-                this.showNotification('Успешный вход в админ панель!', 'success');
-                this.updateAdminStatus();
-                loginForm.reset();
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
                 
-                // Обновляем статистику после входа
-                this.updateStatistics();
-            } else {
-                this.showNotification('Неверный пароль! Попробуйте снова.', 'error');
-                document.getElementById('adminPassword').value = '';
-                document.getElementById('adminPassword').focus();
-            }
-        });
+                const passwordInput = document.getElementById('adminPassword');
+                if (!passwordInput) return;
+                
+                const password = passwordInput.value;
+                
+                if (password === adminPassword) {
+                    this.isAuthenticated = true;
+                    this.showSection('projects');
+                    this.showNotification('Успешный вход в админ панель!', 'success');
+                    this.updateAdminStatus();
+                    loginForm.reset();
+                    
+                    // Обновляем статистику после входа
+                    this.updateStatistics();
+                } else {
+                    this.showNotification('Неверный пароль! Попробуйте снова.', 'error');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            });
+        }
     }
 
     updateAdminStatus() {
@@ -250,40 +270,44 @@ class AdminPanel {
     initProjectForm() {
         const projectForm = document.getElementById('projectForm');
         
-        projectForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            if (!this.isAuthenticated) {
-                this.showNotification('Пожалуйста, войдите в систему', 'warning');
-                this.showSection('login');
-                return;
-            }
+        if (projectForm) {
+            projectForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                if (!this.isAuthenticated) {
+                    this.showNotification('Пожалуйста, войдите в систему', 'warning');
+                    this.showSection('login');
+                    return;
+                }
 
-            const projectData = {
-                id: this.currentEditingId || Date.now(),
-                title: document.getElementById('projectTitle').value,
-                category: document.getElementById('projectCategory').value,
-                description: document.getElementById('projectDescription').value,
-                image: document.getElementById('projectImage').value,
-                technologies: document.getElementById('projectTechnologies').value.split(',').map(tech => tech.trim()),
-                demoLink: document.getElementById('projectDemo').value,
-                githubLink: document.getElementById('projectGithub').value,
-                features: ["Адаптивный дизайн", "Современные технологии", "Оптимизированная производительность"]
-            };
+                const projectData = {
+                    id: this.currentEditingId || Date.now(),
+                    title: document.getElementById('projectTitle').value,
+                    category: document.getElementById('projectCategory').value,
+                    description: document.getElementById('projectDescription').value,
+                    image: document.getElementById('projectImage').value,
+                    technologies: document.getElementById('projectTechnologies').value.split(',').map(tech => tech.trim()),
+                    demoLink: document.getElementById('projectDemo').value,
+                    githubLink: document.getElementById('projectGithub').value,
+                    features: ["Адаптивный дизайн", "Современные технологии", "Оптимизированная производительность"]
+                };
 
-            if (this.currentEditingId) {
-                this.updateProject(projectData);
-            } else {
-                this.addProject(projectData);
-            }
-            
-            projectForm.reset();
-            this.currentEditingId = null;
-            
-            // Обновляем текст кнопки
-            const submitBtn = projectForm.querySelector('button[type="submit"]');
-            submitBtn.innerHTML = '<i class="fas fa-plus"></i> Добавить проект';
-        });
+                if (this.currentEditingId) {
+                    this.updateProject(projectData);
+                } else {
+                    this.addProject(projectData);
+                }
+                
+                projectForm.reset();
+                this.currentEditingId = null;
+                
+                // Обновляем текст кнопки
+                const submitBtn = projectForm.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-plus"></i> Добавить проект';
+                }
+            });
+        }
     }
 
     // =============================================
@@ -404,7 +428,6 @@ class AdminPanel {
             projectsCount.textContent = this.projects.length;
         }
 
-        // ВАЖНО: Обновляем статистику после рендеринга проектов
         this.updateStatistics();
     }
 
@@ -463,7 +486,9 @@ class AdminPanel {
         this.currentEditingId = projectId;
 
         const submitBtn = document.querySelector('#projectForm button[type="submit"]');
-        submitBtn.innerHTML = '<i class="fas fa-save"></i> Сохранить изменения';
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-save"></i> Сохранить изменения';
+        }
 
         this.showNotification('Режим редактирования проекта', 'info');
         
@@ -499,14 +524,12 @@ class AdminPanel {
     // СТАТИСТИКА И ГРАФИКИ
     // =============================================
     updateStatistics() {
-        console.log('📊 Updating statistics...');
-        
         const totalProjects = this.projects.length;
         const webProjects = this.projects.filter(p => p.category === 'web').length;
         const appProjects = this.projects.filter(p => p.category === 'app').length;
         const designProjects = this.projects.filter(p => p.category === 'design').length;
 
-        // Обновляем основную статистику в разделе проектов
+        // Обновляем основную статистику
         const totalEl = document.getElementById('totalProjects');
         const webEl = document.getElementById('webProjects');
         const appEl = document.getElementById('appProjects');
@@ -527,8 +550,6 @@ class AdminPanel {
         if (statsWebEl) statsWebEl.textContent = webProjects;
         if (statsAppEl) statsAppEl.textContent = appProjects;
         if (statsDesignEl) statsDesignEl.textContent = designProjects;
-
-        console.log('📊 Statistics updated:', { totalProjects, webProjects, appProjects, designProjects });
     }
 
     initCharts() {
@@ -539,7 +560,6 @@ class AdminPanel {
         const ctx = document.getElementById('categoryChartCanvas');
         if (!ctx) return;
 
-        // Удаляем предыдущий график если существует
         if (this.categoryChart) {
             this.categoryChart.destroy();
         }
@@ -579,14 +599,6 @@ class AdminPanel {
                                 size: 12
                             }
                         }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Распределение проектов по категориям',
-                        color: 'var(--light)',
-                        font: {
-                            size: 16
-                        }
                     }
                 }
             }
@@ -598,6 +610,8 @@ class AdminPanel {
     // =============================================
     initSettings() {
         const settingsForm = document.getElementById('settingsForm');
+        if (!settingsForm) return;
+
         const musicEnabled = localStorage.getItem('musicEnabled') !== 'false';
         const notificationsEnabled = localStorage.getItem('notificationsEnabled') !== 'false';
         
@@ -777,7 +791,6 @@ class AdminCustomCursor {
             return;
         }
 
-        // Проверяем поддержку fine pointer (не сенсорные устройства)
         if (window.matchMedia('(pointer: fine)').matches) {
             this.bindEvents();
             this.cursor.style.display = 'block';
@@ -791,9 +804,8 @@ class AdminCustomCursor {
             this.moveCursor(e);
         });
 
-        // Эффекты при наведении на интерактивные элементы в админке
         const hoverElements = document.querySelectorAll(
-            'a, button, .btn, .admin-card, .project-item, .filter-btn, input, textarea, select, .mobile-menu-btn, .theme-toggle, .lang-btn, .form-group input, .form-group textarea, .form-group select'
+            'a, button, .btn, .admin-card, .project-item, .filter-btn, input, textarea, select, .mobile-menu-btn, .theme-toggle'
         );
         
         hoverElements.forEach(el => {
@@ -806,7 +818,6 @@ class AdminCustomCursor {
             });
         });
 
-        // Клик эффект
         document.addEventListener('mousedown', () => {
             this.cursor.classList.add('click');
         });
@@ -815,7 +826,6 @@ class AdminCustomCursor {
             this.cursor.classList.remove('click');
         });
 
-        // Скрываем курсор когда мышь покидает окно
         document.addEventListener('mouseleave', () => {
             this.cursor.style.opacity = '0';
         });
@@ -842,5 +852,4 @@ document.addEventListener('DOMContentLoaded', () => {
     admin = new AdminPanel();
 });
 
-// Добавляем глобальные функции для кнопок
 window.admin = admin;
