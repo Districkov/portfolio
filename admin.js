@@ -1,6 +1,6 @@
 // admin.js
 // =============================================
-// АДМИН ПАНЕЛЬ - УЛУЧШЕННАЯ ВЕРСИЯ С СТАТИСТИКОЙ
+// АДМИН ПАНЕЛЬ - УЛУЧШЕННАЯ ВЕРСИЯ С КАСТОМНЫМ КУРСОРОМ
 // =============================================
 
 class AdminPanel {
@@ -9,10 +9,12 @@ class AdminPanel {
         this.projects = [];
         this.currentEditingId = null;
         this.categoryChart = null;
+        this.customCursor = null;
         this.init();
     }
 
     init() {
+        this.initCustomCursor();
         this.initTheme();
         this.initNavigation();
         this.initLogin();
@@ -22,6 +24,21 @@ class AdminPanel {
         this.initPageProgress();
         this.updateAdminStatus();
         console.log('🚀 Admin panel initialized');
+    }
+
+    // =============================================
+    // КАСТОМНЫЙ КУРСОР ДЛЯ АДМИНКИ
+    // =============================================
+    initCustomCursor() {
+        // Создаем элемент курсора если его нет
+        if (!document.getElementById('customCursor')) {
+            const cursor = document.createElement('div');
+            cursor.id = 'customCursor';
+            cursor.className = 'custom-cursor';
+            document.body.appendChild(cursor);
+        }
+        
+        this.customCursor = new AdminCustomCursor();
     }
 
     // =============================================
@@ -51,19 +68,50 @@ class AdminPanel {
     }
 
     // =============================================
-    // НАВИГАЦИЯ
+    // НАВИГАЦИЯ С ИСПРАВЛЕННЫМ БУРГЕР МЕНЮ
     // =============================================
     initNavigation() {
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navbar = document.getElementById('navbar');
         const navLinks = document.querySelectorAll('.nav-link');
 
-        mobileMenuBtn.addEventListener('click', () => {
-            navbar.classList.toggle('active');
-            mobileMenuBtn.innerHTML = navbar.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
-        });
+        if (mobileMenuBtn && navbar) {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navbar.classList.toggle('active');
+                mobileMenuBtn.innerHTML = navbar.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+
+            // Закрытие меню при клике на ссылку
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navbar.classList.contains('active')) {
+                        navbar.classList.remove('active');
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                });
+            });
+
+            // Закрытие меню при клике вне его области
+            document.addEventListener('click', (e) => {
+                if (navbar.classList.contains('active') && 
+                    !navbar.contains(e.target) && 
+                    !mobileMenuBtn.contains(e.target)) {
+                    navbar.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+
+            // Закрытие меню при изменении размера окна
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768 && navbar.classList.contains('active')) {
+                    navbar.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        }
 
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -85,8 +133,12 @@ class AdminPanel {
                     this.initCharts();
                 }
                 
-                navbar.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                if (navbar) {
+                    navbar.classList.remove('active');
+                    if (mobileMenuBtn) {
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                }
             });
         });
 
@@ -707,6 +759,77 @@ class AdminPanel {
             'info': 'info-circle'
         };
         return icons[type] || 'info-circle';
+    }
+}
+
+// =============================================
+// КАСТОМНЫЙ КУРСОР ДЛЯ АДМИНКИ
+// =============================================
+class AdminCustomCursor {
+    constructor() {
+        this.cursor = document.getElementById('customCursor');
+        this.init();
+    }
+
+    init() {
+        if (!this.cursor) {
+            console.warn('Custom cursor element not found in admin');
+            return;
+        }
+
+        // Проверяем поддержку fine pointer (не сенсорные устройства)
+        if (window.matchMedia('(pointer: fine)').matches) {
+            this.bindEvents();
+            this.cursor.style.display = 'block';
+        } else {
+            this.cursor.style.display = 'none';
+        }
+    }
+
+    bindEvents() {
+        document.addEventListener('mousemove', (e) => {
+            this.moveCursor(e);
+        });
+
+        // Эффекты при наведении на интерактивные элементы в админке
+        const hoverElements = document.querySelectorAll(
+            'a, button, .btn, .admin-card, .project-item, .filter-btn, input, textarea, select, .mobile-menu-btn, .theme-toggle, .lang-btn, .form-group input, .form-group textarea, .form-group select'
+        );
+        
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                this.cursor.classList.add('hover');
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                this.cursor.classList.remove('hover');
+            });
+        });
+
+        // Клик эффект
+        document.addEventListener('mousedown', () => {
+            this.cursor.classList.add('click');
+        });
+
+        document.addEventListener('mouseup', () => {
+            this.cursor.classList.remove('click');
+        });
+
+        // Скрываем курсор когда мышь покидает окно
+        document.addEventListener('mouseleave', () => {
+            this.cursor.style.opacity = '0';
+        });
+
+        document.addEventListener('mouseenter', () => {
+            this.cursor.style.opacity = '1';
+        });
+    }
+
+    moveCursor(e) {
+        if (this.cursor.style.display !== 'none') {
+            this.cursor.style.left = e.clientX + 'px';
+            this.cursor.style.top = e.clientY + 'px';
+        }
     }
 }
 

@@ -4,11 +4,93 @@
 const CONFIG = {
     enable3D: false,
     musicEnabled: true,
-    particlesEnabled: true
+    particlesEnabled: true,
+    customCursor: true
 };
 
 let projects = [];
 let threeScene = null;
+
+// =============================================
+// КАСТОМНЫЙ КУРСОР
+// =============================================
+class CustomCursor {
+    constructor() {
+        this.cursor = document.getElementById('customCursor');
+        this.init();
+    }
+
+    init() {
+        if (!this.cursor) {
+            console.warn('Custom cursor element not found');
+            return;
+        }
+
+        // Проверяем поддержку fine pointer (не сенсорные устройства)
+        if (window.matchMedia('(pointer: fine)').matches && CONFIG.customCursor) {
+            this.bindEvents();
+            this.cursor.style.display = 'block';
+        } else {
+            this.cursor.style.display = 'none';
+        }
+    }
+
+    bindEvents() {
+        document.addEventListener('mousemove', (e) => {
+            this.moveCursor(e);
+        });
+
+        // Эффекты при наведении на интерактивные элементы
+        const hoverElements = document.querySelectorAll(
+            'a, button, .btn, .service-card, .portfolio-card, .filter-btn, input, textarea, select, .mobile-menu-btn, .theme-toggle'
+        );
+        
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                this.cursor.classList.add('hover');
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                this.cursor.classList.remove('hover');
+            });
+        });
+
+        // Клик эффект
+        document.addEventListener('mousedown', () => {
+            this.cursor.classList.add('click');
+        });
+
+        document.addEventListener('mouseup', () => {
+            this.cursor.classList.remove('click');
+        });
+
+        // Скрываем курсор когда мышь покидает окно
+        document.addEventListener('mouseleave', () => {
+            this.cursor.style.opacity = '0';
+        });
+
+        document.addEventListener('mouseenter', () => {
+            this.cursor.style.opacity = '1';
+        });
+    }
+
+    moveCursor(e) {
+        if (this.cursor.style.display !== 'none') {
+            this.cursor.style.left = e.clientX + 'px';
+            this.cursor.style.top = e.clientY + 'px';
+        }
+    }
+
+    // Включение/выключение кастомного курсора
+    toggle(enabled) {
+        CONFIG.customCursor = enabled;
+        if (enabled) {
+            this.cursor.style.display = 'block';
+        } else {
+            this.cursor.style.display = 'none';
+        }
+    }
+}
 
 // =============================================
 // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
@@ -26,6 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
+    // Инициализация кастомного курсора
+    initCustomCursor();
+    
     // Инициализация темы
     initTheme();
     
@@ -49,10 +134,337 @@ function initializeApp() {
     
     // Инициализация AI ассистента
     initEnhancedChatAssistant();
+    
+    // Инициализация PWA
+    initPWA();
+    
+    // Инициализация мультиязычности
+    initI18n();
+}
+
+function initCustomCursor() {
+    window.customCursor = new CustomCursor();
 }
 
 // =============================================
-// ЗАГРУЗКА ПРОЕКТОВ - ИСПРАВЛЕННАЯ
+// БУРГЕР МЕНЮ - ПОЛНОСТЬЮ ПЕРЕРАБОТАННОЕ
+// =============================================
+function initMobileMenu() {
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navbar = document.getElementById('navbar');
+    const navList = navbar ? navbar.querySelector('ul') : null;
+    
+    if (!mobileMenuBtn || !navbar || !navList) {
+        console.warn('Mobile menu elements not found');
+        return;
+    }
+
+    console.log('🍔 Mobile menu initialization started');
+
+    function toggleMenu() {
+        const isActive = navList.classList.contains('active');
+        
+        if (isActive) {
+            // Закрытие меню
+            navList.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            document.body.style.overflow = '';
+            console.log('📱 Mobile menu closed');
+        } else {
+            // Открытие меню
+            navList.classList.add('active');
+            mobileMenuBtn.classList.add('active');
+            mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+            document.body.style.overflow = 'hidden';
+            console.log('📱 Mobile menu opened');
+        }
+    }
+
+    function closeMenu() {
+        navList.classList.remove('active');
+        mobileMenuBtn.classList.remove('active');
+        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        document.body.style.overflow = '';
+    }
+
+    // Обработчик клика по бургер-кнопке
+    mobileMenuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        toggleMenu();
+    });
+
+    // Закрытие меню при клике на ссылку
+    const navLinks = navList.querySelectorAll('a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            // Для якорных ссылок даем время на скролл перед закрытием
+            if (link.getAttribute('href').startsWith('#')) {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                
+                // Закрываем меню после небольшой задержки
+                setTimeout(closeMenu, 300);
+            } else {
+                closeMenu();
+            }
+        });
+    });
+
+    // Закрытие меню при клике вне его области
+    document.addEventListener('click', function(e) {
+        if (!navbar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            closeMenu();
+        }
+    });
+
+    // Закрытие меню при нажатии Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeMenu();
+        }
+    });
+
+    // Закрытие меню при изменении размера окна (на десктоп)
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeMenu();
+        }
+    });
+
+    console.log('✅ Mobile menu initialized successfully');
+}
+
+// =============================================
+// НАВИГАЦИЯ И ПРОКРУТКА
+// =============================================
+function initNavigation() {
+    // Инициализация мобильного меню
+    initMobileMenu();
+
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // Активная навигация при скролле
+    function updateActiveNavLink() {
+        let current = '';
+        const scrollPos = window.pageYOffset + 100;
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            
+            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            const href = link.getAttribute('href');
+            if (href && href.includes(current)) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // Плавная прокрутка для якорных ссылок
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            
+            if (href === '#') return;
+            
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                // Обновляем URL без перезагрузки страницы
+                history.pushState(null, null, href);
+            }
+        });
+    });
+
+    // Обновление активной ссылки при скролле
+    window.addEventListener('scroll', updateActiveNavLink);
+    updateActiveNavLink(); // Инициализация при загрузке
+}
+
+// =============================================
+// PWA ФУНКЦИОНАЛ
+// =============================================
+function initPWA() {
+    // Регистрация Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('✅ Service Worker зарегистрирован:', registration);
+            })
+            .catch(error => {
+                console.log('❌ Ошибка регистрации Service Worker:', error);
+            });
+    }
+
+    // Обработка установки PWA
+    let deferredPrompt;
+    const installBtn = document.getElementById('pwaInstallBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        if (installBtn) {
+            installBtn.style.display = 'flex';
+            installBtn.addEventListener('click', installPWA);
+        }
+    });
+
+    function installPWA() {
+        if (!deferredPrompt) return;
+
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('✅ Пользователь принял установку');
+                if (installBtn) installBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+        });
+    }
+
+    window.addEventListener('appinstalled', () => {
+        console.log('✅ PWA установлено');
+        if (installBtn) installBtn.style.display = 'none';
+        showNotification('Приложение успешно установлено!', 'success');
+    });
+}
+
+// =============================================
+// МУЛЬТИЯЗЫЧНОСТЬ
+// =============================================
+function initI18n() {
+    const langSwitcher = document.getElementById('languageSwitcher');
+    if (!langSwitcher) return;
+
+    const currentLang = localStorage.getItem('portfolioLang') || 'ru';
+    
+    // Устанавливаем активную кнопку языка
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === currentLang);
+        btn.addEventListener('click', () => {
+            switchLanguage(btn.dataset.lang);
+        });
+    });
+
+    // Применяем текущий язык
+    applyLanguage(currentLang);
+}
+
+function switchLanguage(lang) {
+    localStorage.setItem('portfolioLang', lang);
+    applyLanguage(lang);
+    showNotification(`Язык изменен на ${getLanguageName(lang)}`, 'success');
+}
+
+function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+    
+    // Обновляем активную кнопку языка
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    // Загружаем и применяем переводы
+    updateUITexts(lang);
+}
+
+function getLanguageName(lang) {
+    const names = {
+        'ru': 'Русский',
+        'en': 'English',
+        'es': 'Español'
+    };
+    return names[lang] || lang;
+}
+
+function updateUITexts(lang) {
+    const translations = {
+        ru: {
+            'loading': 'Загрузка...',
+            'nav.home': 'Главная',
+            'nav.about': 'Обо мне',
+            'nav.services': 'Услуги',
+            'nav.portfolio': 'Портфолио',
+            'nav.contact': 'Контакты',
+            'nav.admin': 'Админка',
+            'hero.title': 'Привет, я ',
+            'hero.subtitle': 'Фронтенд разработчик с опытом создания современных веб-приложений',
+            'hero.works': 'Мои работы',
+            'hero.contact': 'Связаться со мной'
+        },
+        en: {
+            'loading': 'Loading...',
+            'nav.home': 'Home',
+            'nav.about': 'About',
+            'nav.services': 'Services',
+            'nav.portfolio': 'Portfolio',
+            'nav.contact': 'Contact',
+            'nav.admin': 'Admin',
+            'hero.title': 'Hello, I\'m ',
+            'hero.subtitle': 'Frontend developer with experience in creating modern web applications',
+            'hero.works': 'My Works',
+            'hero.contact': 'Contact Me'
+        },
+        es: {
+            'loading': 'Cargando...',
+            'nav.home': 'Inicio',
+            'nav.about': 'Sobre Mí',
+            'nav.services': 'Servicios',
+            'nav.portfolio': 'Portafolio',
+            'nav.contact': 'Contacto',
+            'nav.admin': 'Admin',
+            'hero.title': 'Hola, soy ',
+            'hero.subtitle': 'Desarrollador frontend con experiencia en crear aplicaciones web modernas',
+            'hero.works': 'Mis Trabajos',
+            'hero.contact': 'Contáctame'
+        }
+    };
+
+    const texts = translations[lang] || translations.ru;
+    
+    // Обновляем тексты
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (texts[key]) {
+            element.textContent = texts[key];
+        }
+    });
+
+    // Обновляем placeholder'ы
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        if (texts[key]) {
+            element.placeholder = texts[key];
+        }
+    });
+}
+
+// =============================================
+// ЗАГРУЗКА И ОТОБРАЖЕНИЕ ПРОЕКТОВ
 // =============================================
 function loadProjects() {
     console.log('🔄 Loading projects...');
@@ -64,13 +476,11 @@ function loadProjects() {
             projects = JSON.parse(savedProjects);
             console.log(`📁 Loaded ${projects.length} projects from localStorage`, projects);
             
-            // Проверяем, что проекты загружены корректно
             if (!Array.isArray(projects) || projects.length === 0) {
                 throw new Error('Invalid projects data');
             }
         } catch (error) {
             console.error('❌ Error loading projects from localStorage:', error);
-            console.log('🔄 Loading default projects...');
             projects = getDefaultProjects();
             localStorage.setItem('portfolioProjects', JSON.stringify(projects));
         }
@@ -122,9 +532,6 @@ function getDefaultProjects() {
     ];
 }
 
-// =============================================
-// ОТОБРАЖЕНИЕ ПРОЕКТОВ - ИСПРАВЛЕННОЕ
-// =============================================
 function renderProjects() {
     const portfolioGrid = document.getElementById('portfolioGrid');
     if (!portfolioGrid) {
@@ -178,37 +585,6 @@ function renderProjects() {
     console.log('✅ Projects rendered successfully');
 }
 
-// =============================================
-// ВОССТАНОВЛЕНИЕ ПРОЕКТОВ
-// =============================================
-function restoreDefaultProjects() {
-    if (confirm('Восстановить стандартные проекты? Текущие данные будут заменены.')) {
-        projects = getDefaultProjects();
-        localStorage.setItem('portfolioProjects', JSON.stringify(projects));
-        renderProjects();
-        showNotification('Проекты восстановлены!', 'success');
-        console.log('✅ Default projects restored');
-    }
-}
-
-// =============================================
-// ОТЛАДКА
-// =============================================
-function debugProjects() {
-    console.log('=== PROJECTS DEBUG INFO ===');
-    console.log('Projects array:', projects);
-    console.log('LocalStorage data:', localStorage.getItem('portfolioProjects'));
-    console.log('Portfolio grid element:', document.getElementById('portfolioGrid'));
-    console.log('==========================');
-}
-
-// Добавим глобальные функции для тестирования
-window.restoreProjects = restoreDefaultProjects;
-window.debugProjects = debugProjects;
-
-// =============================================
-// ОСТАЛЬНЫЕ ФУНКЦИИ (без изменений)
-// =============================================
 function getCategoryName(category) {
     const names = {
         web: 'Веб-сайт',
@@ -312,16 +688,282 @@ function showProjectDetails(projectId) {
             modal.remove();
         }
     });
+
+    // Закрытие по Escape
+    document.addEventListener('keydown', function closeModal(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', closeModal);
+        }
+    });
 }
 
 // =============================================
-// УЛУЧШЕННЫЙ ДИНАМИЧЕСКИЙ ФОН
+// ВОССТАНОВЛЕНИЕ ПРОЕКТОВ
+// =============================================
+function restoreDefaultProjects() {
+    if (confirm('Восстановить стандартные проекты? Текущие данные будут заменены.')) {
+        projects = getDefaultProjects();
+        localStorage.setItem('portfolioProjects', JSON.stringify(projects));
+        renderProjects();
+        showNotification('Проекты восстановлены!', 'success');
+        console.log('✅ Default projects restored');
+    }
+}
+
+// =============================================
+// ТЕМА И НАСТРОЙКИ
+// =============================================
+function initTheme() {
+    const savedTheme = localStorage.getItem('portfolioTheme') || 'dark';
+    setTheme(savedTheme);
+    
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+        updateThemeIcon(savedTheme);
+    }
+}
+
+function toggleTheme() {
+    const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+}
+
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('portfolioTheme', theme);
+    updateThemeIcon(theme);
+    console.log(`🎨 Theme changed to: ${theme}`);
+}
+
+function updateThemeIcon(theme) {
+    const icon = document.querySelector('#themeToggle i');
+    if (icon) {
+        icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+}
+
+// =============================================
+// МУЗЫКА И АУДИО
+// =============================================
+function initMusic() {
+    const music = document.getElementById('backgroundMusic');
+    const musicToggle = document.getElementById('musicToggle');
+    
+    if (!music) {
+        console.warn('Background music element not found');
+        CONFIG.musicEnabled = false;
+        return;
+    }
+
+    const musicSettings = JSON.parse(localStorage.getItem('portfolioMusicSettings') || '{"enabled":true,"volume":0.3}');
+    CONFIG.musicEnabled = musicSettings.enabled;
+    
+    music.volume = musicSettings.volume;
+
+    function updateMusicIcon() {
+        const icon = musicToggle?.querySelector('i');
+        
+        if (CONFIG.musicEnabled) {
+            icon?.classList.replace('fa-volume-mute', 'fa-volume-up');
+        } else {
+            icon?.classList.replace('fa-volume-up', 'fa-volume-mute');
+        }
+    }
+
+    function toggleMusic() {
+        CONFIG.musicEnabled = !CONFIG.musicEnabled;
+        
+        if (CONFIG.musicEnabled) {
+            music.play().catch(e => console.log('Autoplay prevented:', e));
+        } else {
+            music.pause();
+        }
+        
+        const musicSettings = {
+            enabled: CONFIG.musicEnabled,
+            volume: music.volume
+        };
+        localStorage.setItem('portfolioMusicSettings', JSON.stringify(musicSettings));
+        
+        updateMusicIcon();
+        showNotification(CONFIG.musicEnabled ? 'Музыка включена' : 'Музыка выключена', 'info');
+    }
+
+    if (musicToggle) {
+        musicToggle.addEventListener('click', toggleMusic);
+    }
+
+    if (CONFIG.musicEnabled) {
+        document.addEventListener('click', function startMusic() {
+            music.play().catch(e => console.log('Autoplay prevented:', e));
+            document.removeEventListener('click', startMusic);
+        }, { once: true });
+    }
+
+    updateMusicIcon();
+}
+
+function initBottomMusicButton() {
+    if (!document.getElementById('musicToggle')) {
+        const musicButton = document.createElement('button');
+        musicButton.id = 'musicToggle';
+        musicButton.className = 'music-toggle-bottom';
+        musicButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+        musicButton.title = 'Включить/выключить музыку';
+        
+        musicButton.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            color: var(--dark);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 252, 0, 0.3);
+        `;
+
+        musicButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+            this.style.boxShadow = '0 6px 20px rgba(124, 252, 0, 0.5)';
+        });
+
+        musicButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+            this.style.boxShadow = '0 4px 15px rgba(124, 252, 0, 0.3)';
+        });
+
+        document.body.appendChild(musicButton);
+
+        musicButton.addEventListener('click', function() {
+            const music = document.getElementById('backgroundMusic');
+            if (!music) return;
+
+            CONFIG.musicEnabled = !CONFIG.musicEnabled;
+            
+            if (CONFIG.musicEnabled) {
+                music.play().catch(e => console.log('Autoplay prevented:', e));
+                this.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                music.pause();
+                this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+            
+            const musicSettings = {
+                enabled: CONFIG.musicEnabled,
+                volume: music.volume
+            };
+            localStorage.setItem('portfolioMusicSettings', JSON.stringify(musicSettings));
+        });
+
+        console.log('✅ Bottom music button initialized');
+    }
+}
+
+// =============================================
+// АНИМАЦИИ И ЭФФЕКТЫ
+// =============================================
+function initAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in, .service-card, .portfolio-item').forEach(el => {
+        observer.observe(el);
+    });
+
+    initCounters();
+    initSkillsAnimation();
+}
+
+function initCounters() {
+    const counters = document.querySelectorAll('.counter');
+    
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const counter = entry.target;
+                const target = +counter.getAttribute('data-target');
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const updateCounter = () => {
+                    current += step;
+                    if (current < target) {
+                        counter.textContent = Math.ceil(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                
+                updateCounter();
+                counterObserver.unobserve(counter);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    counters.forEach(counter => counterObserver.observe(counter));
+}
+
+function initSkillsAnimation() {
+    const skillBars = document.querySelectorAll('.skill-progress');
+    
+    const skillsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const skillBar = entry.target;
+                const width = skillBar.getAttribute('data-width');
+                skillBar.style.width = width + '%';
+                skillsObserver.unobserve(skillBar);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    skillBars.forEach(bar => skillsObserver.observe(bar));
+}
+
+function initPageProgress() {
+    const progressBar = document.querySelector('.progress-bar');
+    if (!progressBar) return;
+
+    window.addEventListener('scroll', () => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight - windowHeight;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const progress = (scrollTop / documentHeight) * 100;
+        
+        progressBar.style.width = progress + '%';
+    });
+}
+
+// =============================================
+// ДИНАМИЧЕСКИЙ ФОН
 // =============================================
 function initEnhancedDynamicBackground() {
     const bgContainer = document.getElementById('dynamic-bg');
     if (!bgContainer) return;
 
-    // Очищаем контейнер
     bgContainer.innerHTML = '';
     
     // Создаем градиентный фон
@@ -419,10 +1061,9 @@ function createPulsingCircles(container) {
 }
 
 // =============================================
-// УЛУЧШЕННЫЙ AI CHAT ASSISTANT
+// AI ЧАТ-АССИСТЕНТ
 // =============================================
 function initEnhancedChatAssistant() {
-    // Создаем элементы чата если их нет
     createChatAssistantElements();
     
     const chatToggle = document.getElementById('chatToggle');
@@ -431,10 +1072,7 @@ function initEnhancedChatAssistant() {
     const chatInput = document.getElementById('chatInput');
     const chatAssistant = document.getElementById('chat-assistant');
     
-    if (!chatToggle) {
-        console.log('Chat assistant elements not found');
-        return;
-    }
+    if (!chatToggle) return;
     
     // Убедимся, что чат изначально скрыт
     if (chatAssistant) {
@@ -463,7 +1101,6 @@ function initEnhancedChatAssistant() {
         });
     }
     
-    // Отправка сообщения
     function sendMessage() {
         const message = chatInput.value.trim();
         if (!message) return;
@@ -471,10 +1108,8 @@ function initEnhancedChatAssistant() {
         addMessage(message, 'user');
         chatInput.value = '';
         
-        // Показываем индикатор набора
         showTypingIndicator();
         
-        // Имитируем задержку ответа AI
         setTimeout(() => {
             removeTypingIndicator();
             const response = generateEnhancedAIResponse(message);
@@ -493,21 +1128,18 @@ function initEnhancedChatAssistant() {
         });
     }
     
-    // Добавляем обработчик для Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && chatAssistant.classList.contains('active')) {
             closeChatAssistant();
         }
     });
     
-    // Быстрые ответы
     addEnhancedQuickReplies();
     
     console.log('🤖 Enhanced chat assistant initialized');
 }
 
 function createChatAssistantElements() {
-    // Проверяем, есть ли уже чат
     if (document.getElementById('chat-assistant')) return;
     
     const chatHTML = `
@@ -550,11 +1182,12 @@ function createChatAssistantElements() {
     chatContainer.innerHTML = chatHTML;
     document.body.appendChild(chatContainer);
     
-    // Добавляем стили для чата
     addChatStyles();
 }
 
 function addChatStyles() {
+    if (document.querySelector('#chat-styles')) return;
+    
     const chatStyles = `
         .chat-toggle {
             position: fixed;
@@ -793,71 +1426,14 @@ function addChatStyles() {
                 opacity: 1;
             }
         }
-        
-        @keyframes enhancedFloat {
-            0%, 100% {
-                transform: translateY(0) translateX(0) rotate(0deg);
-            }
-            25% {
-                transform: translateY(-30px) translateX(15px) rotate(90deg);
-            }
-            50% {
-                transform: translateY(-15px) translateX(30px) rotate(180deg);
-            }
-            75% {
-                transform: translateY(-25px) translateX(-15px) rotate(270deg);
-            }
-        }
-        
-        @keyframes pulseCircle {
-            0% {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.3;
-            }
-            100% {
-                transform: scale(2);
-                opacity: 0;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .chat-assistant {
-                width: 350px;
-                height: 450px;
-                right: 20px;
-                bottom: 150px;
-            }
-            
-            .chat-toggle {
-                right: 20px;
-                bottom: 90px;
-            }
-            
-            .quick-replies.enhanced {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .chat-assistant {
-                width: 300px;
-                height: 400px;
-                right: 10px;
-                left: 10px;
-                bottom: 140px;
-            }
-        }
     `;
     
     const styleSheet = document.createElement('style');
+    styleSheet.id = 'chat-styles';
     styleSheet.textContent = chatStyles;
     document.head.appendChild(styleSheet);
 }
 
-// Закрытие чата
 function closeChatAssistant() {
     const chatAssistant = document.getElementById('chat-assistant');
     if (chatAssistant) {
@@ -929,7 +1505,6 @@ function scrollChatToBottom() {
     }
 }
 
-// Улучшенные быстрые ответы
 function addEnhancedQuickReplies() {
     const chatMessages = document.getElementById('chatMessages');
     if (!chatMessages) return;
@@ -957,14 +1532,12 @@ function addEnhancedQuickReplies() {
         quickRepliesDiv.appendChild(button);
     });
     
-    // Добавляем только если нет других быстрых ответов
     const existingReplies = chatMessages.querySelector('.quick-replies.enhanced');
     if (!existingReplies) {
         chatMessages.appendChild(quickRepliesDiv);
     }
 }
 
-// Обработка быстрых ответов
 function handleQuickReply(replyText) {
     addMessage(replyText, 'user');
     showTypingIndicator();
@@ -977,11 +1550,9 @@ function handleQuickReply(replyText) {
     }, 800);
 }
 
-// Улучшенный AI ответ
 function generateEnhancedAIResponse(userMessage) {
     const message = userMessage.toLowerCase();
     
-    // Расширенная база знаний
     const responses = {
         skills: `Мои ключевые навыки включают:
 • HTML/CSS (95%) - Семантическая верстка, адаптивный дизайн
@@ -1038,14 +1609,6 @@ function generateEnhancedAIResponse(userMessage) {
 ⚡ **Оптимизация**
 Ускорение загрузки и улучшение производительности`,
 
-        technology: `🛠 **Мой технический стек**:
-
-• **Frontend**: HTML5, CSS3, JavaScript (ES6+), React, Svelte
-• **Styling**: CSS Modules, Styled Components, SASS
-• **Tools**: Git, Webpack, Vite, Figma
-• **Libraries**: Chart.js, различные API
-• **Methodologies**: БЭМ, Mobile First, Responsive Design`,
-
         music: `🎵 **Управление музыкой**:
 
 Вы можете управлять фоновой музыкой с помощью кнопки в правом нижнем углу:
@@ -1056,7 +1619,6 @@ function generateEnhancedAIResponse(userMessage) {
 Музыка создает приятную атмосферу при просмотре портфолио!`
     };
     
-    // Улучшенное определение интента
     if (message.includes('навык') || message.includes('skill') || message.includes('умение') || message.includes('технолог') || message.includes('stack')) {
         return responses.skills;
     } else if (message.includes('проект') || message.includes('работ') || message.includes('portfolio') || message.includes('кейс') || message.includes('moscow') || message.includes('pyrometer')) {
@@ -1067,8 +1629,6 @@ function generateEnhancedAIResponse(userMessage) {
         return responses.contact;
     } else if (message.includes('услуг') || message.includes('service') || message.includes('предложен') || message.includes('делаешь') || message.includes('предлагаешь')) {
         return responses.services;
-    } else if (message.includes('технолог') || message.includes('stack') || message.includes('инструмент') || message.includes('используешь') || message.includes('библиотек')) {
-        return responses.technology;
     } else if (message.includes('музык') || message.includes('sound') || message.includes('audio') || message.includes('звук') || message.includes('плеер')) {
         return responses.music;
     } else if (message.includes('привет') || message.includes('hello') || message.includes('hi') || message.includes('здравств') || message.includes('начать')) {
@@ -1094,17 +1654,6 @@ function generateEnhancedAIResponse(userMessage) {
     } else if (message.includes('пока') || message.includes('bye') || message.includes('до свидан') || message.includes('выход')) {
         return `До свидания! 👋 
 Буду рад помочь в будущем. Удачи!`;
-    } else if (message.includes('помощь') || message.includes('help') || message.includes('что ты умеешь') || message.includes('команды')) {
-        return `🆘 **Что я умею**:
-
-• Рассказать о **навыках** и технологиях 🛠
-• Показать **проекты** из портфолио 💼
-• Рассказать об **опыте** работы 📈
-• Показать **контакты** для связи 📞
-• Рассказать об **услугах** 🎯
-• Помочь с **управлением музыкой** 🎵
-
-Просто спросите о чем-нибудь из этого списка!`;
     } else {
         return `🤔 Кажется, я не совсем понял ваш вопрос.
 
@@ -1121,246 +1670,12 @@ function generateEnhancedAIResponse(userMessage) {
 }
 
 // =============================================
-// МУЗЫКА И ОСНОВНЫЕ ФУНКЦИИ
+// ОСНОВНЫЕ ОБРАБОТЧИКИ СОБЫТИЙ
 // =============================================
-function initMusic() {
-    const music = document.getElementById('backgroundMusic');
-    const musicToggle = document.getElementById('musicToggle');
-    
-    if (!music) {
-        console.warn('Background music element not found');
-        CONFIG.musicEnabled = false;
-        return;
-    }
-
-    const musicSettings = JSON.parse(localStorage.getItem('portfolioMusicSettings') || '{"enabled":true,"volume":0.3}');
-    CONFIG.musicEnabled = musicSettings.enabled;
-    
-    music.volume = musicSettings.volume;
-
-    function updateMusicIcon() {
-        const icon = musicToggle?.querySelector('i');
-        
-        if (CONFIG.musicEnabled) {
-            icon?.classList.replace('fa-volume-mute', 'fa-volume-up');
-        } else {
-            icon?.classList.replace('fa-volume-up', 'fa-volume-mute');
-        }
-    }
-
-    function toggleMusic() {
-        CONFIG.musicEnabled = !CONFIG.musicEnabled;
-        
-        if (CONFIG.musicEnabled) {
-            music.play().catch(e => console.log('Autoplay prevented:', e));
-        } else {
-            music.pause();
-        }
-        
-        const musicSettings = {
-            enabled: CONFIG.musicEnabled,
-            volume: music.volume
-        };
-        localStorage.setItem('portfolioMusicSettings', JSON.stringify(musicSettings));
-        
-        updateMusicIcon();
-    }
-
-    if (musicToggle) {
-        musicToggle.addEventListener('click', toggleMusic);
-    }
-
-    if (CONFIG.musicEnabled) {
-        document.addEventListener('click', function startMusic() {
-            music.play().catch(e => console.log('Autoplay prevented:', e));
-            document.removeEventListener('click', startMusic);
-        }, { once: true });
-    }
-
-    updateMusicIcon();
-}
-
-function initBottomMusicButton() {
-    if (!document.getElementById('musicToggle')) {
-        const musicButton = document.createElement('button');
-        musicButton.id = 'musicToggle';
-        musicButton.className = 'music-toggle-bottom';
-        musicButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-        musicButton.title = 'Включить/выключить музыку';
-        
-        musicButton.style.cssText = `
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--primary);
-            border: none;
-            color: var(--dark);
-            font-size: 20px;
-            cursor: pointer;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(124, 252, 0, 0.3);
-        `;
-
-        musicButton.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.1)';
-            this.style.boxShadow = '0 6px 20px rgba(124, 252, 0, 0.5)';
-        });
-
-        musicButton.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-            this.style.boxShadow = '0 4px 15px rgba(124, 252, 0, 0.3)';
-        });
-
-        document.body.appendChild(musicButton);
-
-        musicButton.addEventListener('click', function() {
-            const music = document.getElementById('backgroundMusic');
-            if (!music) return;
-
-            CONFIG.musicEnabled = !CONFIG.musicEnabled;
-            
-            if (CONFIG.musicEnabled) {
-                music.play().catch(e => console.log('Autoplay prevented:', e));
-                this.innerHTML = '<i class="fas fa-volume-up"></i>';
-            } else {
-                music.pause();
-                this.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            }
-            
-            const musicSettings = {
-                enabled: CONFIG.musicEnabled,
-                volume: music.volume
-            };
-            localStorage.setItem('portfolioMusicSettings', JSON.stringify(musicSettings));
-        });
-
-        console.log('✅ Bottom music button initialized');
-    }
-}
-
-function initTheme() {
-    const savedTheme = localStorage.getItem('portfolioTheme') || 'dark';
-    setTheme(savedTheme);
-    
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
-        updateThemeIcon(savedTheme);
-    }
-}
-
-function toggleTheme() {
-    const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-}
-
-function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('portfolioTheme', theme);
-    updateThemeIcon(theme);
-}
-
-function updateThemeIcon(theme) {
-    const icon = document.querySelector('#themeToggle i');
-    if (icon) {
-        icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-    }
-}
-
-function initAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.fade-in, .service-card, .portfolio-item').forEach(el => {
-        observer.observe(el);
-    });
-
-    initCounters();
-    initSkillsAnimation();
-}
-
-function initCounters() {
-    const counters = document.querySelectorAll('.counter');
-    
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const counter = entry.target;
-                const target = +counter.getAttribute('data-target');
-                const duration = 2000;
-                const step = target / (duration / 16);
-                let current = 0;
-                
-                const updateCounter = () => {
-                    current += step;
-                    if (current < target) {
-                        counter.textContent = Math.ceil(current);
-                        requestAnimationFrame(updateCounter);
-                    } else {
-                        counter.textContent = target;
-                    }
-                };
-                
-                updateCounter();
-                counterObserver.unobserve(counter);
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    counters.forEach(counter => counterObserver.observe(counter));
-}
-
-function initSkillsAnimation() {
-    const skillBars = document.querySelectorAll('.skill-progress');
-    
-    const skillsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const skillBar = entry.target;
-                const width = skillBar.getAttribute('data-width');
-                skillBar.style.width = width + '%';
-                skillsObserver.unobserve(skillBar);
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    skillBars.forEach(bar => skillsObserver.observe(bar));
-}
-
-function initPageProgress() {
-    const progressBar = document.querySelector('.progress-bar');
-    if (!progressBar) return;
-
-    window.addEventListener('scroll', () => {
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight - windowHeight;
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const progress = (scrollTop / documentHeight) * 100;
-        
-        progressBar.style.width = progress + '%';
-    });
-}
-
 function initEventListeners() {
     initNavigation();
     initContactForm();
+    initNetworkMonitoring();
     
     window.addEventListener('load', () => {
         setTimeout(() => {
@@ -1375,62 +1690,30 @@ function initEventListeners() {
     });
 }
 
-function initNavigation() {
-    const menuBtn = document.getElementById('mobileMenuBtn');
-    const navbar = document.getElementById('navbar');
-    
-    if (menuBtn && navbar) {
-        menuBtn.addEventListener('click', () => {
-            navbar.classList.toggle('active');
-            menuBtn.innerHTML = navbar.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
-        });
+function initNetworkMonitoring() {
+    const networkStatus = document.createElement('div');
+    networkStatus.className = 'network-status';
+    networkStatus.id = 'networkStatus';
+    document.body.appendChild(networkStatus);
+
+    function updateNetworkStatus() {
+        if (navigator.onLine) {
+            networkStatus.textContent = 'Онлайн';
+            networkStatus.className = 'network-status online';
+            setTimeout(() => {
+                networkStatus.style.display = 'none';
+            }, 3000);
+        } else {
+            networkStatus.textContent = 'Офлайн';
+            networkStatus.className = 'network-status offline';
+            networkStatus.style.display = 'block';
+        }
     }
 
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    window.addEventListener('scroll', () => {
-        let current = '';
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            
-            if (pageYOffset >= sectionTop - 200) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
-        });
-    });
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const target = document.querySelector(targetId);
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-                
-                if (navbar && navbar.classList.contains('active')) {
-                    navbar.classList.remove('active');
-                    menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                }
-            }
-        });
-    });
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    
+    updateNetworkStatus();
 }
 
 function initContactForm() {
@@ -1454,304 +1737,76 @@ function initContactForm() {
     });
 }
 
+// =============================================
+// УВЕДОМЛЕНИЯ
+// =============================================
 function showNotification(message, type = 'info') {
     removeExistingNotifications();
     
     const notification = document.createElement('div');
-    notification.className = `notification ${type} slide-in`;
+    notification.className = `notification ${type}`;
     notification.innerHTML = `
         <div class="notification-content">
+            <i class="fas fa-${getNotificationIcon(type)}"></i>
             <div class="notification-message">${message}</div>
-            <button class="notification-close">
-                <i class="fas fa-times"></i>
-            </button>
         </div>
     `;
     
     document.body.appendChild(notification);
     
-    notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.remove();
-    });
+    setTimeout(() => notification.classList.add('show'), 100);
     
     setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 300);
     }, 5000);
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        success: 'check-circle',
+        error: 'exclamation-circle',
+        warning: 'exclamation-triangle',
+        info: 'info-circle'
+    };
+    return icons[type] || 'info-circle';
 }
 
 function removeExistingNotifications() {
     const existing = document.querySelectorAll('.notification');
-    existing.forEach(notification => notification.remove());
+    existing.forEach(notification => {
+        if (notification.classList.contains('show')) {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        } else {
+            notification.remove();
+        }
+    });
 }
 
-// Добавляем CSS анимации для нового фона
-const additionalStyles = `
-    @keyframes enhancedFloat {
-        0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
-        25% { transform: translateY(-30px) translateX(15px) rotate(90deg); }
-        50% { transform: translateY(-15px) translateX(30px) rotate(180deg); }
-        75% { transform: translateY(-25px) translateX(-15px) rotate(270deg); }
+// =============================================
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ
+// =============================================
+window.toggleCustomCursor = function(enabled) {
+    if (window.customCursor) {
+        window.customCursor.toggle(enabled);
     }
-    
-    @keyframes pulseCircle {
-        0% {
-            transform: scale(0.8);
-            opacity: 0;
-        }
-        50% {
-            opacity: 0.3;
-        }
-        100% {
-            transform: scale(2);
-            opacity: 0;
-        }
-    }
-    
-    .slide-in {
-        animation: slideIn 0.3s ease-out;
-    }
-    
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    .animate-in {
-        animation: fadeInUp 0.6s ease-out;
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--dark-light);
-        border: 1px solid var(--primary);
-        border-radius: var(--border-radius);
-        padding: 15px 20px;
-        min-width: 300px;
-        max-width: 500px;
-        z-index: 10000;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-    
-    .notification.success {
-        border-color: #00ff00;
-    }
-    
-    .notification.error {
-        border-color: #ff4444;
-    }
-    
-    .notification.info {
-        border-color: #4444ff;
-    }
-    
-    .notification-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-    }
-    
-    .notification-message {
-        color: var(--light);
-        flex: 1;
-    }
-    
-    .notification-close {
-        background: none;
-        border: none;
-        color: var(--gray);
-        cursor: pointer;
-        padding: 5px;
-        border-radius: 3px;
-        transition: var(--transition);
-    }
-    
-    .notification-close:hover {
-        color: var(--light);
-        background: rgba(255,255,255,0.1);
-    }
-    
-    .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        padding: 20px;
-    }
-    
-    .modal-content {
-        background: var(--dark-light);
-        border-radius: var(--border-radius);
-        padding: 30px;
-        max-width: 800px;
-        width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
-        position: relative;
-        border: 1px solid var(--primary);
-    }
-    
-    .modal-close {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        font-size: 24px;
-        color: var(--gray);
-        cursor: pointer;
-        transition: var(--transition);
-    }
-    
-    .modal-close:hover {
-        color: var(--light);
-    }
-    
-    .modal-header {
-        margin-bottom: 20px;
-        padding-right: 30px;
-    }
-    
-    .modal-body {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-    }
-    
-    @media (max-width: 768px) {
-        .modal-body {
-            grid-template-columns: 1fr;
-        }
-    }
-    
-    .project-image img {
-        width: 100%;
-        border-radius: var(--border-radius);
-        border: 1px solid rgba(124, 252, 0, 0.2);
-    }
-    
-    .project-info h3 {
-        color: var(--primary);
-        margin-bottom: 10px;
-    }
-    
-    .project-description,
-    .project-technologies,
-    .project-features {
-        margin-bottom: 20px;
-    }
-    
-    .tech-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    
-    .tech-tag {
-        background: rgba(124, 252, 0, 0.1);
-        color: var(--primary);
-        padding: 5px 10px;
-        border-radius: 15px;
-        font-size: 0.8rem;
-        border: 1px solid rgba(124, 252, 0, 0.2);
-    }
-    
-    .project-features ul {
-        list-style: none;
-        padding: 0;
-    }
-    
-    .project-features li {
-        padding: 5px 0;
-        color: var(--gray);
-        position: relative;
-        padding-left: 15px;
-    }
-    
-    .project-features li:before {
-        content: '▸';
-        color: var(--primary);
-        position: absolute;
-        left: 0;
-    }
-    
-    .project-links {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-    
-    .music-toggle-bottom {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: var(--primary);
-        border: none;
-        color: var(--dark);
-        font-size: 20px;
-        cursor: pointer;
-        z-index: 100;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(124, 252, 0, 0.3);
-    }
-    
-    .music-toggle-bottom:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(124, 252, 0, 0.5);
-    }
-    
-    .empty-portfolio {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 60px 20px;
-        color: var(--gray);
-    }
-    
-    .empty-portfolio i {
-        font-size: 4rem;
-        margin-bottom: 20px;
-        opacity: 0.5;
-    }
-    
-    .empty-portfolio h3 {
-        color: var(--gray);
-        margin-bottom: 15px;
-    }
-`;
+};
 
-const styleSheet = document.createElement('style');
-styleSheet.textContent = additionalStyles;
-document.head.appendChild(styleSheet);
+window.switchLanguage = switchLanguage;
+window.restoreDefaultProjects = restoreDefaultProjects;
+
+// Отладка
+window.debugProjects = function() {
+    console.log('=== PROJECTS DEBUG INFO ===');
+    console.log('Projects array:', projects);
+    console.log('LocalStorage data:', localStorage.getItem('portfolioProjects'));
+    console.log('Portfolio grid element:', document.getElementById('portfolioGrid'));
+    console.log('==========================');
+};
 
 console.log('🎨 Enhanced features loaded successfully!');

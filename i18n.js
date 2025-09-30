@@ -1,0 +1,317 @@
+// Мультиязычность
+class I18n {
+    constructor() {
+        this.currentLang = localStorage.getItem('portfolioLang') || 'ru';
+        this.translations = {};
+        this.init();
+    }
+
+    async init() {
+        await this.loadTranslations();
+        this.applyLanguage(this.currentLang);
+        this.initLanguageSwitcher();
+    }
+
+    async loadTranslations() {
+        try {
+            const response = await fetch('translations.json');
+            this.translations = await response.json();
+        } catch (error) {
+            console.error('Ошибка загрузки переводов:', error);
+            // Fallback переводы
+            this.translations = this.getFallbackTranslations();
+        }
+    }
+
+    getFallbackTranslations() {
+        return {
+            ru: {
+                // Навигация
+                "nav.home": "Главная",
+                "nav.about": "Обо мне",
+                "nav.services": "Услуги",
+                "nav.portfolio": "Портфолио",
+                "nav.contact": "Контакты",
+                "nav.admin": "Админка",
+
+                // Герой секция
+                "hero.title": "Привет, я <span>Districk</span>",
+                "hero.subtitle": "Фронтенд разработчик с опытом создания современных веб-приложений",
+                "hero.works": "Мои работы",
+                "hero.contact": "Связаться со мной",
+
+                // Обо мне
+                "about.title": "Обо мне",
+                "about.subtitle": "Узнайте больше о моих навыках и опыте",
+                "about.heading": "Я фронтенд разработчик из Москвы",
+                "about.description": "Занимаюсь разработкой пользовательских интерфейсов уже более 2 лет. Специализируюсь на создании современных, отзывчивых веб-приложений с использованием React, Svelte и чистого JavaScript.",
+                "about.projects": "Завершенных проектов",
+                "about.experience": "Года опыта",
+                "about.clients": "Довольных клиентов",
+                "about.contactBtn": "Связаться со мной",
+
+                // Навыки
+                "skills.html": "HTML/CSS",
+                "skills.design": "UI/UX Design",
+
+                // Услуги
+                "services.title": "Мои услуги",
+                "services.subtitle": "Что я могу предложить как фронтенд разработчик",
+                "services.webdev": "Веб-разработка",
+                "services.webdevDesc": "Создание современных, адаптивных веб-сайтов и веб-приложений с использованием передовых технологий.",
+                "services.responsive": "Адаптивный дизайн",
+                "services.responsiveDesc": "Разработка интерфейсов, которые идеально отображаются на всех устройствах и размерах экранов.",
+                "services.design": "UI/UX Дизайн",
+                "services.designDesc": "Создание интуитивно понятных и визуально привлекательных пользовательских интерфейсов.",
+                "services.optimization": "Оптимизация",
+                "services.optimizationDesc": "Повышение производительности и скорости загрузки веб-приложений для лучшего пользовательского опыта.",
+
+                // Портфолио
+                "portfolio.title": "Мои работы",
+                "portfolio.subtitle": "Примеры моих последних проектов",
+                "portfolio.all": "Все",
+                "portfolio.websites": "Веб-сайты",
+                "portfolio.apps": "Приложения",
+                "portfolio.design": "Дизайн",
+
+                // Контакты
+                "contact.title": "Контакты",
+                "contact.subtitle": "Свяжитесь со мной для сотрудничества",
+                "contact.email": "Email",
+                "contact.phone": "Телефон",
+                "contact.location": "Локация",
+                "contact.locationText": "Москва, Россия",
+                "contact.formName": "Ваше имя",
+                "contact.formEmail": "Ваш email",
+                "contact.formMessage": "Ваше сообщение",
+                "contact.send": "Отправить сообщение",
+
+                // Футер
+                "footer.text": "Создаю современные и функциональные веб-приложения",
+                "footer.rights": "Все права защищены.",
+
+                // PWA
+                "pwa.install": "Установить приложение",
+
+                // Загрузка
+                "loading": "Загрузка..."
+            },
+            en: {
+                "nav.home": "Home",
+                "nav.about": "About",
+                "nav.services": "Services",
+                "nav.portfolio": "Portfolio",
+                "nav.contact": "Contact",
+                "nav.admin": "Admin",
+
+                "hero.title": "Hello, I'm <span>Districk</span>",
+                "hero.subtitle": "Frontend developer with experience in creating modern web applications",
+                "hero.works": "My Works",
+                "hero.contact": "Contact Me",
+
+                "about.title": "About Me",
+                "about.subtitle": "Learn more about my skills and experience",
+                "about.heading": "I'm a frontend developer from Moscow",
+                "about.description": "I've been developing user interfaces for over 2 years. I specialize in creating modern, responsive web applications using React, Svelte and vanilla JavaScript.",
+                "about.projects": "Completed Projects",
+                "about.experience": "Years Experience",
+                "about.clients": "Happy Clients",
+                "about.contactBtn": "Contact Me",
+
+                "skills.html": "HTML/CSS",
+                "skills.design": "UI/UX Design",
+
+                "services.title": "My Services",
+                "services.subtitle": "What I can offer as a frontend developer",
+                "services.webdev": "Web Development",
+                "services.webdevDesc": "Creating modern, responsive websites and web applications using cutting-edge technologies.",
+                "services.responsive": "Responsive Design",
+                "services.responsiveDesc": "Developing interfaces that display perfectly on all devices and screen sizes.",
+                "services.design": "UI/UX Design",
+                "services.designDesc": "Creating intuitive and visually appealing user interfaces.",
+                "services.optimization": "Optimization",
+                "services.optimizationDesc": "Improving performance and loading speed of web applications for better user experience.",
+
+                "portfolio.title": "My Works",
+                "portfolio.subtitle": "Examples of my recent projects",
+                "portfolio.all": "All",
+                "portfolio.websites": "Websites",
+                "portfolio.apps": "Applications",
+                "portfolio.design": "Design",
+
+                "contact.title": "Contact",
+                "contact.subtitle": "Get in touch for collaboration",
+                "contact.email": "Email",
+                "contact.phone": "Phone",
+                "contact.location": "Location",
+                "contact.locationText": "Moscow, Russia",
+                "contact.formName": "Your Name",
+                "contact.formEmail": "Your Email",
+                "contact.formMessage": "Your Message",
+                "contact.send": "Send Message",
+
+                "footer.text": "Creating modern and functional web applications",
+                "footer.rights": "All rights reserved.",
+
+                "pwa.install": "Install App",
+
+                "loading": "Loading..."
+            },
+            es: {
+                "nav.home": "Inicio",
+                "nav.about": "Sobre Mí",
+                "nav.services": "Servicios",
+                "nav.portfolio": "Portafolio",
+                "nav.contact": "Contacto",
+                "nav.admin": "Admin",
+
+                "hero.title": "Hola, soy <span>Districk</span>",
+                "hero.subtitle": "Desarrollador frontend con experiencia en crear aplicaciones web modernas",
+                "hero.works": "Mis Trabajos",
+                "hero.contact": "Contáctame",
+
+                "about.title": "Sobre Mí",
+                "about.subtitle": "Conoce más sobre mis habilidades y experiencia",
+                "about.heading": "Soy desarrollador frontend de Moscú",
+                "about.description": "Llevo más de 2 años desarrollando interfaces de usuario. Me especializo en crear aplicaciones web modernas y responsivas usando React, Svelte y JavaScript vanilla.",
+                "about.projects": "Proyectos Completados",
+                "about.experience": "Años de Experiencia",
+                "about.clients": "Clientes Satisfechos",
+                "about.contactBtn": "Contáctame",
+
+                "skills.html": "HTML/CSS",
+                "skills.design": "Diseño UI/UX",
+
+                "services.title": "Mis Servicios",
+                "services.subtitle": "Lo que puedo ofrecer como desarrollador frontend",
+                "services.webdev": "Desarrollo Web",
+                "services.webdevDesc": "Creación de sitios web y aplicaciones web modernas y responsivas usando tecnologías de vanguardia.",
+                "services.responsive": "Diseño Responsive",
+                "services.responsiveDesc": "Desarrollo de interfaces que se muestran perfectamente en todos los dispositivos y tamaños de pantalla.",
+                "services.design": "Diseño UI/UX",
+                "services.designDesc": "Creación de interfaces de usuario intuitivas y visualmente atractivas.",
+                "services.optimization": "Optimización",
+                "services.optimizationDesc": "Mejora del rendimiento y velocidad de carga de aplicaciones web para una mejor experiencia de usuario.",
+
+                "portfolio.title": "Mis Trabajos",
+                "portfolio.subtitle": "Ejemplos de mis proyectos recientes",
+                "portfolio.all": "Todos",
+                "portfolio.websites": "Sitios Web",
+                "portfolio.apps": "Aplicaciones",
+                "portfolio.design": "Diseño",
+
+                "contact.title": "Contacto",
+                "contact.subtitle": "Ponte en contacto para colaborar",
+                "contact.email": "Email",
+                "contact.phone": "Teléfono",
+                "contact.location": "Ubicación",
+                "contact.locationText": "Moscú, Rusia",
+                "contact.formName": "Tu Nombre",
+                "contact.formEmail": "Tu Email",
+                "contact.formMessage": "Tu Mensaje",
+                "contact.send": "Enviar Mensaje",
+
+                "footer.text": "Creando aplicaciones web modernas y funcionales",
+                "footer.rights": "Todos los derechos reservados.",
+
+                "pwa.install": "Instalar App",
+
+                "loading": "Cargando..."
+            }
+        };
+    }
+
+    applyLanguage(lang) {
+        this.currentLang = lang;
+        localStorage.setItem('portfolioLang', lang);
+        document.documentElement.lang = lang;
+
+        // Обновляем все элементы с data-i18n атрибутом
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (this.translations[lang] && this.translations[lang][key]) {
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    element.value = this.translations[lang][key];
+                } else {
+                    element.innerHTML = this.translations[lang][key];
+                }
+            }
+        });
+
+        // Обновляем placeholder'ы
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+            const key = element.getAttribute('data-i18n-placeholder');
+            if (this.translations[lang] && this.translations[lang][key]) {
+                element.placeholder = this.translations[lang][key];
+            }
+        });
+
+        // Обновляем активную кнопку языка
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+
+        // Обновляем мета-теги для SEO
+        this.updateMetaTags(lang);
+
+        // Отправляем событие смены языка
+        window.dispatchEvent(new CustomEvent('languageChanged', { detail: lang }));
+    }
+
+    updateMetaTags(lang) {
+        // Обновляем meta description
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription && this.translations[lang] && this.translations[lang]['meta.description']) {
+            metaDescription.content = this.translations[lang]['meta.description'];
+        }
+
+        // Обновляем title
+        const title = document.querySelector('title');
+        if (title && this.translations[lang] && this.translations[lang]['meta.title']) {
+            title.textContent = this.translations[lang]['meta.title'];
+        }
+
+        // Обновляем Open Graph
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        const ogDescription = document.querySelector('meta[property="og:description"]');
+        
+        if (ogTitle && this.translations[lang] && this.translations[lang]['og.title']) {
+            ogTitle.content = this.translations[lang]['og.title'];
+        }
+        if (ogDescription && this.translations[lang] && this.translations[lang]['og.description']) {
+            ogDescription.content = this.translations[lang]['og.description'];
+        }
+    }
+
+    initLanguageSwitcher() {
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.dataset.lang;
+                this.applyLanguage(lang);
+            });
+        });
+    }
+
+    // Получить перевод по ключу
+    t(key) {
+        return this.translations[this.currentLang]?.[key] || key;
+    }
+
+    // Динамическое добавление переводов
+    addTranslations(lang, newTranslations) {
+        if (!this.translations[lang]) {
+            this.translations[lang] = {};
+        }
+        Object.assign(this.translations[lang], newTranslations);
+    }
+}
+
+// Инициализация мультиязычности
+let i18n;
+
+document.addEventListener('DOMContentLoaded', () => {
+    i18n = new I18n();
+});
+
+// Глобальный экспорт
+window.i18n = i18n;

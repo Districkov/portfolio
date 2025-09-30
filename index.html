@@ -3,12 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Фронтенд разработчик | Портфолио</title>
+    <title>Districk - Фронтенд разработчик | Портфолио</title>
+    <meta name="description" content="Фронтенд разработчик с опытом создания современных веб-приложений. HTML, CSS, JavaScript, React, Svelte.">
+    <meta name="keywords" content="фронтенд разработчик, веб-разработка, JavaScript, React, портфолио">
+    <meta name="author" content="Districk">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#7cfc00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Districk Portfolio">
+    <meta name="msapplication-TileColor" content="#7cfc00">
+    <meta name="msapplication-config" content="/icons/browserconfig.xml">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Districk - Фронтенд разработчик">
+    <meta property="og:description" content="Портфолио фронтенд разработчика с современными проектами">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:image" content="/images/og-image.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Districk - Фронтенд разработчик">
+    <meta name="twitter:description" content="Портфолио фронтенд разработчика с современными проектами">
+    <meta name="twitter:image" content="/images/og-image.jpg">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#7cfc00">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="customCursor"></div>
+    
+    <!-- Language Switcher -->
+    <div class="language-switcher" id="languageSwitcher">
+        <button class="lang-btn active" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="es">ES</button>
+    </div>
+
     <!-- Dynamic Background -->
     <div class="dynamic-bg" id="dynamic-bg"></div>
 
@@ -23,7 +68,7 @@
     <!-- Preloader -->
     <div class="preloader" id="preloader">
         <div class="loader">
-            <div class="loader-text">Загрузка...</div>
+            <div class="loader-text" data-i18n="loading">Загрузка...</div>
             <div class="loader-spinner"></div>
         </div>
     </div>
@@ -35,17 +80,15 @@
                 <div class="logo">Dis<span>Portfolio</span></div>
                 <nav id="navbar">
                     <ul>
-                        <li><a href="#home" class="nav-link active">Главная</a></li>
-                        <li><a href="#about" class="nav-link">Обо мне</a></li>
-                        <li><a href="#services" class="nav-link">Услуги</a></li>
-                        <li><a href="#portfolio" class="nav-link">Портфолио</a></li>
-                        <li><a href="#contact" class="nav-link">Контакты</a></li>
-                        <li><a href="admin.html" class="nav-link admin-link"><i class="fas fa-lock"></i> Админка</a></li>
+                        <li><a href="#home" class="nav-link active" data-i18n="nav.home">Главная</a></li>
+                        <li><a href="#about" class="nav-link" data-i18n="nav.about">Обо мне</a></li>
+                        <li><a href="#services" class="nav-link" data-i18n="nav.services">Услуги</a></li>
+                        <li><a href="#portfolio" class="nav-link" data-i18n="nav.portfolio">Портфолио</a></li>
+                        <li><a href="#contact" class="nav-link" data-i18n="nav.contact">Контакты</a></li>
+                        <li><a href="admin.html" class="nav-link admin-link"><i class="fas fa-lock"></i> <span data-i18n="nav.admin">Админка</span></a></li>
                     </ul>
                 </nav>
                 <div class="header-actions">
-                    
-                    </button>
                     <button class="theme-toggle" id="themeToggle" title="Переключить тему">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -61,11 +104,11 @@
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
-                <h1 class="typewriter">Привет, я <span>Districk</span></h1>
-                <p>Фронтенд разработчик с опытом создания современных веб-приложений</p>
+                <h1 class="typewriter" data-i18n="hero.title">Привет, я <span>Districk</span></h1>
+                <p data-i18n="hero.subtitle">Фронтенд разработчик с опытом создания современных веб-приложений</p>
                 <div class="hero-btns">
-                    <a href="#portfolio" class="btn floating-btn">Мои работы</a>
-                    <a href="#contact" class="btn btn-outline glow-effect">Связаться со мной</a>    
+                    <a href="#portfolio" class="btn floating-btn" data-i18n="hero.works">Мои работы</a>
+                    <a href="#contact" class="btn btn-outline glow-effect" data-i18n="hero.contact">Связаться со мной</a>    
                 </div>
             </div>
         </div>
@@ -75,33 +118,33 @@
     <section class="about" id="about">
         <div class="container">
             <div class="section-title">
-                <h2>Обо мне</h2>
-                <p>Узнайте больше о моих навыках и опыте</p>
+                <h2 data-i18n="about.title">Обо мне</h2>
+                <p data-i18n="about.subtitle">Узнайте больше о моих навыках и опыте</p>
             </div>
             <div class="about-content">
                 <div class="about-text">
-                    <h2>Я фронтенд разработчик из Москвы</h2>
-                    <p>Занимаюсь разработкой пользовательских интерфейсов уже более 2 лет. Специализируюсь на создании современных, отзывчивых веб-приложений с использованием React, Svelte и чистого JavaScript.</p>
+                    <h2 data-i18n="about.heading">Я фронтенд разработчик из Москвы</h2>
+                    <p data-i18n="about.description">Занимаюсь разработкой пользовательских интерфейсов уже более 2 лет. Специализируюсь на создании современных, отзывчивых веб-приложений с использованием React, Svelte и чистого JavaScript.</p>
                     <div class="stats">
                         <div class="stat-item">
                             <div class="counter" data-target="10">0</div>
-                            <span>Завершенных проектов</span>
+                            <span data-i18n="about.projects">Завершенных проектов</span>
                         </div>
                         <div class="stat-item">
                             <div class="counter" data-target="2">0</div>
-                            <span>Года опыта</span>
+                            <span data-i18n="about.experience">Года опыта</span>
                         </div>
                         <div class="stat-item">
                             <div class="counter" data-target="6">0</div>
-                            <span>Довольных клиентов</span>
+                            <span data-i18n="about.clients">Довольных клиентов</span>
                         </div>
                     </div>
-                    <a href="#contact" class="btn">Связаться со мной</a>
+                    <a href="#contact" class="btn" data-i18n="about.contactBtn">Связаться со мной</a>
                 </div>
                 <div class="about-skills">
                     <div class="skill-item">
                         <div class="skill-header">
-                            <span>HTML/CSS</span>
+                            <span data-i18n="skills.html">HTML/CSS</span>
                             <span>95%</span>
                         </div>
                         <div class="skill-bar">
@@ -137,7 +180,7 @@
                     </div>
                     <div class="skill-item">
                         <div class="skill-header">
-                            <span>UI/UX Design</span>
+                            <span data-i18n="skills.design">UI/UX Design</span>
                             <span>75%</span>
                         </div>
                         <div class="skill-bar">
@@ -153,37 +196,37 @@
     <section class="services" id="services">
         <div class="container">
             <div class="section-title">
-                <h2>Мои услуги</h2>
-                <p>Что я могу предложить как фронтенд разработчик</p>
+                <h2 data-i18n="services.title">Мои услуги</h2>
+                <p data-i18n="services.subtitle">Что я могу предложить как фронтенд разработчик</p>
             </div>
             <div class="services-grid">
                 <div class="service-card fade-in">
                     <div class="service-icon">
                         <i class="fas fa-laptop-code"></i>
                     </div>
-                    <h3>Веб-разработка</h3>
-                    <p>Создание современных, адаптивных веб-сайтов и веб-приложений с использованием передовых технологий.</p>
+                    <h3 data-i18n="services.webdev">Веб-разработка</h3>
+                    <p data-i18n="services.webdevDesc">Создание современных, адаптивных веб-сайтов и веб-приложений с использованием передовых технологий.</p>
                 </div>
                 <div class="service-card fade-in">
                     <div class="service-icon">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
-                    <h3>Адаптивный дизайн</h3>
-                    <p>Разработка интерфейсов, которые идеально отображаются на всех устройствах и размерах экранов.</p>
+                    <h3 data-i18n="services.responsive">Адаптивный дизайн</h3>
+                    <p data-i18n="services.responsiveDesc">Разработка интерфейсов, которые идеально отображаются на всех устройствах и размерах экранов.</p>
                 </div>
                 <div class="service-card fade-in">
                     <div class="service-icon">
                         <i class="fas fa-paint-brush"></i>
                     </div>
-                    <h3>UI/UX Дизайн</h3>
-                    <p>Создание интуитивно понятных и визуально привлекательных пользовательских интерфейсов.</p>
+                    <h3 data-i18n="services.design">UI/UX Дизайн</h3>
+                    <p data-i18n="services.designDesc">Создание интуитивно понятных и визуально привлекательных пользовательских интерфейсов.</p>
                 </div>
                 <div class="service-card fade-in">
                     <div class="service-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h3>Оптимизация</h3>
-                    <p>Повышение производительности и скорости загрузки веб-приложений для лучшего пользовательского опыта.</p>
+                    <h3 data-i18n="services.optimization">Оптимизация</h3>
+                    <p data-i18n="services.optimizationDesc">Повышение производительности и скорости загрузки веб-приложений для лучшего пользовательского опыта.</p>
                 </div>
             </div>
         </div>
@@ -193,14 +236,14 @@
     <section class="portfolio" id="portfolio">
         <div class="container">
             <div class="section-title">
-                <h2>Мои работы</h2>
-                <p>Примеры моих последних проектов</p>
+                <h2 data-i18n="portfolio.title">Мои работы</h2>
+                <p data-i18n="portfolio.subtitle">Примеры моих последних проектов</p>
             </div>
             <div class="portfolio-filter">
-                <button class="filter-btn active" data-filter="all">Все</button>
-                <button class="filter-btn" data-filter="web">Веб-сайты</button>
-                <button class="filter-btn" data-filter="app">Приложения</button>
-                <button class="filter-btn" data-filter="design">Дизайн</button>
+                <button class="filter-btn active" data-filter="all" data-i18n="portfolio.all">Все</button>
+                <button class="filter-btn" data-filter="web" data-i18n="portfolio.websites">Веб-сайты</button>
+                <button class="filter-btn" data-filter="app" data-i18n="portfolio.apps">Приложения</button>
+                <button class="filter-btn" data-filter="design" data-i18n="portfolio.design">Дизайн</button>
             </div>
             <div class="portfolio-grid" id="portfolioGrid">
                 <!-- Projects will be loaded here -->
@@ -212,8 +255,8 @@
     <section class="contact" id="contact">
         <div class="container">
             <div class="section-title">
-                <h2>Контакты</h2>
-                <p>Свяжитесь со мной для сотрудничества</p>
+                <h2 data-i18n="contact.title">Контакты</h2>
+                <p data-i18n="contact.subtitle">Свяжитесь со мной для сотрудничества</p>
             </div>
             <div class="contact-content">
                 <div class="contact-info">
@@ -222,7 +265,7 @@
                             <i class="fas fa-envelope"></i>
                         </div>
                         <div class="contact-details">
-                            <h3>Email</h3>
+                            <h3 data-i18n="contact.email">Email</h3>
                             <p>districkov@yandex.ru</p>
                         </div>
                     </div>
@@ -231,7 +274,7 @@
                             <i class="fas fa-phone"></i>
                         </div>
                         <div class="contact-details">
-                            <h3>Телефон</h3>
+                            <h3 data-i18n="contact.phone">Телефон</h3>
                             <p>+7 (999) 999-99-99</p>
                         </div>
                     </div>
@@ -240,8 +283,8 @@
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
                         <div class="contact-details">
-                            <h3>Локация</h3>
-                            <p>Москва, Россия</p>
+                            <h3 data-i18n="contact.location">Локация</h3>
+                            <p data-i18n="contact.locationText">Москва, Россия</p>
                         </div>
                     </div>
                     <div class="social-links">
@@ -258,16 +301,16 @@
                 </div>
                 <form class="contact-form" id="contactForm">
                     <div class="form-group">
-                        <input type="text" id="name" placeholder="Ваше имя" required>
+                        <input type="text" id="name" placeholder="Ваше имя" required data-i18n-placeholder="contact.formName">
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email" placeholder="Ваш email" required>
+                        <input type="email" id="email" placeholder="Ваш email" required data-i18n-placeholder="contact.formEmail">
                     </div>
                     <div class="form-group">
-                        <textarea id="message" placeholder="Ваше сообщение" required></textarea>
+                        <textarea id="message" placeholder="Ваше сообщение" required data-i18n-placeholder="contact.formMessage"></textarea>
                     </div>
                     <button type="submit" class="btn">
-                        <i class="fas fa-paper-plane"></i> Отправить сообщение
+                        <i class="fas fa-paper-plane"></i> <span data-i18n="contact.send">Отправить сообщение</span>
                     </button>
                 </form>
             </div>
@@ -279,17 +322,17 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">Dis<span>Portfolio</span></div>
-                <p class="footer-text">Создаю современные и функциональные веб-приложения</p>
+                <p class="footer-text" data-i18n="footer.text">Создаю современные и функциональные веб-приложения</p>
                 <div class="footer-links">
-                    <a href="#home">Главная</a>
-                    <a href="#about">Обо мне</a>
-                    <a href="#portfolio">Портфолио</a>
-                    <a href="#contact">Контакты</a>
-                    <a href="admin.html">Админка</a>
+                    <a href="#home" data-i18n="nav.home">Главная</a>
+                    <a href="#about" data-i18n="nav.about">Обо мне</a>
+                    <a href="#portfolio" data-i18n="nav.portfolio">Портфолио</a>
+                    <a href="#contact" data-i18n="nav.contact">Контакты</a>
+                    <a href="admin.html" data-i18n="nav.admin">Админка</a>
                 </div>
             </div>
             <div class="copyright">
-                &copy; 2025 Districk Portfolio. Все права защищены.
+                &copy; 2025 Districk Portfolio. <span data-i18n="footer.rights">Все права защищены.</span>
             </div>
         </div>
     </footer>
@@ -299,11 +342,19 @@
         <i class="fas fa-volume-up"></i>
     </button>
 
+    <!-- Install PWA Button -->
+    <button class="pwa-install-btn" id="pwaInstallBtn" style="display: none;">
+        <i class="fas fa-download"></i>
+        <span data-i18n="pwa.install">Установить приложение</span>
+    </button>
+
     <!-- Audio Element -->
     <audio id="backgroundMusic" loop>
         <source src="music/ambient.mp3" type="audio/mpeg">
     </audio>
 
     <script src="script.js"></script>
+    <script src="pwa.js"></script>
+    <script src="i18n.js"></script>
 </body>
 </html>
