@@ -332,8 +332,6 @@ function initEnhancedDynamicBackground() {
         left: 0;
         width: 100%;
         height: 100%;
-        background: radial-gradient(circle at 30% 30%, rgba(124, 252, 0, 0.1) 0%, transparent 50%),
-                   radial-gradient(circle at 70% 70%, rgba(124, 252, 0, 0.05) 0%, transparent 50%);
         z-index: 1;
     `;
     bgContainer.appendChild(gradientOverlay);
