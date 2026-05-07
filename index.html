@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Персональное портфолио разработчика — проекты, навыки, опыт работы">
+  <meta property="og:title" content="Портфолио разработчика">
+  <meta property="og:description" content="Персональное портфолио разработчика — проекты, навыки, опыт работы">
+  <meta property="og:type" content="website">
+  <title>Портфолио разработчика</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <canvas id="particles-canvas"></canvas>
+
+  <header>
+    <div class="container">
+      <a href="#hero" class="logo">&lt;dev /&gt;</a>
+      <nav>
+        <a href="#about">Обо мне</a>
+        <a href="#skills">Навыки</a>
+        <a href="#projects">Проекты</a>
+        <a href="#experience">Опыт</a>
+        <a href="#contact">Контакты</a>
+        <button class="theme-toggle" aria-label="Переключить тему">☀</button>
+      </nav>
+      <button class="hamburger" aria-label="Меню">☰</button>
+    </div>
+  </header>
+
+  <div class="mobile-nav">
+    <a href="#about">Обо мне</a>
+    <a href="#skills">Навыки</a>
+    <a href="#projects">Проекты</a>
+    <a href="#experience">Опыт</a>
+    <a href="#contact">Контакты</a>
+  </div>
+
+  <div class="social-sidebar">
+    <a href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub">GH</a>
+    <a href="https://t.me/" target="_blank" rel="noopener" aria-label="Telegram">TG</a>
+    <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+  </div>
+
+  <section id="hero" class="hero">
+    <div class="container">
+      <div class="hero-content fade-in">
+        <p class="hero-greeting">console.log("Hello, World!");</p>
+        <h1 class="hero-title">Привет, я Разработчик</h1>
+        <p class="hero-subtitle">Fullstack-разработчик, создающий современные веб-приложения с чистым кодом и вниманием к деталям</p>
+        <div class="hero-buttons">
+          <a href="#projects" class="btn btn-primary">Мои проекты ↓</a>
+          <a href="#contact" class="btn btn-outline">Связаться →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title fade-in">Обо мне</h2>
+      <p class="section-subtitle fade-in">Немного о том, кто я и чем занимаюсь</p>
+      <div class="about-grid fade-in">
+        <div class="about-avatar">
+          <img src="assets/images/avatar-placeholder.svg" alt="Аватар" loading="lazy">
+        </div>
+        <div class="about-text">
+          <p>Я — <strong>Fullstack-разработчик</strong> с опытом создания современных веб-приложений. Мне нравится решать сложные задачи и превращать идеи в работающие продукты.</p>
+          <p>Специализируюсь на <strong>JavaScript/TypeScript</strong> экосистеме, работаю как с фронтендом, так и с бэкендом. Уверен, что хороший код — это не только работающее решение, но и чистая архитектура.</p>
+          <p>В свободное время изучаю новые технологии, участвую в open-source проектах и делюсь опытом через статьи и выступления.</p>
+          <div class="about-links">
+            <a href="#" class="btn btn-outline" download>Резюме ↓</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title fade-in">Навыки</h2>
+      <p class="section-subtitle fade-in">Технологии и инструменты, с которыми я работаю</p>
+      <div class="skills-categories">
+        <div class="skill-category fade-in">
+          <h3>Языки</h3>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">JavaScript</span><span class="skill-percent">90%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">TypeScript</span><span class="skill-percent">85%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">Python</span><span class="skill-percent">75%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="75"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">HTML / CSS</span><span class="skill-percent">95%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="95"></div></div>
+          </div>
+        </div>
+        <div class="skill-category fade-in">
+          <h3>Фреймворки</h3>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">React</span><span class="skill-percent">90%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">Next.js</span><span class="skill-percent">80%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="80"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">Node.js</span><span class="skill-percent">85%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">Express</span><span class="skill-percent">80%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="80"></div></div>
+          </div>
+        </div>
+        <div class="skill-category fade-in">
+          <h3>Инструменты</h3>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">Git / GitHub</span><span class="skill-percent">90%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">Docker</span><span class="skill-percent">70%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="70"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">VS Code</span><span class="skill-percent">95%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="95"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">Figma</span><span class="skill-percent">65%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="65"></div></div>
+          </div>
+        </div>
+        <div class="skill-category fade-in">
+          <h3>Прочее</h3>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">REST API</span><span class="skill-percent">90%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">PostgreSQL</span><span class="skill-percent">75%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="75"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">MongoDB</span><span class="skill-percent">70%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="70"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">CI/CD</span><span class="skill-percent">65%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-percent="65"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title fade-in">Проекты</h2>
+      <p class="section-subtitle fade-in">Избранные проекты, над которыми я работал</p>
+      <div class="projects-filters fade-in">
+        <button class="filter-btn active" data-filter="all">Все</button>
+        <button class="filter-btn" data-filter="frontend">Frontend</button>
+        <button class="filter-btn" data-filter="backend">Backend</button>
+        <button class="filter-btn" data-filter="fullstack">Fullstack</button>
+      </div>
+      <div class="projects-grid">
+        <div class="project-card fade-in" data-category="fullstack">
+          <div class="project-image">
+            <span class="project-image-placeholder">📁</span>
+            <div class="project-overlay">
+              <a href="#" target="_blank" rel="noopener">GitHub</a>
+              <a href="#" target="_blank" rel="noopener">Демо</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>E-commerce платформа</h3>
+            <p>Полноценный интернет-магазин с корзиной, оплатой и панелью администратора</p>
+            <div class="project-tags"><span>React</span><span>Node.js</span><span>MongoDB</span></div>
+          </div>
+        </div>
+        <div class="project-card fade-in" data-category="frontend">
+          <div class="project-image">
+            <span class="project-image-placeholder">📁</span>
+            <div class="project-overlay">
+              <a href="#" target="_blank" rel="noopener">GitHub</a>
+              <a href="#" target="_blank" rel="noopener">Демо</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>Дашборд аналитики</h3>
+            <p>Интерактивная панель с графиками, фильтрами и экспортом данных в PDF</p>
+            <div class="project-tags"><span>React</span><span>Chart.js</span><span>Tailwind</span></div>
+          </div>
+        </div>
+        <div class="project-card fade-in" data-category="backend">
+          <div class="project-image">
+            <span class="project-image-placeholder">📁</span>
+            <div class="project-overlay">
+              <a href="#" target="_blank" rel="noopener">GitHub</a>
+              <a href="#" target="_blank" rel="noopener">API Docs</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>REST API сервис</h3>
+            <p>Микросервисная архитектура с аутентификацией, кэшированием и документацией</p>
+            <div class="project-tags"><span>Node.js</span><span>Express</span><span>PostgreSQL</span></div>
+          </div>
+        </div>
+        <div class="project-card fade-in" data-category="fullstack">
+          <div class="project-image">
+            <span class="project-image-placeholder">📁</span>
+            <div class="project-overlay">
+              <a href="#" target="_blank" rel="noopener">GitHub</a>
+              <a href="#" target="_blank" rel="noopener">Демо</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>Мессенджер</h3>
+            <p>Real-time чат с WebSocket, уведомлениями, поиском и шифрованием сообщений</p>
+            <div class="project-tags"><span>Next.js</span><span>Socket.io</span><span>Redis</span></div>
+          </div>
+        </div>
+        <div class="project-card fade-in" data-category="frontend">
+          <div class="project-image">
+            <span class="project-image-placeholder">📁</span>
+            <div class="project-overlay">
+              <a href="#" target="_blank" rel="noopener">GitHub</a>
+              <a href="#" target="_blank" rel="noopener">Демо</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>UI компонент-библиотека</h3>
+            <p>Набор кастомизируемых React-компонентов с Storybook и тестами</p>
+            <div class="project-tags"><span>React</span><span>Storybook</span><span>Jest</span></div>
+          </div>
+        </div>
+        <div class="project-card fade-in" data-category="backend">
+          <div class="project-image">
+            <span class="project-image-placeholder">📁</span>
+            <div class="project-overlay">
+              <a href="#" target="_blank" rel="noopener">GitHub</a>
+              <a href="#" target="_blank" rel="noopener">API Docs</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>Система авторизации</h3>
+            <p>OAuth 2.0 сервер с JWT, refresh-токенами и двухфакторной аутентификацией</p>
+            <div class="project-tags"><span>Node.js</span><span>JWT</span><span>Docker</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="container">
+      <h2 class="section-title fade-in">Опыт работы</h2>
+      <p class="section-subtitle fade-in">Мой профессиональный путь</p>
+      <div class="timeline fade-in">
+        <div class="timeline-item">
+          <p class="timeline-date">2023 — настоящее время</p>
+          <h3 class="timeline-role">Senior Fullstack Developer</h3>
+          <p class="timeline-company">Tech Company</p>
+          <p class="timeline-desc">Руковожу разработкой микросервисной платформы. Внедрил CI/CD, оптимизировал производительность на 40%, менторю junior-разработчиков.</p>
+        </div>
+        <div class="timeline-item">
+          <p class="timeline-date">2021 — 2023</p>
+          <h3 class="timeline-role">Middle Frontend Developer</h3>
+          <p class="timeline-company">Digital Agency</p>
+          <p class="timeline-desc">Разрабатывал SPA-приложения на React. Создал дизайн-систему, сократившая время разработки UI на 30%. Участвовал в code review.</p>
+        </div>
+        <div class="timeline-item">
+          <p class="timeline-date">2019 — 2021</p>
+          <h3 class="timeline-role">Junior Developer</h3>
+          <p class="timeline-company">Startup</p>
+          <p class="timeline-desc">Начал с вёрстки и простых сайтов, быстро вырос до fullstack-задач. Работал с React и Node.js, внедрил автоматическое тестирование.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title fade-in">Контакты</h2>
+      <p class="section-subtitle fade-in">Свяжитесь со мной для сотрудничества или вопросов</p>
+      <div class="contact-grid">
+        <form class="contact-form fade-in" onsubmit="return false;">
+          <input type="text" placeholder="Ваше имя" required>
+          <input type="email" placeholder="Ваш email" required>
+          <textarea placeholder="Сообщение" required></textarea>
+          <button type="submit" class="btn btn-primary">Отправить →</button>
+        </form>
+        <div class="contact-info fade-in">
+          <h3>Как меня найти</h3>
+          <div class="contact-info-item">
+            <span class="icon">✉</span>
+            <span>developer@email.com</span>
+          </div>
+          <div class="contact-info-item">
+            <span class="icon">📍</span>
+            <span>Москва, Россия</span>
+          </div>
+          <div class="contact-info-item">
+            <span class="icon">⏰</span>
+            <span>Отвечаю в течение 24 часов</span>
+          </div>
+          <div class="contact-socials">
+            <a href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub">GH</a>
+            <a href="https://t.me/" target="_blank" rel="noopener" aria-label="Telegram">TG</a>
+            <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <p>&copy; 2026 Портфолио разработчика. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <button class="back-to-top" aria-label="Наверх">↑</button>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
