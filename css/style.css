@@ -281,6 +281,11 @@ section {
   to { opacity: 1; transform: translateX(0); }
 }
 
+@keyframes fade-in-right {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -502,7 +507,7 @@ nav a.active::after {
   flex: 0 0 380px;
   max-width: 380px;
   position: relative;
-  animation: slide-in-left 0.8s ease both;
+  animation: fade-in-right 0.8s ease both;
 }
 
 .code-window {
@@ -638,8 +643,7 @@ nav a.active::after {
 .hero-content {
   flex: 1;
   max-width: 600px;
-  text-align: right;
-  margin-left: auto;
+  text-align: left;
   animation: slide-up 0.6s ease both;
   overflow: hidden;
   min-width: 0;
@@ -652,14 +656,13 @@ nav a.active::after {
   margin-bottom: 16px;
   font-family: var(--font-mono);
 }
-
 .hero-title {
   font-size: 3.5rem;
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 20px;
   width: 100%;
-  text-align: right;
+  text-align: left;
   overflow: hidden;
 }
 
@@ -667,7 +670,7 @@ nav a.active::after {
   display: block;
   width: 100%;
   position: relative;
-  text-align: right;
+  text-align: left;
 }
 
 .accent-text {
@@ -695,14 +698,12 @@ nav a.active::after {
   margin-bottom: 40px;
   max-width: 540px;
   line-height: 1.6;
-  margin-left: auto;
 }
 
 .hero-buttons {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
-  justify-content: flex-end;
 }
 
 .social-sidebar {
@@ -1439,7 +1440,7 @@ footer .footer-links a:hover {
   }
 
   .hero-interactive {
-    max-width: 400px;
+    max-width: 340px;
   }
 
   .hero-content {
@@ -1447,8 +1448,16 @@ footer .footer-links a:hover {
     max-width: 100%;
   }
 
+  .hero-title {
+    text-align: center;
+  }
+
+  .typing-line {
+    text-align: center;
+  }
+
   .hero-subtitle {
-    margin-left: 0;
+    max-width: 100%;
   }
 
   .hero-buttons {
@@ -1483,16 +1492,21 @@ footer .footer-links a:hover {
     text-align: center;
   }
 
+  .hero-title {
+    text-align: center;
+    font-size: 2rem;
+  }
+
+  .typing-line {
+    text-align: center;
+  }
+
   .hero-subtitle {
-    margin-left: 0;
+    max-width: 100%;
   }
 
   .hero-buttons {
     justify-content: center;
-  }
-
-  .hero-title {
-    font-size: 2rem;
   }
 
   .about-grid {
