@@ -495,13 +495,12 @@ nav a.active::after {
 .hero .container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 80px;
+  gap: 60px;
 }
 
 .hero-interactive {
-  flex: 0 0 50%;
-  max-width: 500px;
+  flex: 0 0 42%;
+  max-width: 460px;
   position: relative;
   animation: slide-in-left 0.8s ease both;
 }
@@ -637,8 +636,8 @@ nav a.active::after {
 }
 
 .hero-content {
-  flex: 0 0 35%;
-  max-width: 400px;
+  flex: 1;
+  max-width: 520px;
   text-align: right;
   margin-left: auto;
   animation: slide-up 0.6s ease both;
@@ -654,7 +653,7 @@ nav a.active::after {
 }
 
 .hero-title {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 20px;
@@ -690,10 +689,10 @@ nav a.active::after {
 }
 
 .hero-subtitle {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   color: var(--text-secondary);
   margin-bottom: 40px;
-  max-width: 380px;
+  max-width: 460px;
   line-height: 1.6;
   margin-left: auto;
 }
