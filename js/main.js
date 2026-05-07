@@ -344,16 +344,13 @@
   var heroInteractive = document.getElementById('hero-interactive');
   var badges = document.querySelectorAll('.floating-badge');
 
-  if (codeWindow && heroInteractive) {
+  if (heroInteractive) {
     heroInteractive.addEventListener('mousemove', function (e) {
       var rect = heroInteractive.getBoundingClientRect();
       var x = e.clientX - rect.left;
       var y = e.clientY - rect.top;
       var centerX = rect.width / 2;
       var centerY = rect.height / 2;
-      var rotateX = (y - centerY) / centerY * -8;
-      var rotateY = (x - centerX) / centerX * 8;
-      codeWindow.style.transform = 'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
 
       badges.forEach(function (badge, i) {
         var factor = (i + 1) * 8;
@@ -364,8 +361,6 @@
     });
 
     heroInteractive.addEventListener('mouseleave', function () {
-      codeWindow.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg)';
-      codeWindow.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
       badges.forEach(function (badge) {
         badge.style.transform = 'translate(0, 0)';
         badge.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
@@ -373,7 +368,6 @@
     });
 
     heroInteractive.addEventListener('mouseenter', function () {
-      codeWindow.style.transition = 'transform 0.1s ease-out';
       badges.forEach(function (badge) {
         badge.style.transition = 'transform 0.1s ease-out';
       });
