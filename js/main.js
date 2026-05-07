@@ -25,6 +25,10 @@
       html.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
       updateThemeIcon();
+      themeToggle.style.transform = 'rotate(360deg)';
+      setTimeout(function () {
+        themeToggle.style.transform = '';
+      }, 500);
     });
   }
 
@@ -48,19 +52,22 @@
     });
   }
 
+  var lastScroll = 0;
   window.addEventListener('scroll', function () {
+    var currentScroll = window.scrollY;
+
     if (backToTop) {
-      backToTop.classList.toggle('visible', window.scrollY > 400);
+      backToTop.classList.toggle('visible', currentScroll > 400);
     }
 
     if (header) {
-      header.classList.toggle('scrolled', window.scrollY > 50);
+      header.classList.toggle('scrolled', currentScroll > 50);
     }
 
     var current = '';
     sections.forEach(function (section) {
       var top = section.offsetTop - 100;
-      if (window.scrollY >= top) {
+      if (currentScroll >= top) {
         current = section.getAttribute('id');
       }
     });
@@ -71,6 +78,8 @@
         link.classList.add('active');
       }
     });
+
+    lastScroll = currentScroll;
   });
 
   if (backToTop) {
@@ -83,20 +92,26 @@
     btn.addEventListener('click', function () {
       filterBtns.forEach(function (b) { b.classList.remove('active'); });
       btn.classList.add('active');
+      btn.style.transform = 'scale(1.1)';
+      setTimeout(function () { btn.style.transform = ''; }, 200);
       var filter = btn.getAttribute('data-filter');
 
-      projectCards.forEach(function (card) {
+      projectCards.forEach(function (card, index) {
         if (filter === 'all' || card.getAttribute('data-category') === filter) {
           card.classList.remove('hidden');
           card.style.opacity = '0';
-          card.style.transform = 'translateY(20px)';
-          requestAnimationFrame(function () {
-            card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          card.style.transform = 'translateY(30px) scale(0.95)';
+          setTimeout(function () {
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-          });
+            card.style.transform = 'translateY(0) scale(1)';
+          }, index * 80);
         } else {
-          card.classList.add('hidden');
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.9)';
+          setTimeout(function () {
+            card.classList.add('hidden');
+          }, 300);
         }
       });
     });
@@ -105,28 +120,47 @@
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+        var delay = 0;
+        var siblings = entry.target.parentElement.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right, .fade-in-scale');
+        for (var i = 0; i < siblings.length; i++) {
+          if (siblings[i] === entry.target) {
+            delay = i * 100;
+            break;
+          }
+        }
+        setTimeout(function () {
+          entry.target.classList.add('visible');
+        }, delay);
 
         var bars = entry.target.querySelectorAll('.skill-bar-fill');
         bars.forEach(function (bar, i) {
           setTimeout(function () {
             var percent = bar.getAttribute('data-percent');
             bar.style.width = percent + '%';
-          }, i * 100);
+          }, i * 120 + 300);
         });
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-  document.querySelectorAll('.fade-in').forEach(function (el) {
+  document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right, .fade-in-scale').forEach(function (el) {
     observer.observe(el);
   });
 
   if (mouseGlow) {
+    var glowX = 0, glowY = 0, targetX = 0, targetY = 0;
     document.addEventListener('mousemove', function (e) {
-      mouseGlow.style.left = e.clientX + 'px';
-      mouseGlow.style.top = e.clientY + 'px';
+      targetX = e.clientX;
+      targetY = e.clientY;
     });
+    function updateGlow() {
+      glowX += (targetX - glowX) * 0.08;
+      glowY += (targetY - glowY) * 0.08;
+      mouseGlow.style.left = glowX + 'px';
+      mouseGlow.style.top = glowY + 'px';
+      requestAnimationFrame(updateGlow);
+    }
+    updateGlow();
   }
 
   var typingElement = document.querySelector('.typing-text');
@@ -168,14 +202,13 @@
       setTimeout(typeEffect, typingSpeed);
     }
 
-    setTimeout(typeEffect, 1000);
+    setTimeout(typeEffect, 1200);
   }
 
   function animateCounter(el) {
     var target = parseInt(el.getAttribute('data-count'), 10);
     var suffix = el.getAttribute('data-suffix') || '';
     var duration = 2000;
-    var start = 0;
     var startTime = null;
 
     function step(timestamp) {
@@ -211,7 +244,7 @@
 
   if (canvas && ctx) {
     var particles = [];
-    var particleCount = 60;
+    var particleCount = 70;
     var mouseX = -1000;
     var mouseY = -1000;
 
@@ -232,11 +265,13 @@
       return {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: Math.random() * 2 + 0.5,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 2.5 + 0.5,
         opacity: Math.random() * 0.3 + 0.1,
-        baseOpacity: Math.random() * 0.3 + 0.1
+        baseOpacity: Math.random() * 0.3 + 0.1,
+        pulseSpeed: Math.random() * 0.02 + 0.01,
+        pulsePhase: Math.random() * Math.PI * 2
       };
     }
 
@@ -244,8 +279,10 @@
       particles.push(createParticle());
     }
 
+    var time = 0;
     function animateParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      time += 0.016;
 
       var isDark = html.getAttribute('data-theme') === 'dark';
       var baseColor = isDark ? '100, 255, 218' : '10, 158, 128';
@@ -256,16 +293,22 @@
         var dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < 200) {
-          p.opacity = p.baseOpacity + (0.3 * (1 - dist / 200));
+          p.opacity = p.baseOpacity + (0.4 * (1 - dist / 200));
+          var angle = Math.atan2(dy, dx);
+          p.x -= Math.cos(angle) * 0.5;
+          p.y -= Math.sin(angle) * 0.5;
         } else {
-          p.opacity += (p.baseOpacity - p.opacity) * 0.05;
+          var pulse = Math.sin(time * p.pulseSpeed * 60 + p.pulsePhase) * 0.1;
+          p.opacity += ((p.baseOpacity + pulse) - p.opacity) * 0.05;
         }
 
         p.x += p.vx;
         p.y += p.vy;
 
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        if (p.x < -10) p.x = canvas.width + 10;
+        if (p.x > canvas.width + 10) p.x = -10;
+        if (p.y < -10) p.y = canvas.height + 10;
+        if (p.y > canvas.height + 10) p.y = -10;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -279,12 +322,13 @@
           var dy = particles[i].y - particles[j].y;
           var dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 120) {
+          if (dist < 130) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = 'rgba(' + baseColor + ',' + (0.1 * (1 - dist / 120)) + ')';
-            ctx.lineWidth = 0.5;
+            var lineOpacity = 0.12 * (1 - dist / 130);
+            ctx.strokeStyle = 'rgba(' + baseColor + ',' + lineOpacity + ')';
+            ctx.lineWidth = 0.6;
             ctx.stroke();
           }
         }
@@ -296,12 +340,37 @@
     animateParticles();
   }
 
+  var tiltCards = document.querySelectorAll('[data-tilt]');
+  tiltCards.forEach(function (card) {
+    card.addEventListener('mousemove', function (e) {
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var centerX = rect.width / 2;
+      var centerY = rect.height / 2;
+      var rotateX = (y - centerY) / centerY * -6;
+      var rotateY = (x - centerX) / centerX * 6;
+      card.style.transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.02)';
+    });
+
+    card.addEventListener('mouseleave', function () {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+      card.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+    });
+
+    card.addEventListener('mouseenter', function () {
+      card.style.transition = 'transform 0.1s ease-out';
+    });
+  });
+
   document.querySelectorAll('.contact-form input, .contact-form textarea').forEach(function (el) {
     el.addEventListener('focus', function () {
-      this.parentElement.style.borderColor = 'var(--accent)';
+      this.style.borderColor = 'var(--accent)';
+      this.style.boxShadow = '0 0 0 3px rgba(100, 255, 218, 0.1)';
     });
     el.addEventListener('blur', function () {
-      this.parentElement.style.borderColor = 'var(--border)';
+      this.style.borderColor = '';
+      this.style.boxShadow = '';
     });
   });
 
@@ -311,13 +380,37 @@
       e.preventDefault();
       var btn = contactForm.querySelector('.btn-primary');
       var originalText = btn.textContent;
-      btn.textContent = 'Отправлено!';
+      btn.textContent = '\u2713 Отправлено!';
       btn.style.background = 'linear-gradient(135deg, var(--accent-alt), #a78bfa)';
+      btn.style.transform = 'scale(1.05)';
       setTimeout(function () {
         btn.textContent = originalText;
         btn.style.background = '';
+        btn.style.transform = '';
         contactForm.reset();
       }, 2500);
     });
   }
+
+  var scrollTimeout;
+  window.addEventListener('scroll', function () {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(function () {
+      document.querySelectorAll('.timeline-item').forEach(function (item) {
+        var rect = item.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.8) {
+          item.style.opacity = '1';
+          item.style.transform = 'translateX(0)';
+        }
+      });
+    }, 50);
+  });
+
+  document.querySelectorAll('.timeline-item').forEach(function (item) {
+    item.style.opacity = '0';
+    item.style.transform = 'translateX(-20px)';
+    item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  });
+
+  window.dispatchEvent(new Event('scroll'));
 })();
