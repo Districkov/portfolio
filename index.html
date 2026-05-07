@@ -10,12 +10,13 @@
   <title>Портфолио разработчика</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <canvas id="particles-canvas"></canvas>
+  <div class="mouse-glow"></div>
 
   <header>
     <div class="container">
@@ -26,9 +27,9 @@
         <a href="#projects">Проекты</a>
         <a href="#experience">Опыт</a>
         <a href="#contact">Контакты</a>
-        <button class="theme-toggle" aria-label="Переключить тему">☀</button>
+        <button class="theme-toggle" aria-label="Переключить тему">&#9788;</button>
       </nav>
-      <button class="hamburger" aria-label="Меню">☰</button>
+      <button class="hamburger" aria-label="Меню">&#9776;</button>
     </div>
   </header>
 
@@ -50,11 +51,43 @@
     <div class="container">
       <div class="hero-content fade-in">
         <p class="hero-greeting">console.log("Hello, World!");</p>
-        <h1 class="hero-title">Привет, я Разработчик</h1>
-        <p class="hero-subtitle">Fullstack-разработчик, создающий современные веб-приложения с чистым кодом и вниманием к деталям</p>
+        <h1 class="hero-title">
+          Привет, я<br>
+          <span class="accent-text typing-text"></span><span class="typing-cursor"></span>
+        </h1>
+        <p class="hero-subtitle">Создаю современные веб-приложения с чистым кодом и вниманием к деталям. Превращаю идеи в работающие продукты.</p>
         <div class="hero-buttons">
-          <a href="#projects" class="btn btn-primary">Мои проекты ↓</a>
-          <a href="#contact" class="btn btn-outline">Связаться →</a>
+          <a href="#projects" class="btn btn-primary">Мои проекты &#8595;</a>
+          <a href="#contact" class="btn btn-outline"><span>Связаться &#8594;</span></a>
+        </div>
+      </div>
+      <div class="hero-decoration" aria-hidden="true">  const developer = {
+    name: "Разработчик",
+    skills: ["React", "Node.js"],
+    passion: "Clean Code",
+    coffee: Infinity
+  };</div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid fade-in">
+        <div class="stat-item">
+          <div class="stat-number" data-count="5" data-suffix="+">0+</div>
+          <div class="stat-label">Лет опыта</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-count="30" data-suffix="+">0+</div>
+          <div class="stat-label">Проектов</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-count="15" data-suffix="+">0+</div>
+          <div class="stat-label">Клиентов</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-count="500" data-suffix="+">0+</div>
+          <div class="stat-label">Коммитов</div>
         </div>
       </div>
     </div>
@@ -62,7 +95,7 @@
 
   <section id="about">
     <div class="container">
-      <h2 class="section-title fade-in">Обо мне</h2>
+      <h2 class="section-title fade-in"><span class="gradient-text">Обо мне</span></h2>
       <p class="section-subtitle fade-in">Немного о том, кто я и чем занимаюсь</p>
       <div class="about-grid fade-in">
         <div class="about-avatar">
@@ -73,7 +106,7 @@
           <p>Специализируюсь на <strong>JavaScript/TypeScript</strong> экосистеме, работаю как с фронтендом, так и с бэкендом. Уверен, что хороший код — это не только работающее решение, но и чистая архитектура.</p>
           <p>В свободное время изучаю новые технологии, участвую в open-source проектах и делюсь опытом через статьи и выступления.</p>
           <div class="about-links">
-            <a href="#" class="btn btn-outline" download>Резюме ↓</a>
+            <a href="#" class="btn btn-outline" download><span>Резюме &#8595;</span></a>
           </div>
         </div>
       </div>
@@ -82,11 +115,11 @@
 
   <section id="skills">
     <div class="container">
-      <h2 class="section-title fade-in">Навыки</h2>
+      <h2 class="section-title fade-in"><span class="gradient-text">Навыки</span></h2>
       <p class="section-subtitle fade-in">Технологии и инструменты, с которыми я работаю</p>
       <div class="skills-categories">
         <div class="skill-category fade-in">
-          <h3>Языки</h3>
+          <h3>&#9881; Языки</h3>
           <div class="skill-item">
             <div class="skill-header"><span class="skill-name">JavaScript</span><span class="skill-percent">90%</span></div>
             <div class="skill-bar"><div class="skill-bar-fill" data-percent="90"></div></div>
@@ -105,7 +138,7 @@
           </div>
         </div>
         <div class="skill-category fade-in">
-          <h3>Фреймворки</h3>
+          <h3>&#9881; Фреймворки</h3>
           <div class="skill-item">
             <div class="skill-header"><span class="skill-name">React</span><span class="skill-percent">90%</span></div>
             <div class="skill-bar"><div class="skill-bar-fill" data-percent="90"></div></div>
@@ -124,7 +157,7 @@
           </div>
         </div>
         <div class="skill-category fade-in">
-          <h3>Инструменты</h3>
+          <h3>&#9881; Инструменты</h3>
           <div class="skill-item">
             <div class="skill-header"><span class="skill-name">Git / GitHub</span><span class="skill-percent">90%</span></div>
             <div class="skill-bar"><div class="skill-bar-fill" data-percent="90"></div></div>
@@ -143,7 +176,7 @@
           </div>
         </div>
         <div class="skill-category fade-in">
-          <h3>Прочее</h3>
+          <h3>&#9881; Прочее</h3>
           <div class="skill-item">
             <div class="skill-header"><span class="skill-name">REST API</span><span class="skill-percent">90%</span></div>
             <div class="skill-bar"><div class="skill-bar-fill" data-percent="90"></div></div>
@@ -167,7 +200,7 @@
 
   <section id="projects">
     <div class="container">
-      <h2 class="section-title fade-in">Проекты</h2>
+      <h2 class="section-title fade-in"><span class="gradient-text">Проекты</span></h2>
       <p class="section-subtitle fade-in">Избранные проекты, над которыми я работал</p>
       <div class="projects-filters fade-in">
         <button class="filter-btn active" data-filter="all">Все</button>
@@ -178,7 +211,7 @@
       <div class="projects-grid">
         <div class="project-card fade-in" data-category="fullstack">
           <div class="project-image">
-            <span class="project-image-placeholder">📁</span>
+            <span class="project-image-placeholder">&#128736;</span>
             <div class="project-overlay">
               <a href="#" target="_blank" rel="noopener">GitHub</a>
               <a href="#" target="_blank" rel="noopener">Демо</a>
@@ -192,7 +225,7 @@
         </div>
         <div class="project-card fade-in" data-category="frontend">
           <div class="project-image">
-            <span class="project-image-placeholder">📁</span>
+            <span class="project-image-placeholder">&#128202;</span>
             <div class="project-overlay">
               <a href="#" target="_blank" rel="noopener">GitHub</a>
               <a href="#" target="_blank" rel="noopener">Демо</a>
@@ -206,7 +239,7 @@
         </div>
         <div class="project-card fade-in" data-category="backend">
           <div class="project-image">
-            <span class="project-image-placeholder">📁</span>
+            <span class="project-image-placeholder">&#128268;</span>
             <div class="project-overlay">
               <a href="#" target="_blank" rel="noopener">GitHub</a>
               <a href="#" target="_blank" rel="noopener">API Docs</a>
@@ -220,7 +253,7 @@
         </div>
         <div class="project-card fade-in" data-category="fullstack">
           <div class="project-image">
-            <span class="project-image-placeholder">📁</span>
+            <span class="project-image-placeholder">&#128172;</span>
             <div class="project-overlay">
               <a href="#" target="_blank" rel="noopener">GitHub</a>
               <a href="#" target="_blank" rel="noopener">Демо</a>
@@ -234,7 +267,7 @@
         </div>
         <div class="project-card fade-in" data-category="frontend">
           <div class="project-image">
-            <span class="project-image-placeholder">📁</span>
+            <span class="project-image-placeholder">&#127912;</span>
             <div class="project-overlay">
               <a href="#" target="_blank" rel="noopener">GitHub</a>
               <a href="#" target="_blank" rel="noopener">Демо</a>
@@ -248,7 +281,7 @@
         </div>
         <div class="project-card fade-in" data-category="backend">
           <div class="project-image">
-            <span class="project-image-placeholder">📁</span>
+            <span class="project-image-placeholder">&#128274;</span>
             <div class="project-overlay">
               <a href="#" target="_blank" rel="noopener">GitHub</a>
               <a href="#" target="_blank" rel="noopener">API Docs</a>
@@ -266,7 +299,7 @@
 
   <section id="experience">
     <div class="container">
-      <h2 class="section-title fade-in">Опыт работы</h2>
+      <h2 class="section-title fade-in"><span class="gradient-text">Опыт работы</span></h2>
       <p class="section-subtitle fade-in">Мой профессиональный путь</p>
       <div class="timeline fade-in">
         <div class="timeline-item">
@@ -293,27 +326,27 @@
 
   <section id="contact">
     <div class="container">
-      <h2 class="section-title fade-in">Контакты</h2>
+      <h2 class="section-title fade-in"><span class="gradient-text">Контакты</span></h2>
       <p class="section-subtitle fade-in">Свяжитесь со мной для сотрудничества или вопросов</p>
       <div class="contact-grid">
-        <form class="contact-form fade-in" onsubmit="return false;">
+        <form class="contact-form fade-in">
           <input type="text" placeholder="Ваше имя" required>
           <input type="email" placeholder="Ваш email" required>
           <textarea placeholder="Сообщение" required></textarea>
-          <button type="submit" class="btn btn-primary">Отправить →</button>
+          <button type="submit" class="btn btn-primary">Отправить &#8594;</button>
         </form>
         <div class="contact-info fade-in">
           <h3>Как меня найти</h3>
           <div class="contact-info-item">
-            <span class="icon">✉</span>
+            <span class="icon">&#9993;</span>
             <span>developer@email.com</span>
           </div>
           <div class="contact-info-item">
-            <span class="icon">📍</span>
+            <span class="icon">&#128205;</span>
             <span>Москва, Россия</span>
           </div>
           <div class="contact-info-item">
-            <span class="icon">⏰</span>
+            <span class="icon">&#9200;</span>
             <span>Отвечаю в течение 24 часов</span>
           </div>
           <div class="contact-socials">
@@ -337,7 +370,7 @@
     </div>
   </footer>
 
-  <button class="back-to-top" aria-label="Наверх">↑</button>
+  <button class="back-to-top" aria-label="Наверх">&#8593;</button>
 
   <script src="js/main.js"></script>
 </body>
