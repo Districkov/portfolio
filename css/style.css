@@ -503,6 +503,9 @@ nav a.active::after {
   margin-bottom: 16px;
   font-family: var(--font-mono);
   animation: slide-up 0.6s ease forwards;
+  text-align: right;
+  margin-left: auto;
+  max-width: 750px;
 }
 
 .hero-title {
@@ -514,8 +517,8 @@ nav a.active::after {
 }
 
 .typing-line {
-  display: block;
-  min-height: 1.2em;
+  display: inline-block;
+  min-width: 22ch;
   position: relative;
 }
 
