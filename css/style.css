@@ -637,11 +637,12 @@ nav a.active::after {
 }
 
 .hero-content {
-  flex: 0 0 auto;
-  max-width: 500px;
+  flex: 0 0 45%;
+  max-width: 520px;
   text-align: right;
   margin-left: auto;
   animation: slide-up 0.6s ease both;
+  overflow: hidden;
 }
 
 .hero-greeting {
@@ -657,12 +658,16 @@ nav a.active::after {
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 20px;
+  width: 100%;
+  text-align: right;
+  overflow: hidden;
 }
 
 .typing-line {
-  display: inline-block;
-  min-width: 22ch;
+  display: block;
+  width: 100%;
   position: relative;
+  text-align: right;
 }
 
 .accent-text {
