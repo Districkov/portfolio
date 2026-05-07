@@ -340,6 +340,66 @@
     animateParticles();
   }
 
+  var codeWindow = document.querySelector('.code-window');
+  var heroInteractive = document.getElementById('hero-interactive');
+  var badges = document.querySelectorAll('.floating-badge');
+
+  if (codeWindow && heroInteractive) {
+    heroInteractive.addEventListener('mousemove', function (e) {
+      var rect = heroInteractive.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var centerX = rect.width / 2;
+      var centerY = rect.height / 2;
+      var rotateX = (y - centerY) / centerY * -8;
+      var rotateY = (x - centerX) / centerX * 8;
+      codeWindow.style.transform = 'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
+
+      badges.forEach(function (badge, i) {
+        var factor = (i + 1) * 8;
+        var bx = (x - centerX) / centerX * factor;
+        var by = (y - centerY) / centerY * factor;
+        badge.style.transform = 'translate(' + bx + 'px, ' + by + 'px)';
+      });
+    });
+
+    heroInteractive.addEventListener('mouseleave', function () {
+      codeWindow.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg)';
+      codeWindow.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      badges.forEach(function (badge) {
+        badge.style.transform = 'translate(0, 0)';
+        badge.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      });
+    });
+
+    heroInteractive.addEventListener('mouseenter', function () {
+      codeWindow.style.transition = 'transform 0.1s ease-out';
+      badges.forEach(function (badge) {
+        badge.style.transition = 'transform 0.1s ease-out';
+      });
+    });
+
+    var codeLines = document.querySelectorAll('.code-line:not(.code-line-cursor)');
+    codeLines.forEach(function (line, i) {
+      line.style.opacity = '0';
+      line.style.transform = 'translateX(-20px)';
+      line.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      setTimeout(function () {
+        line.style.opacity = '1';
+        line.style.transform = 'translateX(0)';
+      }, 300 + i * 100);
+    });
+
+    var cursorLine = document.querySelector('.code-line-cursor');
+    if (cursorLine) {
+      cursorLine.style.opacity = '0';
+      setTimeout(function () {
+        cursorLine.style.opacity = '1';
+        cursorLine.style.transition = 'opacity 0.4s ease';
+      }, 300 + codeLines.length * 100);
+    }
+  }
+
   var tiltCards = document.querySelectorAll('[data-tilt]');
   tiltCards.forEach(function (card) {
     card.addEventListener('mousemove', function (e) {
