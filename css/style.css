@@ -743,6 +743,11 @@ nav a.active::after {
   box-shadow: var(--glow);
 }
 
+[data-theme="light"] .filter-btn:hover,
+[data-theme="light"] .filter-btn.active {
+  background: rgba(10, 158, 128, 0.08);
+}
+
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
